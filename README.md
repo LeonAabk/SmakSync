@@ -68,29 +68,23 @@
 
 ## 🌐 Publisering på GitHub Pages
 
-Dette repositoriet er klargjort med automatisk GitHub Actions CI/CD (`.github/workflows/deploy.yml`).
+Dette repositoriet er optimalisert for GitHub Pages via `/docs`-mappen (som du har konfigurert under innstillingene dine):
 
-### Slik aktiverer du GitHub Pages:
-
-1. Gå til repositoriet på **GitHub**.
-2. Klikk på **Settings** > **Pages** (i venstremenyen).
-3. Under **Build and deployment** > **Source**, velg **GitHub Actions**.
-4. Når du pusher endringer til `main`-branchen, vil GitHub Actions automatisk bygge og publisere nettsiden til:
-   `https://<ditt-brukernavn>.github.io/<repo-navn>/`
-
-> *Merk: `vite.config.ts` er allerede konfigurert med `base: './'`, slik at alle stier fungerer feilfritt både på tilpassede domener og undermapper på GitHub Pages.*
+1. **Source:** `Deploy from a branch`
+2. **Branch:** `main` / `/docs`
+3. Nettsiden serveres direkte fra `docs/index.html` med `.nojekyll` aktivert, slik at den publiseres umiddelbart uten Jekyll-krasj!
 
 ---
 
 ## 📁 Prosjektstruktur
 
 ```
-├── .github/
-│   └── workflows/
-│       └── deploy.yml      # Automatisk GitHub Actions deployment
-├── index.html              # Komplett landingsside, mockups og JavaScript
+├── docs/
+│   ├── index.html          # Nettside for GitHub Pages (produksjon)
+│   └── .nojekyll           # Slår av Jekyll på GitHub Pages
+├── index.html              # Kildekode / lokal visning
 ├── package.json            # Prosjektkonfigurasjon og scripts
-├── vite.config.ts          # Vite build-oppsett med relativ basesti
+├── vite.config.ts          # Vite build-oppsett (bygger til docs/)
 ├── tsconfig.json           # TypeScript-konfigurasjon
 ├── .gitignore              # Ignorerte filer for Git
 └── README.md               # Dokumentasjon

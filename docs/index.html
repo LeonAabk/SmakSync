@@ -1,0 +1,1272 @@
+<!doctype html>
+<html lang="no" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SmartMeny - NFC & Digitale Menyer</title>
+    <meta name="description" content="Skandinavisk B2B SaaS for restauranter: NFC-menykort og lynraske digitale menyer." />
+    <meta property="og:title" content="SmartMeny - NFC & Digitale Menyer" />
+    <meta property="og:description" content="Skandinavisk B2B SaaS for restauranter: NFC-menykort og lynraske digitale menyer." />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+            },
+            colors: {
+              accent: {
+                50: '#ecfdf5',
+                100: '#d1fae5',
+                500: '#10b981',
+                600: '#059669',
+                700: '#047857',
+              },
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      /* Subtile detaljer for skandinavisk minimalisme */
+      body {
+        font-family: 'Inter', sans-serif;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+      /* Skjul scrollbar for mockups men behold scrolling */
+      .no-scrollbar::-webkit-scrollbar {
+        display: none;
+      }
+      .no-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+    </style>
+  </head>
+  <body class="bg-zinc-50 text-zinc-900 selection:bg-accent-100 selection:text-accent-700 antialiased">
+
+    <!-- ========================================== -->
+    <!-- 1. NAVIGASJON (HEADER)                     -->
+    <!-- ========================================== -->
+    <header class="sticky top-0 z-40 w-full border-b border-zinc-200/80 bg-white/90 backdrop-blur-md transition-all">
+      <div class="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6 lg:px-8">
+        <!-- Logo -->
+        <a href="#" class="flex items-center gap-2 group">
+          <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-zinc-900 text-white font-semibold text-sm transition-transform group-hover:scale-95">
+            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" />
+              <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" />
+            </svg>
+          </div>
+          <span class="text-base font-semibold tracking-tight text-zinc-950">SmartMeny</span>
+        </a>
+
+        <!-- Desktop Navigasjonslenker -->
+        <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-zinc-600">
+          <a href="#konsept" class="hover:text-zinc-950 transition-colors">Konsept</a>
+          <a href="#demoer" class="hover:text-zinc-950 transition-colors">Demoer</a>
+          <a href="#for-restauranter" class="hover:text-zinc-950 transition-colors">For Restauranter</a>
+        </nav>
+
+        <!-- CTA-knapp -->
+        <div class="flex items-center gap-3">
+          <button
+            onclick="openDemoModal()"
+            class="inline-flex items-center justify-center rounded-lg bg-zinc-950 px-4 py-2 text-xs sm:text-sm font-medium text-white transition-all hover:bg-zinc-800 active:scale-98 shadow-sm"
+          >
+            Bestill demo
+          </button>
+          <!-- Mobilmeny-knapp -->
+          <button
+            onclick="toggleMobileMenu()"
+            class="md:hidden flex h-9 w-9 items-center justify-center rounded-md border border-zinc-200 text-zinc-700 hover:bg-zinc-100"
+            aria-label="Åpne meny"
+          >
+            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Mobil dropdown -->
+      <div id="mobile-menu" class="hidden border-b border-zinc-200 bg-white px-4 py-4 md:hidden">
+        <div class="flex flex-col space-y-3 text-sm font-medium text-zinc-700">
+          <a href="#konsept" onclick="toggleMobileMenu()" class="py-1 hover:text-zinc-950">Konsept</a>
+          <a href="#demoer" onclick="toggleMobileMenu()" class="py-1 hover:text-zinc-950">Demoer</a>
+          <a href="#for-restauranter" onclick="toggleMobileMenu()" class="py-1 hover:text-zinc-950">For Restauranter</a>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <!-- ========================================== -->
+      <!-- 2. HERO-SEKSJON                            -->
+      <!-- ========================================== -->
+      <section class="relative overflow-hidden pt-16 pb-20 sm:pt-24 sm:pb-28 border-b border-zinc-200/60 bg-gradient-to-b from-white via-zinc-50 to-zinc-50">
+        <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+          
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+            <!-- Tekstkolonne -->
+            <div class="lg:col-span-7 space-y-6 text-left">
+              <div class="inline-flex items-center gap-2 rounded-full border border-zinc-200 bg-white px-3 py-1 text-xs font-medium text-zinc-700 shadow-xs">
+                <span class="h-1.5 w-1.5 rounded-full bg-accent-600 animate-pulse"></span>
+                <span>NFC-brikke + QR-sikring i ett kort</span>
+              </div>
+
+              <h1 class="text-3xl sm:text-5xl lg:text-5xl font-bold tracking-tight text-zinc-950 leading-[1.12]">
+                Fremtidens meny ligger allerede på bordet.
+              </h1>
+
+              <p class="max-w-xl text-base sm:text-lg text-zinc-600 leading-relaxed font-normal">
+                Skreddersydde, lynraske digitale menyer og lekre NFC-kort for din restaurant. Oppdater prisene på sekunder – uten å trykke opp nye menyer.
+              </p>
+
+              <!-- Knapper -->
+              <div class="flex flex-wrap items-center gap-3 pt-2">
+                <a
+                  href="#demoer"
+                  class="inline-flex items-center justify-center rounded-lg bg-zinc-950 px-5 py-2.5 text-sm font-medium text-white transition-all hover:bg-zinc-800 shadow-sm"
+                >
+                  Se demo-menyer
+                  <svg class="ml-2 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </a>
+                <a
+                  href="#konsept"
+                  class="inline-flex items-center justify-center rounded-lg border border-zinc-300 bg-white px-5 py-2.5 text-sm font-medium text-zinc-800 transition-all hover:bg-zinc-100 hover:border-zinc-400 shadow-xs"
+                >
+                  Hvordan det fungerer
+                </a>
+              </div>
+
+              <!-- Nøkkelpunkter -->
+              <div class="pt-6 grid grid-cols-3 gap-4 border-t border-zinc-200/80">
+                <div>
+                  <div class="text-xl sm:text-2xl font-semibold tracking-tight text-zinc-950">&lt; 0.4s</div>
+                  <div class="text-xs text-zinc-500 font-medium mt-0.5">Innlastingstid</div>
+                </div>
+                <div>
+                  <div class="text-xl sm:text-2xl font-semibold tracking-tight text-zinc-950">100%</div>
+                  <div class="text-xs text-zinc-500 font-medium mt-0.5">Ingen app kreves</div>
+                </div>
+                <div>
+                  <div class="text-xl sm:text-2xl font-semibold tracking-tight text-zinc-950">+18%</div>
+                  <div class="text-xs text-zinc-500 font-medium mt-0.5">Snittordre på bord</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Visuelt element: Det fysiske NFC-kortet -->
+            <div class="lg:col-span-5 flex justify-center">
+              <div class="relative w-full max-w-sm">
+                <!-- Bakgrunnsglød (svært dempet) -->
+                <div class="absolute -inset-2 bg-gradient-to-r from-zinc-200 to-zinc-300 rounded-2xl filter blur-xl opacity-40"></div>
+                
+                <!-- Det fysiske bordkortet -->
+                <div class="relative rounded-2xl bg-zinc-950 p-6 text-white shadow-xl border border-zinc-800 space-y-6">
+                  <div class="flex items-center justify-between border-b border-zinc-800/80 pb-4">
+                    <div class="flex items-center gap-2">
+                      <div class="h-2 w-2 rounded-full bg-accent-500"></div>
+                      <span class="text-xs font-medium tracking-wide text-zinc-400 uppercase">Bord 14 · Salong</span>
+                    </div>
+                    <span class="text-[11px] font-mono text-zinc-400 bg-zinc-900 px-2 py-0.5 rounded border border-zinc-800">NFC Active</span>
+                  </div>
+
+                  <div class="text-center py-4 space-y-3">
+                    <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-zinc-900 border border-zinc-800 text-accent-500">
+                      <!-- Kontaktløs NFC ikon -->
+                      <svg class="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M8.5 16.5a5 5 0 0 1 0-7" stroke-linecap="round"/>
+                        <path d="M12 19a8.5 8.5 0 0 1 0-12" stroke-linecap="round"/>
+                        <path d="M15.5 21.5a12 12 0 0 1 0-17" stroke-linecap="round"/>
+                      </svg>
+                    </div>
+                    <div>
+                      <p class="text-sm font-semibold tracking-tight text-white">Hold telefonen inntil kortet</p>
+                      <p class="text-xs text-zinc-400 mt-1">eller skann QR-koden for å se menyen</p>
+                    </div>
+                  </div>
+
+                  <!-- Kortets bunn med minimalistisk QR og branding -->
+                  <div class="flex items-center justify-between pt-2 border-t border-zinc-800/80 text-xs text-zinc-400">
+                    <div class="flex items-center gap-2">
+                      <div class="h-8 w-8 bg-white p-1 rounded">
+                        <!-- Diskret stilisert QR SVG -->
+                        <svg viewBox="0 0 24 24" class="w-full h-full text-zinc-950 fill-current">
+                          <path d="M2 2h8v8H2V2zm2 2v4h4V4H4zm10-2h8v8h-8V2zm2 2v4h4V4h-4zM2 14h8v8H2v-8zm2 2v4h4v-4H4zm10 0h2v2h-2v-2zm4 0h2v2h-2v-2zm-4 4h2v2h-2v-2zm4 0h2v2h-2v-2zm-2-2h2v2h-2v-2zm-2-2h2v2h-2v-2z"/>
+                        </svg>
+                      </div>
+                      <span class="text-[11px] text-zinc-400">Matt akryl / trefinér</span>
+                    </div>
+                    <span class="font-semibold text-zinc-300 tracking-tight">SmartMeny™</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ========================================== -->
+      <!-- 3. SEKSJON: HVORDAN DET FUNGERER           -->
+      <!-- ========================================== -->
+      <section id="konsept" class="py-20 sm:py-24 bg-white border-b border-zinc-200/80">
+        <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+          
+          <div class="text-center max-w-2xl mx-auto space-y-3">
+            <p class="text-xs font-semibold uppercase tracking-wider text-accent-700">Enkelhet for gjesten</p>
+            <h2 class="text-2xl sm:text-3xl font-bold tracking-tight text-zinc-950">
+              Hvordan det fungerer
+            </h2>
+            <p class="text-sm sm:text-base text-zinc-600 font-normal">
+              Ingen nedlasting fra App Store, ingen brukernavn, ingen friksjon. Kun ren matopplevelse på under ett sekund.
+            </p>
+          </div>
+
+          <!-- Tre enkle steg -->
+          <div class="mt-14 grid grid-cols-1 md:grid-cols-3 gap-8 relative">
+            
+            <!-- Steg 1 -->
+            <div class="relative rounded-xl border border-zinc-200 bg-zinc-50/50 p-6 sm:p-8 flex flex-col justify-between transition-all hover:border-zinc-300 hover:bg-white hover:shadow-xs">
+              <div>
+                <div class="flex items-center justify-between mb-6">
+                  <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-zinc-900 text-white font-semibold text-sm">
+                    01
+                  </div>
+                  <!-- Ikon: Tap / NFC -->
+                  <div class="text-zinc-400">
+                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+                    </svg>
+                  </div>
+                </div>
+                <h3 class="text-lg font-semibold tracking-tight text-zinc-950 mb-2">
+                  Gjesten tapper kortet på bordet
+                </h3>
+                <p class="text-sm text-zinc-600 leading-relaxed">
+                  Den diskrete NFC-brikken i bordkortet aktiverer telefonens innebygde leser automatisk. QR-kode fungerer som trygg fallback for eldre modeller.
+                </p>
+              </div>
+              <div class="mt-6 pt-4 border-t border-zinc-200/80 text-xs font-medium text-zinc-500">
+                Fysisk kontakt · 0 ventetid
+              </div>
+            </div>
+
+            <!-- Steg 2 -->
+            <div class="relative rounded-xl border border-zinc-200 bg-zinc-50/50 p-6 sm:p-8 flex flex-col justify-between transition-all hover:border-zinc-300 hover:bg-white hover:shadow-xs">
+              <div>
+                <div class="flex items-center justify-between mb-6">
+                  <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-zinc-900 text-white font-semibold text-sm">
+                    02
+                  </div>
+                  <!-- Ikon: Lynrask skjerm -->
+                  <div class="text-accent-600">
+                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                    </svg>
+                  </div>
+                </div>
+                <h3 class="text-lg font-semibold tracking-tight text-zinc-950 mb-2">
+                  Menyen åpnes umiddelbart på telefonen
+                </h3>
+                <p class="text-sm text-zinc-600 leading-relaxed">
+                  Ingen app kreves. Den skreddersydde nettmenyen lastes på millisekunder med dine farger, bilder, allergener og oppdaterte priser.
+                </p>
+              </div>
+              <div class="mt-6 pt-4 border-t border-zinc-200/80 text-xs font-medium text-zinc-500">
+                Lynrask nettvisning · Full responsivitet
+              </div>
+            </div>
+
+            <!-- Steg 3 -->
+            <div class="relative rounded-xl border border-zinc-200 bg-zinc-50/50 p-6 sm:p-8 flex flex-col justify-between transition-all hover:border-zinc-300 hover:bg-white hover:shadow-xs">
+              <div>
+                <div class="flex items-center justify-between mb-6">
+                  <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-zinc-900 text-white font-semibold text-sm">
+                    03
+                  </div>
+                  <!-- Ikon: Vekst og bestilling -->
+                  <div class="text-zinc-400">
+                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
+                    </svg>
+                  </div>
+                </div>
+                <h3 class="text-lg font-semibold tracking-tight text-zinc-950 mb-2">
+                  Gjesten bestiller mer, og du øker omsetningen
+                </h3>
+                <p class="text-sm text-zinc-600 leading-relaxed">
+                  Gjestene har alltid oppdatert drikkekart og dessertmeny for hånden gjennom hele kvelden. Mindre stress for servitører og høyere mersalg.
+                </p>
+              </div>
+              <div class="mt-6 pt-4 border-t border-zinc-200/80 text-xs font-medium text-zinc-500">
+                Økt mersalg · Effektiv drift
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ========================================== -->
+      <!-- 4. DEMO-GALLERIET (VIS FREM PRODUKTENE)     -->
+      <!-- ========================================== -->
+      <section id="demoer" class="py-20 sm:py-24 bg-zinc-50 border-b border-zinc-200/80">
+        <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+          
+          <div class="text-center max-w-2xl mx-auto space-y-3 mb-14">
+            <p class="text-xs font-semibold uppercase tracking-wider text-accent-700">Ekte restaurant-opplevelser</p>
+            <h2 class="text-2xl sm:text-3xl font-bold tracking-tight text-zinc-950">
+              Demo-Galleriet
+            </h2>
+            <p class="text-sm sm:text-base text-zinc-600 font-normal">
+              Hvert konsept får sitt eget designuttrykk. Scroll inni mobilene under eller åpne fullskjerm-demo.
+            </p>
+          </div>
+
+          <!-- Grid med 3 telefon-mockups -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-10 items-start justify-items-center">
+
+            <!-- =============================== -->
+            <!-- DEMO 1: CAFÉ & BAKERY           -->
+            <!-- =============================== -->
+            <div class="w-full max-w-[320px] flex flex-col items-center">
+              <!-- Telefon Mockup -->
+              <div class="w-full rounded-[2.5rem] p-3 bg-zinc-900 shadow-2xl border-4 border-zinc-800">
+                <!-- Skjerm innhold (Lyst tema) -->
+                <div class="h-[520px] w-full rounded-[2rem] bg-stone-50 overflow-y-auto no-scrollbar flex flex-col text-zinc-800 text-xs border border-stone-200">
+                  
+                  <!-- Telefon topplinje -->
+                  <div class="px-5 pt-3 pb-2 flex items-center justify-between text-[11px] font-semibold text-zinc-600 border-b border-stone-200/60 bg-stone-50/90 backdrop-blur sticky top-0 z-10">
+                    <span>09:41</span>
+                    <div class="h-3.5 w-12 rounded-full bg-zinc-900 mx-auto"></div>
+                    <span>5G · 100%</span>
+                  </div>
+
+                  <!-- Café Header -->
+                  <div class="p-4 bg-amber-50/60 border-b border-amber-100/80 text-left">
+                    <p class="text-[10px] uppercase tracking-wider font-semibold text-amber-800">Grünerløkka · Oslo</p>
+                    <h4 class="text-base font-bold text-zinc-900">Kaffebrenneriet & Surdeig</h4>
+                    <p class="text-[11px] text-zinc-500 mt-0.5">Bakevarer, håndbrygg og lunsj</p>
+                  </div>
+
+                  <!-- Kategori tabs i mini-menyen -->
+                  <div class="px-4 py-2 flex gap-2 border-b border-stone-200/80 bg-stone-50">
+                    <span class="font-semibold text-zinc-900 border-b-2 border-zinc-900 pb-0.5">Bakst</span>
+                    <span class="text-zinc-500">Kaffe</span>
+                    <span class="text-zinc-500">Lunsj</span>
+                  </div>
+
+                  <!-- Retter (Café) -->
+                  <div class="p-4 space-y-3 divide-y divide-stone-200/60">
+                    <div class="pt-2 first:pt-0">
+                      <div class="flex justify-between font-semibold text-zinc-900">
+                        <span>Kardemommebolle</span>
+                        <span>48,-</span>
+                      </div>
+                      <p class="text-[11px] text-zinc-500 mt-0.5">Surdeigsbakt med nykvernet kardemomme og rørossmør.</p>
+                      <span class="text-[10px] text-amber-700 font-medium">Allergener: Hvetegluten, Melk</span>
+                    </div>
+
+                    <div class="pt-2">
+                      <div class="flex justify-between font-semibold text-zinc-900">
+                        <span>Mandelcroissant</span>
+                        <span>56,-</span>
+                      </div>
+                      <p class="text-[11px] text-zinc-500 mt-0.5">Fylt med frangipane og drysset med ristede mandler.</p>
+                      <span class="text-[10px] text-amber-700 font-medium">Allergener: Gluten, Nøtter, Melk</span>
+                    </div>
+
+                    <div class="pt-2">
+                      <div class="flex justify-between font-semibold text-zinc-900">
+                        <span>Avokado Toast</span>
+                        <span>145,-</span>
+                      </div>
+                      <p class="text-[11px] text-zinc-500 mt-0.5">Ristet landbrød, posjert egg, chiliflak og sitronolje.</p>
+                      <span class="text-[10px] text-amber-700 font-medium">Allergener: Egg, Gluten</span>
+                    </div>
+
+                    <div class="pt-2">
+                      <div class="flex justify-between font-semibold text-zinc-900">
+                        <span>Cortado / Cappuccino</span>
+                        <span>46,-</span>
+                      </div>
+                      <p class="text-[11px] text-zinc-500 mt-0.5">Etiopiske bønner, silkemyk havre- eller kumelk.</p>
+                    </div>
+
+                    <div class="pt-2">
+                      <div class="flex justify-between font-semibold text-zinc-900">
+                        <span>Espresso Tonic</span>
+                        <span>58,-</span>
+                      </div>
+                      <p class="text-[11px] text-zinc-500 mt-0.5">Dobbel espresso over håndverkstonic og rosmarin.</p>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+
+              <!-- Tittel og knapp under -->
+              <div class="mt-4 text-center">
+                <h3 class="text-sm font-semibold text-zinc-950">Café & Bakery</h3>
+                <p class="text-xs text-zinc-500 mb-2">Lyst, varmt og innbydende</p>
+                <button
+                  onclick="openFullDemo('cafe')"
+                  class="inline-flex items-center text-xs font-medium text-accent-700 hover:text-accent-800 bg-accent-50 hover:bg-accent-100 px-3 py-1.5 rounded-md border border-accent-200 transition-colors"
+                >
+                  Åpne full demo
+                  <svg class="ml-1 h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            <!-- =============================== -->
+            <!-- DEMO 2: FINE DINING             -->
+            <!-- =============================== -->
+            <div class="w-full max-w-[320px] flex flex-col items-center">
+              <!-- Telefon Mockup -->
+              <div class="w-full rounded-[2.5rem] p-3 bg-zinc-900 shadow-2xl border-4 border-zinc-800">
+                <!-- Skjerm innhold (Mørkt tema) -->
+                <div class="h-[520px] w-full rounded-[2rem] bg-zinc-950 overflow-y-auto no-scrollbar flex flex-col text-zinc-300 text-xs border border-zinc-800">
+                  
+                  <!-- Telefon topplinje -->
+                  <div class="px-5 pt-3 pb-2 flex items-center justify-between text-[11px] font-semibold text-zinc-400 border-b border-zinc-900 bg-zinc-950/90 backdrop-blur sticky top-0 z-10">
+                    <span>20:15</span>
+                    <div class="h-3.5 w-12 rounded-full bg-zinc-800 mx-auto"></div>
+                    <span>5G · 94%</span>
+                  </div>
+
+                  <!-- Fine Dining Header -->
+                  <div class="p-4 border-b border-zinc-900 text-center">
+                    <p class="text-[9px] uppercase tracking-widest text-zinc-500 font-medium">Michelin-inspirert</p>
+                    <h4 class="text-sm font-semibold tracking-wide text-zinc-100 mt-1 uppercase">Restaurant Eik & Gran</h4>
+                    <p class="text-[10px] text-zinc-500 mt-0.5">Kveldens smaksmeny</p>
+                  </div>
+
+                  <!-- Kategori tabs i mini-menyen -->
+                  <div class="px-4 py-2 flex justify-center gap-4 border-b border-zinc-900 text-[11px]">
+                    <span class="text-zinc-100 border-b border-zinc-100 pb-0.5">Hovedretter</span>
+                    <span class="text-zinc-500">Forretter</span>
+                    <span class="text-zinc-500">Vinkart</span>
+                  </div>
+
+                  <!-- Retter (Fine Dining) -->
+                  <div class="p-4 space-y-4 divide-y divide-zinc-900 text-left">
+                    <div class="pt-2 first:pt-0">
+                      <div class="flex justify-between items-baseline text-zinc-100 font-medium">
+                        <span>Grillet Norsk Hjort</span>
+                        <span class="font-mono text-zinc-300">385,-</span>
+                      </div>
+                      <p class="text-[11px] text-zinc-400 mt-1">Skogssopp, røkt sellerikrem og einebærglaze.</p>
+                      <p class="text-[10px] text-zinc-500 mt-0.5 italic">Anbefalt vin: Barolo 2018</p>
+                    </div>
+
+                    <div class="pt-3">
+                      <div class="flex justify-between items-baseline text-zinc-100 font-medium">
+                        <span>Pannestekt Kveite</span>
+                        <span class="font-mono text-zinc-300">365,-</span>
+                      </div>
+                      <p class="text-[11px] text-zinc-400 mt-1">Purreløk, ramsløkolje og champagne beurre blanc.</p>
+                      <p class="text-[10px] text-zinc-500 mt-0.5 italic">Anbefalt vin: Meursault 2020</p>
+                    </div>
+
+                    <div class="pt-3">
+                      <div class="flex justify-between items-baseline text-zinc-100 font-medium">
+                        <span>Tørrmodnet Entrecôte</span>
+                        <span class="font-mono text-zinc-300">420,-</span>
+                      </div>
+                      <p class="text-[11px] text-zinc-400 mt-1">45 dager tørrmodnet, morkelsaus, pommes anna.</p>
+                    </div>
+
+                    <div class="pt-3">
+                      <div class="flex justify-between items-baseline text-zinc-100 font-medium">
+                        <span>Multer & Hvit Sjokolade</span>
+                        <span class="font-mono text-zinc-300">175,-</span>
+                      </div>
+                      <p class="text-[11px] text-zinc-400 mt-1">Røros-fløteis, tindved og karamellisert hvete.</p>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+
+              <!-- Tittel og knapp under -->
+              <div class="mt-4 text-center">
+                <h3 class="text-sm font-semibold text-zinc-950">Fine Dining</h3>
+                <p class="text-xs text-zinc-500 mb-2">Mørkt, stramt og eksklusivt</p>
+                <button
+                  onclick="openFullDemo('fine_dining')"
+                  class="inline-flex items-center text-xs font-medium text-accent-700 hover:text-accent-800 bg-accent-50 hover:bg-accent-100 px-3 py-1.5 rounded-md border border-accent-200 transition-colors"
+                >
+                  Åpne full demo
+                  <svg class="ml-1 h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            <!-- =============================== -->
+            <!-- DEMO 3: COCKTAIL BAR            -->
+            <!-- =============================== -->
+            <div class="w-full max-w-[320px] flex flex-col items-center">
+              <!-- Telefon Mockup -->
+              <div class="w-full rounded-[2.5rem] p-3 bg-zinc-900 shadow-2xl border-4 border-zinc-800">
+                <!-- Skjerm innhold (Cocktail bar mørkt tema med fargeaksenter) -->
+                <div class="h-[520px] w-full rounded-[2rem] bg-[#0c0d12] overflow-y-auto no-scrollbar flex flex-col text-zinc-200 text-xs border border-zinc-800">
+                  
+                  <!-- Telefon topplinje -->
+                  <div class="px-5 pt-3 pb-2 flex items-center justify-between text-[11px] font-semibold text-zinc-400 border-b border-zinc-800/80 bg-[#0c0d12]/90 backdrop-blur sticky top-0 z-10">
+                    <span>23:10</span>
+                    <div class="h-3.5 w-12 rounded-full bg-zinc-800 mx-auto"></div>
+                    <span>5G · 82%</span>
+                  </div>
+
+                  <!-- Bar Header -->
+                  <div class="p-4 border-b border-zinc-800/60 text-left bg-gradient-to-b from-purple-950/20 to-transparent">
+                    <div class="flex items-center justify-between">
+                      <span class="text-[9px] uppercase tracking-wider font-semibold text-purple-400">Signaturer & Klassikere</span>
+                      <span class="text-[10px] text-zinc-400 font-mono">Bord 08</span>
+                    </div>
+                    <h4 class="text-base font-bold text-white mt-1">Vesper Cocktail Bar</h4>
+                    <p class="text-[11px] text-zinc-400 mt-0.5">Håndverk, is og botanikk</p>
+                  </div>
+
+                  <!-- Retter (Cocktails) -->
+                  <div class="p-4 space-y-3 divide-y divide-zinc-800/70">
+                    <div class="pt-2 first:pt-0">
+                      <div class="flex justify-between font-semibold text-white">
+                        <span class="flex items-center gap-1.5">
+                          <span class="h-2 w-2 rounded-full bg-amber-400"></span>
+                          Nordic Old Fashioned
+                        </span>
+                        <span class="font-mono text-amber-300">175,-</span>
+                      </div>
+                      <p class="text-[11px] text-zinc-400 mt-1">Lagret akevitt, rugbourbon, røsslyngsirup og appelsinolje.</p>
+                    </div>
+
+                    <div class="pt-2">
+                      <div class="flex justify-between font-semibold text-white">
+                        <span class="flex items-center gap-1.5">
+                          <span class="h-2 w-2 rounded-full bg-emerald-400"></span>
+                          Smoked Paloma
+                        </span>
+                        <span class="font-mono text-emerald-300">165,-</span>
+                      </div>
+                      <p class="text-[11px] text-zinc-400 mt-1">Mezcal Artesanal, rosa grapefrukt, lime og røkt havsalt.</p>
+                    </div>
+
+                    <div class="pt-2">
+                      <div class="flex justify-between font-semibold text-white">
+                        <span class="flex items-center gap-1.5">
+                          <span class="h-2 w-2 rounded-full bg-purple-400"></span>
+                          Yuzu & Cloudberry Sour
+                        </span>
+                        <span class="font-mono text-purple-300">170,-</span>
+                      </div>
+                      <p class="text-[11px] text-zinc-400 mt-1">Botanisk gin, japansk yuzu, villmulter og eggehvite.</p>
+                    </div>
+
+                    <div class="pt-2">
+                      <div class="flex justify-between font-semibold text-white">
+                        <span class="flex items-center gap-1.5">
+                          <span class="h-2 w-2 rounded-full bg-rose-400"></span>
+                          Negroni Sbagliato
+                        </span>
+                        <span class="font-mono text-rose-300">160,-</span>
+                      </div>
+                      <p class="text-[11px] text-zinc-400 mt-1">Campari, rød vermut og tørr Prosecco DOCG.</p>
+                    </div>
+
+                    <div class="pt-2">
+                      <div class="flex justify-between font-semibold text-white">
+                        <span class="flex items-center gap-1.5">
+                          <span class="h-2 w-2 rounded-full bg-blue-400"></span>
+                          Alkoholfritt: Eple & Sitrontimian
+                        </span>
+                        <span class="font-mono text-blue-300">95,-</span>
+                      </div>
+                      <p class="text-[11px] text-zinc-400 mt-1">Kaldpresset eplemost, fermentert timiansirup og soda.</p>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+
+              <!-- Tittel og knapp under -->
+              <div class="mt-4 text-center">
+                <h3 class="text-sm font-semibold text-zinc-950">Cocktail Bar</h3>
+                <p class="text-xs text-zinc-500 mb-2">Mørkt tema, vibrerende farger</p>
+                <button
+                  onclick="openFullDemo('cocktail')"
+                  class="inline-flex items-center text-xs font-medium text-accent-700 hover:text-accent-800 bg-accent-50 hover:bg-accent-100 px-3 py-1.5 rounded-md border border-accent-200 transition-colors"
+                >
+                  Åpne full demo
+                  <svg class="ml-1 h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ========================================== -->
+      <!-- 5. SEKSJON: KUNDEPORTALEN (FOR RESTAURANTER)-->
+      <!-- ========================================== -->
+      <section id="for-restauranter" class="py-20 sm:py-24 bg-white border-b border-zinc-200/80">
+        <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+          
+          <div class="max-w-3xl space-y-3 mb-12">
+            <p class="text-xs font-semibold uppercase tracking-wider text-accent-700">Enkel administrasjon</p>
+            <h2 class="text-2xl sm:text-4xl font-bold tracking-tight text-zinc-950">
+              Full kontroll, null stress.
+            </h2>
+            <p class="text-base sm:text-lg text-zinc-600 font-normal">
+              Endre priser, merk retter som utsolgt, eller legg til sesongens nyheter på sekunder.
+            </p>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            
+            <!-- Venstre kolonne: Dashboard Mockup (Kontrollpanel) -->
+            <div class="lg:col-span-7 rounded-2xl border border-zinc-200 bg-zinc-50/70 p-5 sm:p-6 shadow-xs">
+              
+              <!-- Dashboard Header -->
+              <div class="flex flex-wrap items-center justify-between gap-3 border-b border-zinc-200 pb-4 mb-4">
+                <div class="flex items-center gap-3">
+                  <div class="h-9 w-9 rounded-lg bg-zinc-950 text-white flex items-center justify-center font-bold text-xs">
+                    SM
+                  </div>
+                  <div>
+                    <h3 class="text-sm font-semibold text-zinc-900 leading-tight">Brasserie Stortorget</h3>
+                    <div class="flex items-center gap-2 mt-0.5">
+                      <span class="inline-block h-2 w-2 rounded-full bg-accent-500"></span>
+                      <span class="text-xs text-zinc-500">Sanntidsmeny synkronisert</span>
+                    </div>
+                  </div>
+                </div>
+                
+                <span class="text-xs font-medium text-zinc-500 bg-white border border-zinc-200 px-2.5 py-1 rounded-md">
+                  4 bord aktive
+                </span>
+              </div>
+
+              <!-- Tabell over menyretter -->
+              <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs sm:text-sm">
+                  <thead>
+                    <tr class="border-b border-zinc-200 text-zinc-500 text-xs uppercase font-medium">
+                      <th class="py-2.5 font-medium">Rett</th>
+                      <th class="py-2.5 font-medium">Pris</th>
+                      <th class="py-2.5 font-medium">Status</th>
+                      <th class="py-2.5 text-right font-medium">Handling</th>
+                    </tr>
+                  </thead>
+                  <tbody id="dishes-table-body" class="divide-y divide-zinc-200/70 text-zinc-800">
+                    <!-- Rader opprettes/oppdateres via JS -->
+                  </tbody>
+                </table>
+              </div>
+
+              <div class="mt-4 pt-3 border-t border-zinc-200 flex items-center justify-between text-xs text-zinc-500">
+                <span>Tips: Trykk "Rediger" for å teste sanntidsendring.</span>
+                <span class="text-accent-700 font-medium">Oppdateres umiddelbart</span>
+              </div>
+            </div>
+
+            <!-- Høyre kolonne: Kontaktskjema for "Full-Service" -->
+            <div class="lg:col-span-5 rounded-2xl border border-zinc-200 bg-white p-5 sm:p-6 shadow-xs">
+              <div class="mb-4">
+                <span class="inline-block rounded bg-zinc-100 text-zinc-700 font-medium px-2 py-0.5 text-xs border border-zinc-200">
+                  Full-Service Avtale
+                </span>
+                <h3 class="text-lg font-bold text-zinc-950 mt-2">Send oppdateringsønske</h3>
+                <p class="text-xs text-zinc-500 mt-1">
+                  Har du ikke tid til å logge inn selv? Send oss en melding, så fikser supportteamet vårt endringen innen 30 minutter.
+                </p>
+              </div>
+
+              <form id="update-request-form" onsubmit="handleUpdateRequest(event)" class="space-y-4 text-left">
+                <div>
+                  <label for="restaurant-name" class="block text-xs font-semibold text-zinc-700 mb-1">
+                    Restaurant / Avtalenummer
+                  </label>
+                  <input
+                    type="text"
+                    id="restaurant-name"
+                    required
+                    placeholder="F.eks. Brasserie Stortorget"
+                    class="w-full rounded-lg border border-zinc-300 bg-zinc-50/50 px-3 py-2 text-sm text-zinc-900 placeholder-zinc-400 focus:border-zinc-900 focus:bg-white focus:outline-none focus:ring-1 focus:ring-zinc-900 transition-colors"
+                  />
+                </div>
+
+                <div>
+                  <label for="update-notes" class="block text-xs font-semibold text-zinc-700 mb-1">
+                    Hva vil du endre?
+                  </label>
+                  <textarea
+                    id="update-notes"
+                    rows="3"
+                    required
+                    placeholder="F.eks: Øk prisen på Truffle Burger til 205,- og merk Dagens Fangst som utsolgt for kvelden."
+                    class="w-full rounded-lg border border-zinc-300 bg-zinc-50/50 px-3 py-2 text-sm text-zinc-900 placeholder-zinc-400 focus:border-zinc-900 focus:bg-white focus:outline-none focus:ring-1 focus:ring-zinc-900 transition-colors"
+                  ></textarea>
+                </div>
+
+                <div>
+                  <label for="contact-person" class="block text-xs font-semibold text-zinc-700 mb-1">
+                    Din e-post eller telefon
+                  </label>
+                  <input
+                    type="text"
+                    id="contact-person"
+                    required
+                    placeholder="dagligleder@restaurant.no"
+                    class="w-full rounded-lg border border-zinc-300 bg-zinc-50/50 px-3 py-2 text-sm text-zinc-900 placeholder-zinc-400 focus:border-zinc-900 focus:bg-white focus:outline-none focus:ring-1 focus:ring-zinc-900 transition-colors"
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  class="w-full rounded-lg bg-zinc-950 px-4 py-2.5 text-sm font-medium text-white transition-all hover:bg-zinc-800 active:scale-98 shadow-sm flex items-center justify-center gap-2"
+                >
+                  <span>Send oppdateringsønske</span>
+                  <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+                  </svg>
+                </button>
+              </form>
+            </div>
+
+          </div>
+
+        </div>
+      </section>
+    </main>
+
+    <!-- ========================================== -->
+    <!-- 6. FOOTER                                  -->
+    <!-- ========================================== -->
+    <footer class="bg-zinc-950 text-zinc-300 pt-16 pb-12 border-t border-zinc-900">
+      <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+        
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-10 pb-12 border-b border-zinc-800">
+          
+          <!-- Hovedbudskap / CTA -->
+          <div class="md:col-span-6 space-y-4">
+            <div class="flex items-center gap-2">
+              <div class="flex h-7 w-7 items-center justify-center rounded-md bg-white text-zinc-950 font-bold text-xs">
+                SM
+              </div>
+              <span class="text-lg font-bold tracking-tight text-white">SmartMeny</span>
+            </div>
+            <h3 class="text-xl sm:text-2xl font-bold tracking-tight text-white">
+              Klar for å oppgradere din restaurant?
+            </h3>
+            <p class="text-sm text-zinc-400 max-w-md">
+              Motta en skreddersydd digital meny og fysiske prøvekort innen 48 timer. Ingen bindingstid.
+            </p>
+            <button
+              onclick="openDemoModal()"
+              class="inline-flex items-center rounded-lg bg-white px-4 py-2 text-xs sm:text-sm font-semibold text-zinc-950 transition-all hover:bg-zinc-100 active:scale-98"
+            >
+              Bestill uforpliktende demo
+            </button>
+          </div>
+
+          <!-- Kontaktinformasjon -->
+          <div class="md:col-span-3 space-y-2 text-sm">
+            <h4 class="text-xs font-semibold uppercase tracking-wider text-zinc-400">Kontakt & Byrå</h4>
+            <p class="text-zinc-300">SmartMeny Studio AS</p>
+            <p class="text-zinc-400">Dronning Eufemias gate 16</p>
+            <p class="text-zinc-400">0191 Oslo, Norge</p>
+            <p class="pt-2 text-zinc-300 hover:text-white transition-colors">
+              <a href="mailto:hei@smartmeny.no" class="underline underline-offset-4 decoration-zinc-700">hei@smartmeny.no</a>
+            </p>
+            <p class="text-zinc-400">+47 22 10 90 00</p>
+          </div>
+
+          <!-- Lenker og sertifisering -->
+          <div class="md:col-span-3 space-y-2 text-sm">
+            <h4 class="text-xs font-semibold uppercase tracking-wider text-zinc-400">Løsninger</h4>
+            <ul class="space-y-1.5 text-zinc-400 text-xs sm:text-sm">
+              <li><a href="#demoer" class="hover:text-white transition-colors">NFC-bordkort i matt akryl</a></li>
+              <li><a href="#demoer" class="hover:text-white transition-colors">NFC-bordkort i eiketre</a></li>
+              <li><a href="#for-restauranter" class="hover:text-white transition-colors">Sanntids kontrollpanel</a></li>
+              <li><a href="#for-restauranter" class="hover:text-white transition-colors">Full-Service oppdateringer</a></li>
+            </ul>
+          </div>
+
+        </div>
+
+        <!-- Copyright -->
+        <div class="pt-8 flex flex-col sm:flex-row items-center justify-between text-xs text-zinc-400 gap-4">
+          <p>© 2026 SmartMeny AS. Alle rettigheter reservert. Org.nr: 928 412 881 MVA.</p>
+          <div class="flex items-center gap-6">
+            <span>Utviklet i Norge</span>
+            <span>·</span>
+            <span>GDPR-kompatibel</span>
+            <span>·</span>
+            <span>NFC Forum Certified</span>
+          </div>
+        </div>
+
+      </div>
+    </footer>
+
+    <!-- ========================================== -->
+    <!-- MODAL 1: REDIGER RETT I KONTROLLPANELET   -->
+    <!-- ========================================== -->
+    <div id="edit-dish-modal" class="fixed inset-0 z-50 hidden bg-zinc-950/60 backdrop-blur-xs flex items-center justify-center p-4">
+      <div class="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl border border-zinc-200">
+        <div class="flex items-center justify-between border-b border-zinc-100 pb-3 mb-4">
+          <h3 class="text-base font-bold text-zinc-950">Rediger menyrett</h3>
+          <button onclick="closeEditModal()" class="text-zinc-400 hover:text-zinc-700 text-sm">
+            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+          </button>
+        </div>
+
+        <form onsubmit="saveDishEdit(event)" class="space-y-4 text-left">
+          <input type="hidden" id="edit-dish-id" />
+          
+          <div>
+            <label for="edit-dish-name" class="block text-xs font-semibold text-zinc-700 mb-1">Rettens navn</label>
+            <input
+              type="text"
+              id="edit-dish-name"
+              required
+              class="w-full rounded-lg border border-zinc-300 px-3 py-2 text-sm text-zinc-900 focus:border-zinc-900 focus:outline-none"
+            />
+          </div>
+
+          <div>
+            <label for="edit-dish-price" class="block text-xs font-semibold text-zinc-700 mb-1">Pris (kr)</label>
+            <input
+              type="text"
+              id="edit-dish-price"
+              required
+              class="w-full rounded-lg border border-zinc-300 px-3 py-2 text-sm text-zinc-900 focus:border-zinc-900 focus:outline-none"
+            />
+          </div>
+
+          <div>
+            <label for="edit-dish-status" class="block text-xs font-semibold text-zinc-700 mb-1">Status</label>
+            <select
+              id="edit-dish-status"
+              class="w-full rounded-lg border border-zinc-300 px-3 py-2 text-sm text-zinc-900 focus:border-zinc-900 focus:outline-none bg-white"
+            >
+              <option value="Aktiv">Aktiv (Synlig for gjester)</option>
+              <option value="Utsolgt">Utsolgt (Merkes grået ut)</option>
+            </select>
+          </div>
+
+          <div class="flex justify-end gap-2 pt-2">
+            <button
+              type="button"
+              onclick="closeEditModal()"
+              class="px-4 py-2 rounded-lg border border-zinc-300 text-xs font-medium text-zinc-700 hover:bg-zinc-100"
+            >
+              Avbryt
+            </button>
+            <button
+              type="submit"
+              class="px-4 py-2 rounded-lg bg-zinc-950 text-xs font-medium text-white hover:bg-zinc-800"
+            >
+              Lagre endringer
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- MODAL 2: FULL DEMO FORHÅNDSVISNING         -->
+    <!-- ========================================== -->
+    <div id="full-demo-modal" class="fixed inset-0 z-50 hidden bg-zinc-950/80 backdrop-blur-sm flex items-center justify-center p-4">
+      <div class="relative w-full max-w-sm rounded-[2.5rem] bg-zinc-900 p-3 shadow-2xl border-4 border-zinc-700">
+        <!-- Lukkeknapp -->
+        <button
+          onclick="closeFullDemo()"
+          class="absolute -top-3 -right-3 h-8 w-8 rounded-full bg-white text-zinc-950 font-bold flex items-center justify-center shadow-lg hover:bg-zinc-200"
+          aria-label="Lukk"
+        >
+          ✕
+        </button>
+
+        <div id="demo-modal-screen" class="h-[580px] w-full rounded-[2rem] overflow-y-auto no-scrollbar flex flex-col text-xs">
+          <!-- Dynamisk fylt via JavaScript -->
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- MODAL 3: BESTILL DEMO                      -->
+    <!-- ========================================== -->
+    <div id="book-demo-modal" class="fixed inset-0 z-50 hidden bg-zinc-950/60 backdrop-blur-xs flex items-center justify-center p-4">
+      <div class="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl border border-zinc-200">
+        <div class="flex items-center justify-between border-b border-zinc-100 pb-3 mb-4">
+          <div>
+            <h3 class="text-base font-bold text-zinc-950">Bestill uforpliktende demo</h3>
+            <p class="text-xs text-zinc-500">Vi sender deg gratis prøvekort og setter opp en testmeny</p>
+          </div>
+          <button onclick="closeDemoModal()" class="text-zinc-400 hover:text-zinc-700 text-sm">
+            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+          </button>
+        </div>
+
+        <form onsubmit="handleBookDemo(event)" class="space-y-3.5 text-left">
+          <div>
+            <label class="block text-xs font-semibold text-zinc-700 mb-1">Restaurantnavn</label>
+            <input
+              type="text"
+              required
+              placeholder="F.eks. Bølgen & Moi"
+              class="w-full rounded-lg border border-zinc-300 px-3 py-2 text-sm text-zinc-900 focus:border-zinc-900 focus:outline-none"
+            />
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-semibold text-zinc-700 mb-1">Kontaktperson</label>
+              <input
+                type="text"
+                required
+                placeholder="Ola Nordmann"
+                class="w-full rounded-lg border border-zinc-300 px-3 py-2 text-sm text-zinc-900 focus:border-zinc-900 focus:outline-none"
+              />
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-zinc-700 mb-1">Antall bord (ca.)</label>
+              <input
+                type="number"
+                min="1"
+                placeholder="24"
+                class="w-full rounded-lg border border-zinc-300 px-3 py-2 text-sm text-zinc-900 focus:border-zinc-900 focus:outline-none"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-zinc-700 mb-1">E-post eller mobil</label>
+            <input
+              type="text"
+              required
+              placeholder="ola@restaurant.no"
+              class="w-full rounded-lg border border-zinc-300 px-3 py-2 text-sm text-zinc-900 focus:border-zinc-900 focus:outline-none"
+            />
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-zinc-700 mb-1">Foretrukket kort-materiale</label>
+            <select class="w-full rounded-lg border border-zinc-300 px-3 py-2 text-sm text-zinc-900 focus:border-zinc-900 focus:outline-none bg-white">
+              <option>Matt sort akryl (mest populær)</option>
+              <option>Nordisk massiv eik</option>
+              <option>Børstet rustfritt stål</option>
+              <option>Usikker - ønsker vareprøver</option>
+            </select>
+          </div>
+
+          <div class="pt-2 flex justify-end gap-2">
+            <button
+              type="button"
+              onclick="closeDemoModal()"
+              class="px-4 py-2 rounded-lg border border-zinc-300 text-xs font-medium text-zinc-700 hover:bg-zinc-100"
+            >
+              Avbryt
+            </button>
+            <button
+              type="submit"
+              class="px-4 py-2 rounded-lg bg-zinc-950 text-xs font-medium text-white hover:bg-zinc-800"
+            >
+              Send henvendelse
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- INTERAKTIV VANILLA JAVASCRIPT              -->
+    <!-- ========================================== -->
+    <script>
+      // 1. Data for retter i Kontrollpanel (Dashboard)
+      let dishesData = [
+        { id: 1, name: 'Truffle Burger', price: '195,-', status: 'Aktiv' },
+        { id: 2, name: 'Entrecôte 250g', price: '345,-', status: 'Aktiv' },
+        { id: 3, name: 'Dagens Fangst: Kveite', price: '315,-', status: 'Utsolgt' },
+        { id: 4, name: 'Husets Focaccia & Smør', price: '65,-', status: 'Aktiv' }
+      ];
+
+      // Rendring av tabell
+      function renderDishesTable() {
+        const tbody = document.getElementById('dishes-table-body');
+        if (!tbody) return;
+
+        tbody.innerHTML = dishesData.map(dish => {
+          const isSoldOut = dish.status === 'Utsolgt';
+          const badgeClass = isSoldOut 
+            ? 'text-zinc-600 bg-zinc-100 border-zinc-300' 
+            : 'text-accent-700 bg-accent-50 border-accent-200';
+
+          return `
+            <tr class="hover:bg-zinc-100/60 transition-colors">
+              <td class="py-3 font-medium text-zinc-900 ${isSoldOut ? 'line-through text-zinc-400' : ''}">
+                ${dish.name}
+              </td>
+              <td class="py-3 font-mono text-zinc-700">${dish.price}</td>
+              <td class="py-3">
+                <button 
+                  onclick="toggleDishStatus(${dish.id})"
+                  title="Klikk for å bytte status"
+                  class="cursor-pointer text-xs font-medium px-2 py-0.5 rounded border ${badgeClass} inline-flex items-center gap-1.5 transition-transform active:scale-95"
+                >
+                  <span class="h-1.5 w-1.5 rounded-full ${isSoldOut ? 'bg-zinc-400' : 'bg-accent-600'}"></span>
+                  ${dish.status}
+                </button>
+              </td>
+              <td class="py-3 text-right">
+                <button
+                  onclick="openEditModal(${dish.id})"
+                  class="cursor-pointer text-xs font-medium text-zinc-700 hover:text-zinc-950 px-2.5 py-1 rounded border border-zinc-300 hover:border-zinc-400 bg-white transition-colors"
+                >
+                  Rediger
+                </button>
+              </td>
+            </tr>
+          `;
+        }).join('');
+      }
+
+      // Hurtig-toggle av status direkte fra tabell
+      function toggleDishStatus(id) {
+        const dish = dishesData.find(d => d.id === id);
+        if (dish) {
+          dish.status = dish.status === 'Aktiv' ? 'Utsolgt' : 'Aktiv';
+          renderDishesTable();
+        }
+      }
+
+      // Åpne modal for redigering
+      function openEditModal(id) {
+        const dish = dishesData.find(d => d.id === id);
+        if (!dish) return;
+
+        document.getElementById('edit-dish-id').value = dish.id;
+        document.getElementById('edit-dish-name').value = dish.name;
+        document.getElementById('edit-dish-price').value = dish.price;
+        document.getElementById('edit-dish-status').value = dish.status;
+
+        document.getElementById('edit-dish-modal').classList.remove('hidden');
+      }
+
+      function closeEditModal() {
+        document.getElementById('edit-dish-modal').classList.add('hidden');
+      }
+
+      // Lagre redigering i tabellen
+      function saveDishEdit(e) {
+        e.preventDefault();
+        const id = parseInt(document.getElementById('edit-dish-id').value);
+        const name = document.getElementById('edit-dish-name').value;
+        const price = document.getElementById('edit-dish-price').value;
+        const status = document.getElementById('edit-dish-status').value;
+
+        const dishIndex = dishesData.findIndex(d => d.id === id);
+        if (dishIndex !== -1) {
+          dishesData[dishIndex] = { id, name, price, status };
+          renderDishesTable();
+          closeEditModal();
+        }
+      }
+
+      // 2. Håndtere "Send oppdateringsønske"-skjema
+      function handleUpdateRequest(e) {
+        e.preventDefault();
+        const restName = document.getElementById('restaurant-name').value;
+        const notes = document.getElementById('update-notes').value;
+        const contact = document.getElementById('contact-person').value;
+
+        alert(`✓ Oppdateringsønske mottatt!\n\nRestaurant: ${restName}\nØnske: "${notes}"\nKontakt: ${contact}\n\nSupportteamet hos SmartMeny oppdaterer menyen og sender bekreftelse på SMS/e-post innen 30 min.`);
+        
+        // Nullstill skjema
+        document.getElementById('update-request-form').reset();
+      }
+
+      // 3. Bestill demo-modal
+      function openDemoModal() {
+        document.getElementById('book-demo-modal').classList.remove('hidden');
+      }
+
+      function closeDemoModal() {
+        document.getElementById('book-demo-modal').classList.add('hidden');
+      }
+
+      function handleBookDemo(e) {
+        e.preventDefault();
+        alert('✓ Takk for din henvendelse! Vi tar kontakt innen neste virkedag og sender gratis prøvekort til din restaurant.');
+        closeDemoModal();
+      }
+
+      // 4. Mobilmeny toggle
+      function toggleMobileMenu() {
+        const menu = document.getElementById('mobile-menu');
+        menu.classList.toggle('hidden');
+      }
+
+      // 5. Fullskjerm demo visning
+      const demoData = {
+        cafe: {
+          themeClass: 'bg-stone-50 text-zinc-900 border-stone-200',
+          headerBg: 'bg-amber-50/80 border-b border-amber-100',
+          title: 'Kaffebrenneriet & Surdeig',
+          sub: 'Lyst tema · Café & Bakeri',
+          items: [
+            { cat: 'Ferskbakt Surdeig', items: [
+              { name: 'Kardemommebolle', price: '48,-', desc: 'Nykvernet kardemomme, rørossmør, luftig krumme' },
+              { name: 'Mandelcroissant', price: '56,-', desc: 'Dobbelbakt med mandelremonce og flak' },
+              { name: 'Kanelknute', price: '46,-', desc: 'Klassisk med ceylon-kanel og perlesukker' }
+            ]},
+            { cat: 'Kaffe & Drikke', items: [
+              { name: 'Kaldtrakter Nitro Cold Brew', price: '55,-', desc: 'Fløyelsmyk nitro-kaffe servert på tapp' },
+              { name: 'Klassisk Cappuccino', price: '46,-', desc: 'Dobbel espresso med silkemyk melk' },
+              { name: 'Matcha Latte', price: '58,-', desc: 'Seremoniell Uji matcha med havremelk' }
+            ]}
+          ]
+        },
+        fine_dining: {
+          themeClass: 'bg-zinc-950 text-zinc-200 border-zinc-800',
+          headerBg: 'bg-zinc-900/90 border-b border-zinc-800',
+          title: 'Restaurant Eik & Gran',
+          sub: 'Mørkt tema · Fine Dining',
+          items: [
+            { cat: 'Hovedretter', items: [
+              { name: 'Grillet Norsk Hjort', price: '385,-', desc: 'Skogssopp, røkt sellerikrem og einebærglaze' },
+              { name: 'Pannestekt Kveite', price: '365,-', desc: 'Purreløk, ramsløkolje og champagne beurre blanc' },
+              { name: 'Tørrmodnet Entrecôte', price: '420,-', desc: '45 dager tørrmodnet, morkelsaus og pommes anna' }
+            ]},
+            { cat: 'Desserter & Vin', items: [
+              { name: 'Multer & Hvit Sjokolade', price: '175,-', desc: 'Røros-fløteis, tindved og karamellisert hvete' },
+              { name: 'Barolo DOCG 2018 (Glass)', price: '195,-', desc: 'Piemonte, Italia · Røde bær, roser og lær' }
+            ]}
+          ]
+        },
+        cocktail: {
+          themeClass: 'bg-[#0c0d12] text-zinc-200 border-zinc-800',
+          headerBg: 'bg-purple-950/40 border-b border-zinc-800',
+          title: 'Vesper Cocktail Bar',
+          sub: 'Mørkt tema · Signaturdrinker',
+          items: [
+            { cat: 'Signatur Cocktails', items: [
+              { name: 'Nordic Old Fashioned', price: '175,-', desc: 'Lagret akevitt, rugbourbon, røsslyngsirup og appelsinolje' },
+              { name: 'Smoked Paloma', price: '165,-', desc: 'Mezcal Artesanal, rosa grapefrukt og røkt flaksalt' },
+              { name: 'Yuzu & Cloudberry Sour', price: '170,-', desc: 'Botanisk gin, japansk yuzu, villmulter og skum' },
+              { name: 'Negroni Sbagliato', price: '160,-', desc: 'Campari, rød vermut og tørr musserende vin' }
+            ]},
+            { cat: 'Bar Snacks', items: [
+              { name: 'Trøffelpopkorn & Parmesan', price: '65,-', desc: 'Nypoppet med trøffelolje og 24 mnd parmesan' },
+              { name: 'Marinerte Nocellara-oliven', price: '55,-', desc: 'Med sitrusskall og rosmarin' }
+            ]}
+          ]
+        }
+      };
+
+      function openFullDemo(type) {
+        const data = demoData[type];
+        if (!data) return;
+
+        const container = document.getElementById('demo-modal-screen');
+        container.className = `h-[560px] w-full rounded-[2rem] overflow-y-auto no-scrollbar flex flex-col text-xs ${data.themeClass}`;
+
+        let html = `
+          <div class="px-5 pt-3 pb-2 flex items-center justify-between text-[11px] font-semibold border-b border-zinc-700/50 sticky top-0 z-10 backdrop-blur">
+            <span>20:00</span>
+            <div class="h-3.5 w-12 rounded-full bg-zinc-800 mx-auto"></div>
+            <span>SmartMeny Live</span>
+          </div>
+
+          <div class="p-4 ${data.headerBg} text-left">
+            <span class="text-[10px] uppercase tracking-wider font-semibold opacity-75">${data.sub}</span>
+            <h3 class="text-base font-bold mt-0.5">${data.title}</h3>
+            <p class="text-[11px] opacity-80 mt-1">Live digital meny testversjon</p>
+          </div>
+
+          <div class="p-4 space-y-6 text-left">
+        `;
+
+        data.items.forEach(section => {
+          html += `
+            <div>
+              <h4 class="text-xs font-bold uppercase tracking-wider mb-2 pb-1 border-b border-zinc-700/40 opacity-70">
+                ${section.cat}
+              </h4>
+              <div class="space-y-3">
+          `;
+
+          section.items.forEach(item => {
+            html += `
+              <div class="space-y-0.5">
+                <div class="flex justify-between font-semibold">
+                  <span>${item.name}</span>
+                  <span class="font-mono">${item.price}</span>
+                </div>
+                <p class="text-[11px] opacity-75">${item.desc}</p>
+              </div>
+            `;
+          });
+
+          html += `</div></div>`;
+        });
+
+        html += `
+            <div class="pt-4 text-center border-t border-zinc-700/40 opacity-75 text-[11px]">
+              Tappet via NFC-bordkort · Bord 04
+            </div>
+          </div>
+        `;
+
+        container.innerHTML = html;
+        document.getElementById('full-demo-modal').classList.remove('hidden');
+      }
+
+      function closeFullDemo() {
+        document.getElementById('full-demo-modal').classList.add('hidden');
+      }
+
+      // Initialiser ved lasting
+      document.addEventListener('DOMContentLoaded', () => {
+        renderDishesTable();
+      });
+      // Kjør også umiddelbart i tilfelle script kjører etter DOM er klar
+      renderDishesTable();
+    </script>
+  </body>
+</html>
