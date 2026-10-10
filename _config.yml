@@ -1,0 +1,11 @@
+# GitHub Pages configuration
+# Slår av standard Jekyll-temaer og ekskluderer utviklerfiler
+theme: []
+exclude:
+  - node_modules
+  - package.json
+  - package-lock.json
+  - tsconfig.json
+  - vite.config.ts
+  - src
+  - .github
