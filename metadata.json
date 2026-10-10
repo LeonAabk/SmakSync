@@ -1,0 +1,6 @@
+{
+  "name": "SmartMeny - NFC & Digitale Menyer",
+  "description": "Skandinavisk B2B SaaS for restauranter: NFC-menykort og lynraske digitale menyer.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
