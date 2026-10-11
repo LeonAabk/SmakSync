@@ -64,18 +64,72 @@
 
         <div class="pt-2 flex flex-col sm:flex-row gap-2 justify-center">
           <a
-            href="superadmin.html"
-            class="inline-flex items-center justify-center px-4 py-2.5 rounded-lg bg-zinc-950 hover:bg-zinc-800 text-white text-xs font-semibold transition-all shadow-xs"
-          >
-            Åpne Superadmin
-          </a>
-          <a
-            href="admin.html?id=restaurant_eik_og_gran"
+            href="index.html"
             class="inline-flex items-center justify-center px-4 py-2.5 rounded-lg border border-zinc-300 bg-zinc-50 hover:bg-zinc-100 text-zinc-800 text-xs font-semibold transition-all"
           >
-            Test med Eik & Gran
+            ← Tilbake til forside
           </a>
         </div>
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- LÅSESKJERM FOR RESTAURANTSJEF (PIN-KODE)   -->
+    <!-- ========================================== -->
+    <div id="restaurant-lock-view" class="hidden flex-1 flex items-center justify-center p-4 min-h-[calc(100vh-4rem)]">
+      <div class="max-w-md w-full bg-white rounded-3xl p-8 border border-zinc-200 shadow-xl text-center space-y-6">
+        <div class="mx-auto h-16 w-16 rounded-2xl bg-zinc-950 text-white flex items-center justify-center shadow-md">
+          <svg class="h-8 w-8 text-accent-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+          </svg>
+        </div>
+
+        <div>
+          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-accent-50 text-accent-700 border border-accent-200 mb-2">
+            <span class="h-1.5 w-1.5 rounded-full bg-accent-600 animate-pulse"></span>
+            Restauranteier Adgang
+          </span>
+          <h1 class="text-xl sm:text-2xl font-bold text-zinc-950 tracking-tight" id="lock-restaurant-name">Laster restaurant...</h1>
+          <p class="text-xs text-zinc-500 mt-2 leading-relaxed">
+            Dette kontrollpanelet er beskyttet. Skriv inn den 4-sifrede adgangskoden (PIN) oppgitt av din SmakSync-administrator for å få tilgang.
+          </p>
+        </div>
+
+        <form id="restaurant-pin-form" onsubmit="handleRestaurantPinSubmit(event)" class="space-y-4">
+          <div class="space-y-1.5 text-left">
+            <label for="restaurant-pin-input" class="block text-xs font-semibold text-zinc-700">
+              Adgangskode (PIN)
+            </label>
+            <input
+              type="password"
+              inputmode="numeric"
+              id="restaurant-pin-input"
+              maxlength="10"
+              required
+              placeholder="••••"
+              class="w-full text-center text-2xl font-mono tracking-[0.4em] font-bold py-3 px-4 rounded-xl bg-zinc-50 border border-zinc-300 text-zinc-950 placeholder-zinc-400 focus:bg-white focus:outline-none focus:border-zinc-950 focus:ring-1 focus:ring-zinc-950 transition-all"
+            />
+          </div>
+
+          <div id="pin-error-msg" class="hidden text-xs text-rose-600 font-medium bg-rose-50 border border-rose-200 py-2 px-3 rounded-lg">
+            Ugyldig adgangskode for denne restauranten. Vennligst sjekk med SmakSync-administrator.
+          </div>
+
+          <button
+            type="submit"
+            id="pin-unlock-btn"
+            class="w-full py-3 px-4 rounded-xl bg-zinc-950 hover:bg-zinc-800 text-white font-bold text-xs sm:text-sm transition-all shadow-md active:scale-98 flex items-center justify-center gap-2"
+          >
+            <span>Lås opp Kontrollpanel</span>
+            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+            </svg>
+          </button>
+        </form>
+
+        <p class="text-[11px] text-zinc-400">
+          Restaurant ID: <code class="font-mono text-zinc-600 font-semibold" id="lock-restaurant-id">--</code>
+        </p>
       </div>
     </div>
 
@@ -123,12 +177,16 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
               </svg>
             </a>
-            <a
-              href="superadmin.html"
-              class="hidden sm:inline-flex items-center px-3 py-2 text-xs font-medium text-zinc-600 hover:text-zinc-950 hover:bg-zinc-100 rounded-lg transition-all border border-zinc-200"
+            <button
+              onclick="handleLogoutRestaurant()"
+              class="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-semibold text-rose-700 hover:text-rose-900 bg-rose-50 hover:bg-rose-100 rounded-lg transition-all border border-rose-200"
+              title="Lås kontrollpanelet og logg ut"
             >
-              ← Superadmin
-            </a>
+              <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+              </svg>
+              <span>Lås / Logg ut</span>
+            </button>
           </div>
 
         </div>
@@ -501,7 +559,7 @@ service cloud.firestore {
         <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
           <p>© 2026 SmakSync Multi-Tenant SaaS. Data lagret i Firebase Firestore.</p>
           <div class="flex items-center gap-4">
-            <a href="superadmin.html" class="hover:text-zinc-900 font-medium underline">superadmin.html</a>
+            <span class="text-zinc-600 font-medium">SmakSync Restaurant Admin</span>
             <span>·</span>
             <a id="footer-menu-link" href="#" target="_blank" class="hover:text-zinc-900 font-medium underline">meny.html (?id=...)</a>
           </div>
@@ -575,10 +633,12 @@ service cloud.firestore {
 
       const invalidView = document.getElementById('invalid-link-view');
       const mainView = document.getElementById('admin-main-view');
+      const lockView = document.getElementById('restaurant-lock-view');
 
-      // Vis alltid hovedvisningen med gjeldende restaurantId
+      // Skjul alt inntil restaurant og autentisering er validert
       if (invalidView) invalidView.classList.add('hidden');
-      if (mainView) mainView.classList.remove('hidden');
+      if (mainView) mainView.classList.add('hidden');
+      if (lockView) lockView.classList.remove('hidden');
 
       // Sett lenker til meny.html med samme ID
       const guestMenuUrl = `meny.html?id=${encodeURIComponent(restaurantId)}`;
@@ -683,7 +743,70 @@ service cloud.firestore {
       let currentFilter = 'Alle';
       const LOCAL_ITEMS_KEY = `smaksync_items_${restaurantId}`;
 
-      // Hent restaurantnavn
+      let currentRestaurantPin = '1234';
+      let isUnlocked = false;
+      let unsubscribeMenu = null;
+      const AUTH_KEY = `smaksync_auth_pin_${restaurantId}`;
+
+      function checkSessionAuth() {
+        const savedPin = sessionStorage.getItem(AUTH_KEY);
+        if (savedPin && savedPin === currentRestaurantPin) {
+          unlockDashboard();
+        } else {
+          lockDashboard();
+        }
+      }
+
+      function lockDashboard() {
+        isUnlocked = false;
+        if (mainView) mainView.classList.add('hidden');
+        if (lockView) lockView.classList.remove('hidden');
+        const pinInput = document.getElementById('restaurant-pin-input');
+        if (pinInput) {
+          pinInput.value = '';
+          setTimeout(() => pinInput.focus(), 150);
+        }
+        const err = document.getElementById('pin-error-msg');
+        if (err) err.classList.add('hidden');
+      }
+
+      function unlockDashboard() {
+        isUnlocked = true;
+        if (lockView) lockView.classList.add('hidden');
+        if (mainView) mainView.classList.remove('hidden');
+        startMenuSync();
+      }
+
+      window.handleRestaurantPinSubmit = function(e) {
+        e.preventDefault();
+        const pinInput = document.getElementById('restaurant-pin-input');
+        const entered = (pinInput ? pinInput.value : '').trim();
+        const err = document.getElementById('pin-error-msg');
+
+        if (entered === currentRestaurantPin) {
+          sessionStorage.setItem(AUTH_KEY, entered);
+          if (err) err.classList.add('hidden');
+          unlockDashboard();
+        } else {
+          if (err) err.classList.remove('hidden');
+          if (pinInput) {
+            pinInput.classList.add('border-rose-500');
+            setTimeout(() => pinInput.classList.remove('border-rose-500'), 1500);
+            pinInput.focus();
+          }
+        }
+      };
+
+      window.handleLogoutRestaurant = function() {
+        sessionStorage.removeItem(AUTH_KEY);
+        if (unsubscribeMenu) {
+          unsubscribeMenu();
+          unsubscribeMenu = null;
+        }
+        lockDashboard();
+      };
+
+      // Hent restaurantnavn og adgangskode
       async function loadRestaurantMetadata() {
         let name = restaurantId.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
         if (isRealFirebase && db) {
@@ -692,22 +815,33 @@ service cloud.firestore {
             if (restSnap.exists()) {
               const data = restSnap.data();
               if (data.name) name = data.name;
+              if (data.pin) currentRestaurantPin = String(data.pin).trim();
             }
           } catch (e) {
             console.warn('Kunne ikke hente restaurantdata fra Firestore:', e);
           }
         } else {
-          // Demo: sjekk om navnet finnes i fallback restaurantoversikt
+          // Demo: sjekk om navnet og PIN finnes i fallback restaurantoversikt
           try {
             const all = JSON.parse(localStorage.getItem('smaksync_firestore_restaurants') || '[]');
             const found = all.find(r => r.id === restaurantId);
-            if (found && found.name) name = found.name;
+            if (found) {
+              if (found.name) name = found.name;
+              if (found.pin) currentRestaurantPin = String(found.pin).trim();
+            }
           } catch {}
         }
 
         document.getElementById('header-restaurant-name').innerText = name;
         document.getElementById('banner-welcome-text').innerText = `${name} · Kontrollpanel`;
+        const lockTitle = document.getElementById('lock-restaurant-name');
+        if (lockTitle) lockTitle.innerText = name;
+        const lockId = document.getElementById('lock-restaurant-id');
+        if (lockId) lockId.innerText = restaurantId;
         document.title = `SmakSync - ${name} (Admin)`;
+
+        // Kontroller om brukeren allerede er autentisert i denne sesjonen
+        checkSessionAuth();
       }
 
       loadRestaurantMetadata();
@@ -805,43 +939,46 @@ service cloud.firestore {
         }
       };
 
-      if (isRealFirebase && db) {
-        try {
-          const menuCol = collection(db, 'restaurants', restaurantId, 'menu_items');
-          onSnapshot(menuCol, (snapshot) => {
-            hideFirebaseError();
-            if (snapshot.empty) {
-              showEmptyCloudBanner();
-              dishesList = [];
-            } else {
-              hideEmptyCloudBanner();
-              const items = [];
-              snapshot.forEach(docSnap => {
-                const d = docSnap.data();
-                items.push({
-                  id: docSnap.id,
-                  name: d.name || 'Uten navn',
-                  description: d.description || d.desc || '',
-                  price: typeof d.price === 'number' ? d.price : parseFloat(d.price) || 0,
-                  category: d.category || 'Hovedrett',
-                  sold_out: d.sold_out === true || d.soldOut === true
+      function startMenuSync() {
+        if (unsubscribeMenu) return; // Allerede aktiv
+        if (isRealFirebase && db) {
+          try {
+            const menuCol = collection(db, 'restaurants', restaurantId, 'menu_items');
+            unsubscribeMenu = onSnapshot(menuCol, (snapshot) => {
+              hideFirebaseError();
+              if (snapshot.empty) {
+                showEmptyCloudBanner();
+                dishesList = [];
+              } else {
+                hideEmptyCloudBanner();
+                const items = [];
+                snapshot.forEach(docSnap => {
+                  const d = docSnap.data();
+                  items.push({
+                    id: docSnap.id,
+                    name: d.name || 'Uten navn',
+                    description: d.description || d.desc || '',
+                    price: typeof d.price === 'number' ? d.price : parseFloat(d.price) || 0,
+                    category: d.category || 'Hovedrett',
+                    sold_out: d.sold_out === true || d.soldOut === true
+                  });
                 });
-              });
-              dishesList = items;
-            }
-            renderTable();
-          }, (err) => {
-            console.error('onSnapshot feil i menu_items:', err);
+                dishesList = items;
+              }
+              renderTable();
+            }, (err) => {
+              console.error('onSnapshot feil i menu_items:', err);
+              showFirebaseError(err);
+              initFallbackStorage();
+            });
+          } catch (err) {
+            console.warn('Feil ved oppstart av menu_items onSnapshot:', err);
             showFirebaseError(err);
             initFallbackStorage();
-          });
-        } catch (err) {
-          console.warn('Feil ved oppstart av menu_items onSnapshot:', err);
-          showFirebaseError(err);
+          }
+        } else {
           initFallbackStorage();
         }
-      } else {
-        initFallbackStorage();
       }
 
       function initFallbackStorage() {
