@@ -135,7 +135,80 @@
       </header>
 
       <!-- Hovedinnhold -->
-      <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+      <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+
+        <!-- Live Feil / Diagnostikk banner for Firestore -->
+        <div id="firestore-error-banner" class="hidden rounded-2xl bg-rose-50 border-2 border-rose-300 p-5 text-rose-950 space-y-3 shadow-md">
+          <div class="flex items-start gap-3">
+            <div class="h-9 w-9 rounded-xl bg-rose-600 text-white flex items-center justify-center shrink-0">
+              <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+              </svg>
+            </div>
+            <div class="space-y-1 flex-1">
+              <div class="flex items-center gap-2">
+                <span class="bg-rose-200 text-rose-900 font-mono text-[10px] font-bold px-2 py-0.5 rounded">KRITISK FOR SYNKRONISERING</span>
+                <span class="text-xs font-semibold text-rose-800" id="firestore-error-code">Feil: permission-denied</span>
+              </div>
+              <h3 class="text-sm font-bold text-rose-950">
+                Firebase Firestore avviser forespørselen – endringer oppdateres IKKE på telefonen din før dette er åpnet!
+              </h3>
+              <p class="text-xs text-rose-800" id="firestore-error-desc">
+                Telefonen din og PC-en din er på to forskjellige enheter, så de må kunne snakke med Firebase i skyen.
+              </p>
+            </div>
+          </div>
+
+          <div class="bg-white/90 rounded-xl p-3.5 border border-rose-200 text-xs text-zinc-800 space-y-2">
+            <p class="font-bold text-rose-950">Slik fikser du dette på 1 minutt i Firebase Console:</p>
+            <ol class="list-decimal list-inside space-y-1.5 text-zinc-700">
+              <li>Gå til Firebase Console: <a href="https://console.firebase.google.com/project/smaksync/firestore" target="_blank" class="text-rose-700 font-bold underline">console.firebase.google.com/project/smaksync/firestore</a></li>
+              <li>Dersom databasen ikke er opprettet ennå: Klikk <strong>«Create database»</strong>.</li>
+              <li>Klikk på fanen <strong>«Rules» (Regler)</strong>, erstatt innholdet med dette og trykk <strong>«Publish»</strong>:</li>
+            </ol>
+            <pre class="bg-zinc-950 text-accent-400 p-3 rounded-lg font-mono text-xs overflow-x-auto select-all">rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /{document=**} {
+      allow read, write: if true;
+    }
+  }
+}</pre>
+          </div>
+
+          <div class="flex items-center gap-2 pt-1">
+            <button
+              onclick="window.location.reload()"
+              class="px-4 py-2 rounded-lg bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold shadow-xs transition-colors"
+            >
+              🔄 Test tilkobling på nytt
+            </button>
+            <span class="text-[11px] text-rose-700">Når reglene er publisert, forsvinner denne meldingen automatisk.</span>
+          </div>
+        </div>
+
+        <!-- Banner dersom Firestore er tilkoblet, men restauranten har 0 retter i skyen -->
+        <div id="firestore-empty-banner" class="hidden rounded-2xl bg-amber-50 border border-amber-300 p-4 text-amber-950 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-xs">
+          <div class="space-y-0.5">
+            <div class="flex items-center gap-2">
+              <span class="h-2 w-2 rounded-full bg-amber-500 animate-pulse"></span>
+              <h4 class="text-xs font-bold text-amber-900">Firestore i skyen er tom for denne restauranten</h4>
+            </div>
+            <p class="text-xs text-amber-800">
+              Last opp standardmenyen til skyen slik at den blir tilgjengelig på gjestenes mobiltelefoner umiddelbart.
+            </p>
+          </div>
+          <button
+            onclick="seedDishesToCloud()"
+            id="seed-cloud-btn"
+            class="shrink-0 px-3.5 py-2 rounded-lg bg-zinc-950 hover:bg-zinc-800 text-white text-xs font-semibold shadow-xs flex items-center gap-1.5 transition-all active:scale-95"
+          >
+            <svg class="h-3.5 w-3.5 text-accent-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+            </svg>
+            <span>Last opp standardmeny til Firestore nå</span>
+          </button>
+        </div>
 
         <!-- Informasjonsbanner om prototypen -->
         <section class="bg-gradient-to-r from-zinc-900 to-zinc-950 text-white rounded-2xl p-5 sm:p-6 shadow-md border border-zinc-800 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
@@ -156,6 +229,65 @@
               </svg>
               <span>Kopier NFC-lenke</span>
             </button>
+          </div>
+        </section>
+
+        <!-- NFC-tag & Synkroniserings-veileder -->
+        <section class="bg-white rounded-2xl p-5 border-2 border-accent-200 shadow-xs space-y-3">
+          <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-3">
+            <div class="flex items-center gap-3">
+              <div class="h-10 w-10 rounded-xl bg-accent-50 text-accent-700 flex items-center justify-center shrink-0 border border-accent-200">
+                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+                </svg>
+              </div>
+              <div>
+                <div class="flex items-center gap-2">
+                  <h3 class="text-sm font-bold text-zinc-950">NFC-brikke & Telefon-synkronisering</h3>
+                  <span class="inline-flex items-center gap-1 text-[11px] font-semibold text-accent-700 bg-accent-50 px-2 py-0.5 rounded-full border border-accent-200">
+                    <span class="h-1.5 w-1.5 rounded-full bg-accent-600 animate-pulse"></span>
+                    Firebase Firestore Live
+                  </span>
+                </div>
+                <p class="text-xs text-zinc-600 mt-0.5">
+                  Denne lenken må være programmert inn på NFC-taggen din for at telefonen din skal motta endringene live:
+                </p>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-2 w-full md:w-auto">
+              <button
+                onclick="copyMenuLink()"
+                class="flex-1 md:flex-initial inline-flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-lg bg-zinc-950 hover:bg-zinc-800 text-white text-xs font-semibold shadow-xs transition-all active:scale-95"
+              >
+                <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/>
+                </svg>
+                <span>Kopier NFC-lenke</span>
+              </button>
+              <button
+                onclick="toggleQrModal()"
+                class="inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg bg-zinc-100 hover:bg-zinc-200 text-zinc-800 text-xs font-medium border border-zinc-200 transition-colors"
+                title="Vis QR-kode for å teste med mobilkamera"
+              >
+                <svg class="h-3.5 w-3.5 text-zinc-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"/>
+                </svg>
+                <span>Vis QR</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- URL input-felt som viser den eksakte NFC URL-en -->
+          <div class="flex items-center gap-2 bg-zinc-50 rounded-xl p-2.5 border border-zinc-200">
+            <span class="text-[11px] font-mono text-zinc-400 pl-1 uppercase font-semibold shrink-0">NFC URL:</span>
+            <input
+              id="live-nfc-url-input"
+              type="text"
+              readonly
+              class="w-full bg-transparent text-xs font-mono text-zinc-800 select-all focus:outline-none"
+              value="..."
+            />
           </div>
         </section>
 
@@ -378,6 +510,29 @@
 
     </div>
 
+    <!-- QR-kode test modal -->
+    <div id="qr-test-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4">
+      <div class="bg-white rounded-2xl max-w-sm w-full p-6 text-center shadow-2xl border border-zinc-200 space-y-4">
+        <div class="flex items-center justify-between pb-2 border-b border-zinc-100">
+          <h3 class="text-sm font-bold text-zinc-950">Test på telefon (NFC / QR)</h3>
+          <button onclick="toggleQrModal()" class="text-zinc-400 hover:text-zinc-800 p-1 rounded-md">✕</button>
+        </div>
+        <p class="text-xs text-zinc-600">
+          Skann denne koden med mobilkameraet ditt for å åpne gjestemenyen direkte:
+        </p>
+        <div class="flex justify-center p-3 bg-zinc-50 rounded-xl border border-zinc-200">
+          <img id="qr-test-img" src="" alt="QR kode for meny" class="h-48 w-48 rounded-lg shadow-xs" />
+        </div>
+        <p id="qr-test-url-text" class="text-[11px] font-mono text-zinc-500 break-all select-all bg-zinc-100 p-2 rounded-lg"></p>
+        <button
+          onclick="toggleQrModal()"
+          class="w-full py-2.5 rounded-lg bg-zinc-950 hover:bg-zinc-800 text-white text-xs font-semibold"
+        >
+          Lukk
+        </button>
+      </div>
+    </div>
+
     <!-- ============================================================================ -->
     <!-- FIREBASE v9 MODULAR SDK & LOGIKK FOR ADMIN                                   -->
     <!-- ============================================================================ -->
@@ -402,6 +557,7 @@
         collection, 
         doc, 
         getDoc, 
+        setDoc,
         addDoc, 
         updateDoc, 
         deleteDoc, 
@@ -410,22 +566,19 @@
         orderBy 
       } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
 
-      // 1. URL-Routing: Hent '?id=' fra URL-en
+      // 1. URL-Routing: Hent '?id=' fra URL-en (standard fallback: restaurant_eik_og_gran)
       const urlParams = new URLSearchParams(window.location.search);
-      const restaurantId = urlParams.get('id');
+      let restaurantId = urlParams.get('id');
+      if (!restaurantId || restaurantId.trim() === '') {
+        restaurantId = 'restaurant_eik_og_gran';
+      }
 
       const invalidView = document.getElementById('invalid-link-view');
       const mainView = document.getElementById('admin-main-view');
 
-      // 2. Hvis ingen ID finnes, vis feilmeldingen "Ugyldig restaurant-lenke"
-      if (!restaurantId || restaurantId.trim() === '') {
-        invalidView.classList.remove('hidden');
-        mainView.classList.add('hidden');
-        throw new Error('Ugyldig restaurant-lenke: Ingen restaurant-ID oppgitt i URL.');
-      } else {
-        invalidView.classList.add('hidden');
-        mainView.classList.remove('hidden');
-      }
+      // Vis alltid hovedvisningen med gjeldende restaurantId
+      if (invalidView) invalidView.classList.add('hidden');
+      if (mainView) mainView.classList.remove('hidden');
 
       // Sett lenker til meny.html med samme ID
       const guestMenuUrl = `meny.html?id=${encodeURIComponent(restaurantId)}`;
@@ -560,31 +713,131 @@
       loadRestaurantMetadata();
 
       // Start sanntidslytting mot Firestore subcollection: restaurants/{restaurantId}/menu_items
+      function showFirebaseError(err) {
+        console.error('Firestore feil:', err);
+        const banner = document.getElementById('firestore-error-banner');
+        const codeElem = document.getElementById('firestore-error-code');
+        const descElem = document.getElementById('firestore-error-desc');
+        const syncBadge = document.getElementById('sync-status-indicator');
+        const dbStat = document.getElementById('stat-db-indicator');
+
+        if (banner) banner.classList.remove('hidden');
+        if (codeElem) codeElem.innerText = `Feil: ${err.code || 'Ukjent feil'}`;
+        if (descElem) descElem.innerText = `Firebase nektet tilgang: ${err.message || 'Kontroller at Firestore Database er opprettet og at Rules tillater tilgang.'}`;
+        if (syncBadge) {
+          syncBadge.className = 'text-rose-700 font-bold';
+          syncBadge.innerText = '🔴 Sky blokkert';
+          syncBadge.parentElement.className = 'inline-flex items-center gap-1.5 rounded-full bg-rose-50 border border-rose-200 px-2 py-0.5 text-[11px] font-semibold text-rose-700';
+        }
+        if (dbStat) dbStat.innerText = `Feil: ${err.code || 'Blokkert'}`;
+      }
+
+      function hideFirebaseError() {
+        const banner = document.getElementById('firestore-error-banner');
+        const syncBadge = document.getElementById('sync-status-indicator');
+        const dbStat = document.getElementById('stat-db-indicator');
+
+        if (banner) banner.classList.add('hidden');
+        if (syncBadge) {
+          syncBadge.innerText = 'Firestore Live';
+          syncBadge.parentElement.className = 'inline-flex items-center gap-1.5 rounded-full bg-accent-50 border border-accent-200 px-2 py-0.5 text-[11px] font-semibold text-accent-700';
+        }
+        if (dbStat) dbStat.innerText = 'Firestore OK';
+      }
+
+      function showEmptyCloudBanner() {
+        const b = document.getElementById('firestore-empty-banner');
+        if (b) b.classList.remove('hidden');
+      }
+
+      function hideEmptyCloudBanner() {
+        const b = document.getElementById('firestore-empty-banner');
+        if (b) b.classList.add('hidden');
+      }
+
+      // Last opp standardmeny direkte til Firestore
+      window.seedDishesToCloud = async function() {
+        const btn = document.getElementById('seed-cloud-btn');
+        if (btn) {
+          btn.disabled = true;
+          btn.innerHTML = `
+            <svg class="animate-spin h-3.5 w-3.5 text-white inline" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            <span>Laster opp til Firestore...</span>
+          `;
+        }
+
+        try {
+          if (isRealFirebase && db) {
+            // Sørg for at restaurant-dokumentet også eksisterer
+            await setDoc(doc(db, 'restaurants', restaurantId), {
+              name: document.getElementById('header-restaurant-name').innerText || restaurantId,
+              created_at: new Date().toISOString()
+            }, { merge: true });
+
+            const menuCol = collection(db, 'restaurants', restaurantId, 'menu_items');
+            for (const dish of DEFAULT_DISHES) {
+              await addDoc(menuCol, {
+                name: dish.name,
+                description: dish.description,
+                price: dish.price,
+                category: dish.category,
+                sold_out: dish.sold_out === true,
+                created_at: new Date().toISOString()
+              });
+            }
+            showToast('✓ 8 standardretter lastet opp til Firestore!');
+          }
+        } catch (err) {
+          showFirebaseError(err);
+        } finally {
+          if (btn) {
+            btn.disabled = false;
+            btn.innerHTML = `
+              <svg class="h-3.5 w-3.5 text-accent-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+              </svg>
+              <span>Last opp standardmeny til Firestore nå</span>
+            `;
+          }
+        }
+      };
+
       if (isRealFirebase && db) {
         try {
           const menuCol = collection(db, 'restaurants', restaurantId, 'menu_items');
           onSnapshot(menuCol, (snapshot) => {
-            const items = [];
-            snapshot.forEach(docSnap => {
-              const d = docSnap.data();
-              items.push({
-                id: docSnap.id,
-                name: d.name || 'Uten navn',
-                description: d.description || d.desc || '',
-                price: typeof d.price === 'number' ? d.price : parseFloat(d.price) || 0,
-                category: d.category || 'Hovedrett',
-                sold_out: d.sold_out === true || d.soldOut === true
+            hideFirebaseError();
+            if (snapshot.empty) {
+              showEmptyCloudBanner();
+              dishesList = [];
+            } else {
+              hideEmptyCloudBanner();
+              const items = [];
+              snapshot.forEach(docSnap => {
+                const d = docSnap.data();
+                items.push({
+                  id: docSnap.id,
+                  name: d.name || 'Uten navn',
+                  description: d.description || d.desc || '',
+                  price: typeof d.price === 'number' ? d.price : parseFloat(d.price) || 0,
+                  category: d.category || 'Hovedrett',
+                  sold_out: d.sold_out === true || d.soldOut === true
+                });
               });
-            });
-
-            dishesList = items;
+              dishesList = items;
+            }
             renderTable();
           }, (err) => {
             console.error('onSnapshot feil i menu_items:', err);
+            showFirebaseError(err);
             initFallbackStorage();
           });
         } catch (err) {
           console.warn('Feil ved oppstart av menu_items onSnapshot:', err);
+          showFirebaseError(err);
           initFallbackStorage();
         }
       } else {
@@ -827,6 +1080,8 @@
       // Kopier meny-lenke
       window.copyMenuLink = function() {
         const fullUrl = window.location.origin + window.location.pathname.replace('admin.html', '') + guestMenuUrl;
+        const input = document.getElementById('live-nfc-url-input');
+        if (input) input.value = fullUrl;
         if (navigator.clipboard && navigator.clipboard.writeText) {
           navigator.clipboard.writeText(fullUrl).then(() => {
             showToast('✓ NFC-menylenke kopiert til utklippstavlen!');
@@ -837,6 +1092,25 @@
           prompt('Kopier NFC-lenken her:', fullUrl);
         }
       };
+
+      window.toggleQrModal = function() {
+        const modal = document.getElementById('qr-test-modal');
+        const img = document.getElementById('qr-test-img');
+        const text = document.getElementById('qr-test-url-text');
+        const fullUrl = window.location.origin + window.location.pathname.replace('admin.html', '') + guestMenuUrl;
+        if (img) {
+          img.src = `https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=${encodeURIComponent(fullUrl)}`;
+        }
+        if (text) text.innerText = fullUrl;
+        if (modal) modal.classList.toggle('hidden');
+      };
+
+      function updateNfcUrlDisplay() {
+        const fullUrl = window.location.origin + window.location.pathname.replace('admin.html', '') + guestMenuUrl;
+        const input = document.getElementById('live-nfc-url-input');
+        if (input) input.value = fullUrl;
+      }
+      setTimeout(updateNfcUrlDisplay, 200);
 
       function showToast(message) {
         const toast = document.getElementById('toast-message');

@@ -542,6 +542,9 @@
             renderRestaurantsTable();
           }, (err) => {
             console.error('onSnapshot feil i Firestore:', err);
+            updateBackendBadge(false, 'Avvist: ' + (err.code || 'permission-denied'));
+            const statusDesc = document.getElementById('stat-db-mode');
+            if (statusDesc) statusDesc.innerText = `Feil: ${err.code || 'permission-denied'}`;
             fallbackRender();
           });
         } catch (e) {

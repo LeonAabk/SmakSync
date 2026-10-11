@@ -363,12 +363,13 @@
       // SETT INN FIREBASE CONFIG HER
       // ============================================================================
       const DEFAULT_FIREBASE_CONFIG = {
-        apiKey: "DIN_API_KEY",
-        authDomain: "ditt-prosjekt.firebaseapp.com",
-        projectId: "ditt-prosjekt",
-        storageBucket: "ditt-prosjekt.appspot.com",
-        messagingSenderId: "123456789012",
-        appId: "1:123456789012:web:abcdef123456"
+        apiKey: "AIzaSyBqhHxR2alXm667KkJSJ8eiLxzsOLZui9U",
+        authDomain: "smaksync.firebaseapp.com",
+        projectId: "smaksync",
+        storageBucket: "smaksync.firebasestorage.app",
+        messagingSenderId: "247220233955",
+        appId: "1:247220233955:web:4dd3a6269394575f2347d6",
+        measurementId: "G-9XXCYSG5C2"
       };
 
       // Importer Firebase v9 Modular SDK via CDN
@@ -541,6 +542,9 @@
             renderRestaurantsTable();
           }, (err) => {
             console.error('onSnapshot feil i Firestore:', err);
+            updateBackendBadge(false, 'Avvist: ' + (err.code || 'permission-denied'));
+            const statusDesc = document.getElementById('stat-db-mode');
+            if (statusDesc) statusDesc.innerText = `Feil: ${err.code || 'permission-denied'}`;
             fallbackRender();
           });
         } catch (e) {

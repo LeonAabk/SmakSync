@@ -261,21 +261,18 @@
         onSnapshot 
       } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
 
-      // 1. URL-Routing: Hent '?id=' fra URL-en for å laste ned riktig meny
+      // 1. URL-Routing: Hent '?id=' fra URL-en for å laste ned riktig meny (standard: restaurant_eik_og_gran)
       const urlParams = new URLSearchParams(window.location.search);
-      const restaurantId = urlParams.get('id');
+      let restaurantId = urlParams.get('id');
+      if (!restaurantId || restaurantId.trim() === '') {
+        restaurantId = 'restaurant_eik_og_gran';
+      }
 
       const invalidView = document.getElementById('invalid-menu-view');
       const validContainer = document.getElementById('valid-menu-container');
 
-      if (!restaurantId || restaurantId.trim() === '') {
-        invalidView.classList.remove('hidden');
-        validContainer.classList.add('hidden');
-        throw new Error('Ugyldig restaurant-lenke: Ingen restaurant-ID oppgitt i URL.');
-      } else {
-        invalidView.classList.add('hidden');
-        validContainer.classList.remove('hidden');
-      }
+      if (invalidView) invalidView.classList.add('hidden');
+      if (validContainer) validContainer.classList.remove('hidden');
 
       // Sett snarvei til admin for samme restaurant
       document.getElementById('admin-shortcut-btn').href = `admin.html?id=${encodeURIComponent(restaurantId)}`;
@@ -407,10 +404,38 @@
       // 5. Sett opp 'onSnapshot' (sanntidslytting) mot Firebase Firestore:
       // Når restauranten endrer priser eller setter en rett til "sold_out",
       // oppdateres gjestenes skjerm automatisk uten "refresh".
+      function updateLiveStatus(statusText, isSuccess) {
+        const ind = document.getElementById('live-sync-indicator');
+        if (!ind) return;
+        if (isSuccess) {
+          ind.className = 'text-accent-400 font-mono text-[11px] font-semibold';
+          ind.innerText = `● ${statusText}`;
+        } else {
+          ind.className = 'text-rose-400 font-mono text-[11px] font-semibold';
+          ind.innerText = `▲ ${statusText}`;
+        }
+      }
+
       if (isRealFirebase && db) {
         try {
           const menuCol = collection(db, 'restaurants', restaurantId, 'menu_items');
           onSnapshot(menuCol, (snapshot) => {
+            if (snapshot.empty) {
+              updateLiveStatus('Firestore tilkoblet · 0 retter funnet i skyen', true);
+              const container = document.getElementById('menu-items-container');
+              if (container) {
+                container.innerHTML = `
+                  <div class="py-16 text-center text-zinc-400 space-y-3 p-4 bg-zinc-900/60 rounded-2xl border border-zinc-800">
+                    <p class="text-xs font-semibold text-white">Menyen i skyen er tom</p>
+                    <p class="text-[11px] text-zinc-400">
+                      Gå til <a href="admin.html?id=${encodeURIComponent(restaurantId)}" target="_blank" class="text-accent-400 underline font-semibold">Admin-panelet på PC</a> og klikk «Last opp standardmeny til Firestore nå».
+                    </p>
+                  </div>
+                `;
+              }
+              return;
+            }
+
             const items = [];
             snapshot.forEach(docSnap => {
               const d = docSnap.data();
@@ -425,13 +450,16 @@
             });
 
             menuItems = items;
+            updateLiveStatus('Sky-synkronisert live', true);
             renderMenu();
           }, (err) => {
             console.error('onSnapshot feil i gjestemeny:', err);
+            updateLiveStatus(`Firestore avvist: ${err.code || 'permission-denied'}`, false);
             initFallbackStorage();
           });
         } catch (err) {
           console.warn('Feil ved onSnapshot initialisering:', err);
+          updateLiveStatus(`Firestore feil: ${err.code || 'offline'}`, false);
           initFallbackStorage();
         }
       } else {
