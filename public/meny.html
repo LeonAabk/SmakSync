@@ -1,0 +1,608 @@
+<!doctype html>
+<html lang="no">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>SmakSync - Digital Mobilmeny</title>
+    <meta name="description" content="Eksklusiv digital mobilmeny åpnet via NFC-bordkort. Sanntidsmeny synkronisert med restaurantens kjøkken via Firebase Firestore." />
+
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+            },
+            colors: {
+              accent: {
+                400: '#34d399',
+                500: '#10b981',
+                600: '#059669',
+              },
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      body {
+        font-family: 'Inter', sans-serif;
+        -webkit-font-smoothing: antialiased;
+        -webkit-tap-highlight-color: transparent;
+      }
+      /* Skjul scrollbar for horisontale tabs men behold scrolling */
+      .no-scrollbar::-webkit-scrollbar {
+        display: none;
+      }
+      .no-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+    </style>
+  </head>
+  <body class="bg-zinc-950 text-zinc-100 min-h-screen flex flex-col justify-between selection:bg-zinc-800">
+
+    <!-- FEILMELDING: DERSOM INGEN RESTAURANT-ID ER OPPGITT -->
+    <div id="invalid-menu-view" class="hidden min-h-screen flex items-center justify-center p-6 text-center">
+      <div class="max-w-sm w-full bg-zinc-900 border border-zinc-800 rounded-3xl p-8 shadow-2xl space-y-5">
+        <div class="mx-auto h-14 w-14 rounded-full bg-zinc-800 border border-zinc-700 text-accent-400 flex items-center justify-center">
+          <svg class="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M8.5 16.5a5 5 0 0 1 0-7" stroke-linecap="round"/>
+            <path d="M12 19a8.5 8.5 0 0 1 0-12" stroke-linecap="round"/>
+            <path d="M15.5 21.5a12 12 0 0 1 0-17" stroke-linecap="round"/>
+          </svg>
+        </div>
+
+        <div>
+          <h1 class="text-lg font-bold text-white">Ingen restaurant valgt</h1>
+          <p class="text-xs text-zinc-400 mt-2 leading-relaxed">
+            Vennligst hold telefonen inntil NFC-kortet på bordet på nytt, eller bruk en gyldig restaurant-lenke med <code class="font-mono text-accent-400">?id=restaurant_slug</code>.
+          </p>
+        </div>
+
+        <div class="space-y-2 pt-2">
+          <a
+            href="meny.html?id=restaurant_eik_og_gran"
+            class="block w-full py-2.5 px-4 rounded-xl bg-white hover:bg-zinc-200 text-zinc-950 text-xs font-semibold transition-all shadow-md"
+          >
+            Åpne Restaurant Eik & Gran
+          </a>
+          <a
+            href="superadmin.html"
+            class="block w-full py-2.5 px-4 rounded-xl border border-zinc-800 bg-zinc-950 hover:bg-zinc-850 text-zinc-400 hover:text-white text-xs font-medium transition-all"
+          >
+            Gå til Superadmin oversikt
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- MOBIL-RAMME CONTAINER (Sentrert på desktop for autentisk native app følelse) -->
+    <div id="valid-menu-container" class="w-full max-w-md mx-auto min-h-screen flex flex-col bg-zinc-950 border-x border-zinc-900 shadow-2xl relative">
+      
+      <!-- ========================================== -->
+      <!-- MOBIL TOPPLINJE & STATUS                   -->
+      <!-- ========================================== -->
+      <div class="px-5 pt-3 pb-2 flex items-center justify-between text-[11px] font-semibold text-zinc-500 border-b border-zinc-900 bg-zinc-950/90 backdrop-blur sticky top-0 z-30">
+        <span class="flex items-center gap-1.5">
+          <span class="h-2 w-2 rounded-full bg-accent-500 animate-pulse"></span>
+          <span class="text-zinc-400 font-mono" id="table-number-label">Bord 14 · Salong</span>
+        </span>
+        <span class="text-[10px] uppercase tracking-wider text-zinc-600 font-mono flex items-center gap-1">
+          <svg class="h-3 w-3 text-accent-500 inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M8.5 16.5a5 5 0 0 1 0-7" stroke-linecap="round"/>
+            <path d="M12 19a8.5 8.5 0 0 1 0-12" stroke-linecap="round"/>
+          </svg>
+          <span>NFC Tilkoblet</span>
+        </span>
+      </div>
+
+      <!-- ========================================== -->
+      <!-- RESTAURANT BRANDING HEADER                 -->
+      <!-- ========================================== -->
+      <header class="p-6 text-center border-b border-zinc-900 bg-gradient-to-b from-zinc-900/40 via-zinc-950 to-zinc-950">
+        <p class="text-[10px] font-semibold uppercase tracking-widest text-zinc-500" id="restaurant-tagline">Fine Dining & Vinbar</p>
+        <h1 class="text-2xl font-bold tracking-tight text-white mt-1 uppercase" id="guest-restaurant-title">
+          Laster meny...
+        </h1>
+        <p class="text-xs text-zinc-400 mt-1 max-w-xs mx-auto">
+          Sesongens råvarer og klassiske favoritter. Velkommen til bords.
+        </p>
+
+        <!-- Hurtiglenke til admin i prototypen -->
+        <div class="mt-4 flex items-center justify-center gap-2">
+          <a
+            id="admin-shortcut-btn"
+            href="#"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center gap-1.5 px-3 py-1 text-[11px] font-medium text-zinc-400 hover:text-white bg-zinc-900 hover:bg-zinc-850 rounded-full border border-zinc-800 transition-colors shadow-xs"
+            title="Åpne kontrollpanelet for å teste toveis Firestore endringer"
+          >
+            <span>Åpne Kontrollpanel (Admin)</span>
+            <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+            </svg>
+          </a>
+        </div>
+      </header>
+
+      <!-- ========================================== -->
+      <!-- KATEGORIFILTER OG SØK                      -->
+      <!-- ========================================== -->
+      <div class="sticky top-[37px] z-20 bg-zinc-950/95 backdrop-blur-md border-b border-zinc-900 px-4 py-3 space-y-2.5">
+        
+        <!-- Horisontalt scrollbare kategori-knapper -->
+        <div class="flex items-center gap-2 overflow-x-auto no-scrollbar py-0.5">
+          <button
+            onclick="setGuestFilter('Alle')"
+            id="g-btn-Alle"
+            class="guest-cat-btn px-3.5 py-1.5 rounded-full text-xs font-semibold bg-white text-zinc-950 transition-all shrink-0 shadow-xs"
+          >
+            Alle retter
+          </button>
+          <button
+            onclick="setGuestFilter('Hovedrett')"
+            id="g-btn-Hovedrett"
+            class="guest-cat-btn px-3.5 py-1.5 rounded-full text-xs font-medium text-zinc-400 hover:text-white bg-zinc-900 border border-zinc-800/80 transition-all shrink-0"
+          >
+            Hovedretter
+          </button>
+          <button
+            onclick="setGuestFilter('Forrett')"
+            id="g-btn-Forrett"
+            class="guest-cat-btn px-3.5 py-1.5 rounded-full text-xs font-medium text-zinc-400 hover:text-white bg-zinc-900 border border-zinc-800/80 transition-all shrink-0"
+          >
+            Forretter
+          </button>
+          <button
+            onclick="setGuestFilter('Desserter')"
+            id="g-btn-Desserter"
+            class="guest-cat-btn px-3.5 py-1.5 rounded-full text-xs font-medium text-zinc-400 hover:text-white bg-zinc-900 border border-zinc-800/80 transition-all shrink-0"
+          >
+            Desserter
+          </button>
+          <button
+            onclick="setGuestFilter('Drikke')"
+            id="g-btn-Drikke"
+            class="guest-cat-btn px-3.5 py-1.5 rounded-full text-xs font-medium text-zinc-400 hover:text-white bg-zinc-900 border border-zinc-800/80 transition-all shrink-0"
+          >
+            Drikke & Vin
+          </button>
+        </div>
+
+        <!-- Søkefelt inni mobilmenyen -->
+        <div class="relative">
+          <input
+            type="text"
+            id="menu-search-input"
+            oninput="handleSearch(event)"
+            placeholder="Søk etter rett eller ingrediens..."
+            class="w-full bg-zinc-900/80 border border-zinc-800 text-xs text-white rounded-xl py-2 pl-8 pr-3 placeholder:text-zinc-500 focus:outline-none focus:border-zinc-700 focus:bg-zinc-900 transition-colors"
+          />
+          <svg class="absolute left-2.5 top-2.5 h-3.5 w-3.5 text-zinc-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+          </svg>
+        </div>
+
+      </div>
+
+      <!-- ========================================== -->
+      <!-- MENY ELEMENTER (DYNAMISK GENERERT)         -->
+      <!-- ========================================== -->
+      <main class="flex-1 p-4 space-y-3.5" id="menu-items-container">
+        <!-- Genereres dynamisk via JavaScript fra Firebase Firestore onSnapshot -->
+        <div class="py-16 text-center text-zinc-500 space-y-2">
+          <svg class="animate-spin h-6 w-6 mx-auto text-zinc-600" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          <p class="text-xs">Laster inn fersk meny...</p>
+        </div>
+      </main>
+
+      <!-- ========================================== -->
+      <!-- BUNN: TILKALL SERVITØR & FOOTER            -->
+      <!-- ========================================== -->
+      <footer class="p-4 border-t border-zinc-900 bg-zinc-950/90 backdrop-blur sticky bottom-0 z-20 space-y-3">
+        <button
+          onclick="callWaiter()"
+          id="call-waiter-btn"
+          class="w-full py-3 px-4 rounded-xl bg-white hover:bg-zinc-200 text-zinc-950 font-semibold text-xs tracking-tight transition-all active:scale-98 shadow-md flex items-center justify-center gap-2"
+        >
+          <svg class="h-4 w-4 text-zinc-950" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+          </svg>
+          <span>Tilkall servitør (Bord 14)</span>
+        </button>
+
+        <div class="text-center text-[10px] text-zinc-400 space-y-1">
+          <p>SmakSync™ · Drevet av kontaktløs NFC · Ingen app kreves</p>
+          <p id="live-sync-indicator" class="text-zinc-500 font-mono">Tilkoblet Firebase Realtime</p>
+        </div>
+      </footer>
+
+    </div>
+
+    <!-- ============================================================================ -->
+    <!-- FIREBASE v9 MODULAR SDK & LOGIKK FOR MENY                                    -->
+    <!-- ============================================================================ -->
+    <script type="module">
+      // ============================================================================
+      // SETT INN FIREBASE CONFIG HER
+      // ============================================================================
+      const DEFAULT_FIREBASE_CONFIG = {
+        apiKey: "AIzaSyBqhHxR2alXm667KkJSJ8eiLxzsOLZui9U",
+        authDomain: "smaksync.firebaseapp.com",
+        projectId: "smaksync",
+        storageBucket: "smaksync.firebasestorage.app",
+        messagingSenderId: "247220233955",
+        appId: "1:247220233955:web:4dd3a6269394575f2347d6",
+        measurementId: "G-9XXCYSG5C2"
+      };
+
+      // Importer Firebase v9 Modular SDK via CDN
+      import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
+      import { 
+        getFirestore, 
+        collection, 
+        doc, 
+        getDoc, 
+        onSnapshot 
+      } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
+
+      // 1. URL-Routing: Hent '?id=' fra URL-en for å laste ned riktig meny
+      const urlParams = new URLSearchParams(window.location.search);
+      const restaurantId = urlParams.get('id');
+
+      const invalidView = document.getElementById('invalid-menu-view');
+      const validContainer = document.getElementById('valid-menu-container');
+
+      if (!restaurantId || restaurantId.trim() === '') {
+        invalidView.classList.remove('hidden');
+        validContainer.classList.add('hidden');
+        throw new Error('Ugyldig restaurant-lenke: Ingen restaurant-ID oppgitt i URL.');
+      } else {
+        invalidView.classList.add('hidden');
+        validContainer.classList.remove('hidden');
+      }
+
+      // Sett snarvei til admin for samme restaurant
+      document.getElementById('admin-shortcut-btn').href = `admin.html?id=${encodeURIComponent(restaurantId)}`;
+
+      // Hent konfigurering (enten fra koden eller fra nettleser-lagret konfig)
+      let activeConfig = DEFAULT_FIREBASE_CONFIG;
+      try {
+        const saved = localStorage.getItem('smaksync_firebase_config');
+        if (saved) activeConfig = JSON.parse(saved);
+      } catch (e) {
+        console.warn('Kunne ikke lese lagret config', e);
+      }
+
+      let db = null;
+      let isRealFirebase = false;
+      const isPlaceholder = !activeConfig.apiKey || activeConfig.apiKey === "DIN_API_KEY";
+
+      if (!isPlaceholder) {
+        try {
+          const app = initializeApp(activeConfig);
+          db = getFirestore(app);
+          isRealFirebase = true;
+          console.log('✓ Firebase Firestore tilkoblet live i gjestemeny for:', restaurantId);
+        } catch (err) {
+          console.error('Feil ved initialisering av Firebase:', err);
+        }
+      }
+
+      // Standardretter for demo
+      const DEFAULT_DISHES = [
+        {
+          id: 'dish-1',
+          name: 'Truffle & Dry-Aged Burger',
+          description: '200g kvernet norsk storfe, trøffelmajones, lagret cheddar og smørstekt brioche.',
+          price: 225,
+          category: 'Hovedrett',
+          sold_out: false
+        },
+        {
+          id: 'dish-2',
+          name: 'Pannestekt Kveite',
+          description: 'Bresert purreløk, ramsløkolje og champagne beurre blanc.',
+          price: 365,
+          category: 'Hovedrett',
+          sold_out: false
+        },
+        {
+          id: 'dish-3',
+          name: 'Dagens Fangst: Villtorsk',
+          description: 'Saltbakt sellerirot, Sandefjordsmør og friterte kapers.',
+          price: 315,
+          category: 'Hovedrett',
+          sold_out: true
+        },
+        {
+          id: 'dish-4',
+          name: 'Villkveite Ceviche',
+          description: 'Tindved, sjalottløk, koriander og sprø jordskokkchips.',
+          price: 175,
+          category: 'Forrett',
+          sold_out: false
+        },
+        {
+          id: 'dish-5',
+          name: 'Husets Focaccia & Pisket Smør',
+          description: 'Nybakt surdeigsfocaccia med rosmarin og havsalt fra Røros.',
+          price: 65,
+          category: 'Forrett',
+          sold_out: false
+        },
+        {
+          id: 'dish-6',
+          name: 'Multer & Røros-is',
+          description: 'Villmulter, karamellisert hvit sjokolade og tindvedsirup.',
+          price: 165,
+          category: 'Desserter',
+          sold_out: false
+        },
+        {
+          id: 'dish-7',
+          name: 'Nøgne Ø IPA (0.33l)',
+          description: 'Klassisk håndverks-IPA med rik humleprofil og frisk sitrus.',
+          price: 115,
+          category: 'Drikke',
+          sold_out: false
+        },
+        {
+          id: 'dish-8',
+          name: 'Nordic Old Fashioned',
+          description: 'Fatlagret akevitt, rugbourbon, røsslyngsirup og appelsinolje.',
+          price: 175,
+          category: 'Drikke',
+          sold_out: false
+        }
+      ];
+
+      let menuItems = [];
+      let activeCategory = 'Alle';
+      let searchQuery = '';
+      const LOCAL_ITEMS_KEY = `smaksync_items_${restaurantId}`;
+
+      // Hent restaurant metadata (navn, logo)
+      async function loadRestaurantInfo() {
+        let name = restaurantId.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+        if (isRealFirebase && db) {
+          try {
+            const snap = await getDoc(doc(db, 'restaurants', restaurantId));
+            if (snap.exists()) {
+              const data = snap.data();
+              if (data.name) name = data.name;
+            }
+          } catch (e) {
+            console.warn('Kunne ikke hente restaurantinfo fra Firestore:', e);
+          }
+        } else {
+          try {
+            const all = JSON.parse(localStorage.getItem('smaksync_firestore_restaurants') || '[]');
+            const found = all.find(r => r.id === restaurantId);
+            if (found && found.name) name = found.name;
+          } catch {}
+        }
+
+        document.getElementById('guest-restaurant-title').innerText = name;
+        document.title = `${name} - Digital Meny`;
+      }
+
+      loadRestaurantInfo();
+
+      // 5. Sett opp 'onSnapshot' (sanntidslytting) mot Firebase Firestore:
+      // Når restauranten endrer priser eller setter en rett til "sold_out",
+      // oppdateres gjestenes skjerm automatisk uten "refresh".
+      if (isRealFirebase && db) {
+        try {
+          const menuCol = collection(db, 'restaurants', restaurantId, 'menu_items');
+          onSnapshot(menuCol, (snapshot) => {
+            const items = [];
+            snapshot.forEach(docSnap => {
+              const d = docSnap.data();
+              items.push({
+                id: docSnap.id,
+                name: d.name || 'Uten navn',
+                description: d.description || d.desc || '',
+                price: typeof d.price === 'number' ? d.price : parseFloat(d.price) || 0,
+                category: d.category || 'Hovedrett',
+                sold_out: d.sold_out === true || d.soldOut === true
+              });
+            });
+
+            menuItems = items;
+            renderMenu();
+          }, (err) => {
+            console.error('onSnapshot feil i gjestemeny:', err);
+            initFallbackStorage();
+          });
+        } catch (err) {
+          console.warn('Feil ved onSnapshot initialisering:', err);
+          initFallbackStorage();
+        }
+      } else {
+        initFallbackStorage();
+      }
+
+      function initFallbackStorage() {
+        const stored = localStorage.getItem(LOCAL_ITEMS_KEY);
+        if (!stored) {
+          localStorage.setItem(LOCAL_ITEMS_KEY, JSON.stringify(DEFAULT_DISHES));
+          menuItems = DEFAULT_DISHES;
+        } else {
+          try {
+            menuItems = JSON.parse(stored);
+          } catch {
+            menuItems = DEFAULT_DISHES;
+          }
+        }
+        renderMenu();
+
+        // Lytt på storage-event for sanntidstest i demo-modus på tvers av vinduer
+        window.addEventListener('storage', (e) => {
+          if (e.key === LOCAL_ITEMS_KEY) {
+            menuItems = JSON.parse(localStorage.getItem(LOCAL_ITEMS_KEY) || '[]');
+            renderMenu();
+          }
+        });
+      }
+
+      // Rendrer meny-kortene dynamisk
+      function renderMenu() {
+        const container = document.getElementById('menu-items-container');
+        if (!container) return;
+
+        // Filtrer basert på kategori og søketekst
+        const filtered = menuItems.filter(dish => {
+          if (activeCategory !== 'Alle' && dish.category !== activeCategory) {
+            return false;
+          }
+          if (searchQuery) {
+            const q = searchQuery.toLowerCase();
+            const matchName = dish.name.toLowerCase().includes(q);
+            const matchDesc = (dish.description || '').toLowerCase().includes(q);
+            if (!matchName && !matchDesc) return false;
+          }
+          return true;
+        });
+
+        if (filtered.length === 0) {
+          container.innerHTML = `
+            <div class="py-16 text-center text-zinc-500 space-y-2">
+              <svg class="h-8 w-8 mx-auto text-zinc-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+              </svg>
+              <p class="text-xs">Ingen retter funnet i denne visningen.</p>
+            </div>
+          `;
+          return;
+        }
+
+        container.innerHTML = filtered.map(dish => {
+          const isSoldOut = dish.sold_out === true;
+
+          // Utsolgt styling: tydelig grå "Utsolgt"-tag og overstreket pris
+          if (isSoldOut) {
+            return `
+              <article class="p-4 rounded-2xl bg-zinc-900/40 border border-zinc-800/60 opacity-60 transition-all">
+                <div class="flex items-start justify-between gap-3">
+                  <div class="space-y-1">
+                    <div class="flex items-center gap-2">
+                      <span class="inline-block text-[10px] font-semibold text-zinc-500 uppercase tracking-wider">
+                        ${dish.category}
+                      </span>
+                      <span class="inline-block text-[10px] font-semibold px-2 py-0.5 rounded-full bg-zinc-800 text-zinc-400 border border-zinc-700">
+                        Utsolgt i kveld
+                      </span>
+                    </div>
+                    <h3 class="text-sm font-semibold text-zinc-400 line-through">
+                      ${escapeHtml(dish.name)}
+                    </h3>
+                  </div>
+                  <div class="text-right">
+                    <span class="font-mono text-sm text-zinc-500 line-through">
+                      ${dish.price},-
+                    </span>
+                  </div>
+                </div>
+                ${dish.description ? `<p class="text-xs text-zinc-500 mt-2 leading-relaxed">${escapeHtml(dish.description)}</p>` : ''}
+              </article>
+            `;
+          }
+
+          // Aktiv tilgjengelig rett
+          return `
+            <article class="p-4 rounded-2xl bg-zinc-900/80 border border-zinc-850 hover:border-zinc-700 transition-all shadow-xs group">
+              <div class="flex items-start justify-between gap-3">
+                <div class="space-y-1 flex-1">
+                  <span class="inline-block text-[10px] font-semibold text-zinc-500 uppercase tracking-wider">
+                    ${dish.category}
+                  </span>
+                  <h3 class="text-base font-semibold text-white tracking-tight group-hover:text-accent-400 transition-colors">
+                    ${escapeHtml(dish.name)}
+                  </h3>
+                </div>
+                <div class="text-right shrink-0">
+                  <span class="font-mono text-base font-bold text-white tracking-tight">
+                    ${dish.price},-
+                  </span>
+                </div>
+              </div>
+              ${dish.description ? `<p class="text-xs text-zinc-400 mt-2 leading-relaxed">${escapeHtml(dish.description)}</p>` : ''}
+            </article>
+          `;
+        }).join('');
+
+        // Oppdater tidsstempel
+        const ind = document.getElementById('live-sync-indicator');
+        if (ind) {
+          const now = new Date();
+          const t = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`;
+          ind.innerText = `Sanntidssynk aktiv · Sist sjekket: kl. ${t}`;
+        }
+      }
+
+      // Filterkategori endring
+      window.setGuestFilter = function(cat) {
+        activeCategory = cat;
+        ['Alle', 'Hovedrett', 'Forrett', 'Desserter', 'Drikke'].forEach(c => {
+          const btn = document.getElementById(`g-btn-${c}`);
+          if (btn) {
+            if (c === cat) {
+              btn.className = 'guest-cat-btn px-3.5 py-1.5 rounded-full text-xs font-semibold bg-white text-zinc-950 transition-all shrink-0 shadow-xs';
+            } else {
+              btn.className = 'guest-cat-btn px-3.5 py-1.5 rounded-full text-xs font-medium text-zinc-400 hover:text-white bg-zinc-900 border border-zinc-800/80 transition-all shrink-0';
+            }
+          }
+        });
+        renderMenu();
+      };
+
+      window.handleSearch = function(e) {
+        searchQuery = e.target.value.trim();
+        renderMenu();
+      };
+
+      window.callWaiter = function() {
+        const btn = document.getElementById('call-waiter-btn');
+        btn.innerHTML = `
+          <svg class="h-4 w-4 text-accent-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+          <span class="text-accent-400">Servitør er varslet!</span>
+        `;
+        btn.classList.add('border', 'border-accent-400');
+        setTimeout(() => {
+          btn.innerHTML = `
+            <svg class="h-4 w-4 text-zinc-950" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+            </svg>
+            <span>Tilkall servitør (Bord 14)</span>
+          `;
+          btn.classList.remove('border', 'border-accent-400');
+        }, 3000);
+      };
+
+      function escapeHtml(string) {
+        if (!string) return '';
+        const div = document.createElement('div');
+        div.innerText = string;
+        return div.innerHTML;
+      }
+    </script>
+  </body>
+</html>
