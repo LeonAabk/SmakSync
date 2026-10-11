@@ -98,7 +98,7 @@
         </form>
 
         <div class="pt-2 border-t border-zinc-800/80 text-[11px] text-zinc-500">
-          Standard masterkode: <span class="font-mono text-zinc-300 bg-zinc-800 px-1.5 py-0.5 rounded">8899</span> · Kan endres i portalen
+          Beskyttet eierportal · Kun autorisert personell
         </div>
       </div>
     </div>
@@ -964,13 +964,21 @@
       let allRestaurants = [];
       let searchQuery = '';
 
-      // Superadmin Master PIN autentisering
+      // Superadmin Master PIN autentisering (Sikker kryptografisk hash-verifisering)
       const SUPERADMIN_AUTH_KEY = 'smaksync_superadmin_auth';
-      const SUPERADMIN_MASTER_KEY = 'smaksync_superadmin_master_pin';
-      const DEFAULT_MASTER_PIN = '8899';
+      const SUPERADMIN_MASTER_HASH_KEY = 'smaksync_superadmin_master_hash';
+      // SHA-256 hash av autorisert passord (passordet lagres aldri i klartekst)
+      const DEFAULT_MASTER_HASH = '5524fe000ffd5c1743a619d7e17581511ed083d674b9998c6c7b42024315e88a';
 
-      function getMasterPin() {
-        return localStorage.getItem(SUPERADMIN_MASTER_KEY) || DEFAULT_MASTER_PIN;
+      async function sha256(message) {
+        const msgBuffer = new TextEncoder().encode(message);
+        const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+      }
+
+      function getMasterPinHash() {
+        return localStorage.getItem(SUPERADMIN_MASTER_HASH_KEY) || DEFAULT_MASTER_HASH;
       }
 
       function checkSuperadminAuth() {
@@ -988,13 +996,14 @@
         }
       }
 
-      window.handleSuperadminPinSubmit = function(e) {
+      window.handleSuperadminPinSubmit = async function(e) {
         e.preventDefault();
         const input = document.getElementById('superadmin-pin-input');
         const err = document.getElementById('superadmin-pin-error');
         const entered = (input ? input.value : '').trim();
 
-        if (entered === getMasterPin()) {
+        const enteredHash = await sha256(entered);
+        if (enteredHash === getMasterPinHash()) {
           sessionStorage.setItem(SUPERADMIN_AUTH_KEY, 'true');
           if (err) err.classList.add('hidden');
           const lockView = document.getElementById('superadmin-lock-view');
@@ -1027,7 +1036,7 @@
         document.getElementById('master-pin-modal').classList.add('hidden');
       };
 
-      window.handleSaveMasterPin = function(e) {
+      window.handleSaveMasterPin = async function(e) {
         e.preventDefault();
         const curInput = document.getElementById('current-master-pin-input');
         const newInput = document.getElementById('new-master-pin-input');
@@ -1036,7 +1045,8 @@
         const currentEntered = curInput ? curInput.value.trim() : '';
         const newCode = newInput ? newInput.value.trim() : '';
 
-        if (currentEntered !== getMasterPin()) {
+        const currentHash = await sha256(currentEntered);
+        if (currentHash !== getMasterPinHash()) {
           if (err) {
             err.innerText = 'Feil gjeldende masterkode.';
             err.classList.remove('hidden');
@@ -1052,7 +1062,10 @@
           return;
         }
 
-        localStorage.setItem(SUPERADMIN_MASTER_KEY, newCode);
+        const newHash = await sha256(newCode);
+        localStorage.setItem(SUPERADMIN_MASTER_HASH_KEY, newHash);
+        // Fjern eventuell eldre klartekst-nøkkel
+        localStorage.removeItem('smaksync_superadmin_master_pin');
         closeMasterPinModal();
         showToast('✓ Superadmin Masterkode er oppdatert!');
       };
@@ -1238,11 +1251,20 @@
                   href="${menyUrl}"
                   target="_blank"
                   class="inline-flex items-center gap-1 px-2.5 py-1 rounded border border-zinc-200 bg-white hover:bg-zinc-100 text-zinc-800 text-xs font-semibold transition-colors"
+                  title="Åpne meny på norsk"
                 >
-                  <span>Meny</span>
+                  <span>🇳🇴 Meny</span>
                   <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
                   </svg>
+                </a>
+                <a
+                  href="${menyUrl}&lang=en"
+                  target="_blank"
+                  class="inline-flex items-center gap-1 px-2 py-1 rounded border border-zinc-200 bg-white hover:bg-zinc-100 text-zinc-700 text-xs font-medium transition-colors"
+                  title="Åpne meny på engelsk (for turister)"
+                >
+                  <span>🇬🇧 EN</span>
                 </a>
                 <button
                   onclick="deleteRestaurant('${rest.id}')"

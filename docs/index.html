@@ -2400,11 +2400,15 @@
         alert(`✓ Tilkallingsvarsel sendt!\n\nServitøren på vakt mottok diskret varsel på smartklokke/POS for ${table}.`);
       }
 
-      // 4. Fullskjerm demo med live søk
+      // 4. Fullskjerm demo med live søk og språkstøtte
       let currentFullDemoType = 'fine';
+      let fullDemoLang = 'no';
+      let fullDemoQuery = '';
 
       function openFullDemo(type) {
         currentFullDemoType = (type === 'fine_dining' || type === 'fine') ? 'fine' : type;
+        fullDemoLang = phoneState[currentFullDemoType]?.lang || 'no';
+        fullDemoQuery = '';
         renderFullDemoModal('');
         document.getElementById('full-demo-modal').classList.remove('hidden');
       }
@@ -2413,13 +2417,20 @@
         document.getElementById('full-demo-modal').classList.add('hidden');
       }
 
+      function toggleFullDemoLang() {
+        fullDemoLang = fullDemoLang === 'no' ? 'en' : 'no';
+        renderFullDemoModal(fullDemoQuery);
+      }
+
       function handleFullDemoSearch(e) {
-        renderFullDemoModal(e.target.value.toLowerCase());
+        fullDemoQuery = (e.target.value || '').toLowerCase();
+        renderFullDemoModal(fullDemoQuery);
       }
 
       function renderFullDemoModal(searchQuery) {
         const type = currentFullDemoType;
-        const data = fullMenuDatabase[type]['no'];
+        const lang = fullDemoLang || 'no';
+        const data = fullMenuDatabase[type][lang];
         const container = document.getElementById('demo-modal-screen');
 
         let themeClass = 'bg-stone-50 text-zinc-900 border-stone-200';
@@ -2448,7 +2459,7 @@
 
         let itemsHtml = '';
         if (filteredItems.length === 0) {
-          itemsHtml = `<div class="py-12 text-center opacity-60 text-xs">Ingen retter matchet "${searchQuery}".</div>`;
+          itemsHtml = `<div class="py-12 text-center opacity-60 text-xs">${lang === 'no' ? `Ingen retter matchet "${searchQuery}".` : `No dishes matched "${searchQuery}".`}</div>`;
         } else {
           itemsHtml = `
             <div class="space-y-3">
@@ -2460,7 +2471,7 @@
                         <div class="space-y-0.5 flex-1">
                           <div class="flex items-center gap-1.5 flex-wrap">
                             <span class="text-[9px] font-semibold ${isDark ? 'text-zinc-500' : 'text-stone-500'} uppercase tracking-wider">${it.category}</span>
-                            <span class="text-[9px] font-semibold px-2 py-0.2 rounded-full ${isDark ? 'bg-zinc-800 text-zinc-400 border border-zinc-700' : 'bg-stone-200 text-stone-600 border border-stone-300'}">Utsolgt i kveld</span>
+                            <span class="text-[9px] font-semibold px-2 py-0.2 rounded-full ${isDark ? 'bg-zinc-800 text-zinc-400 border border-zinc-700' : 'bg-stone-200 text-stone-600 border border-stone-300'}">${lang === 'no' ? 'Utsolgt i kveld' : 'Sold out tonight'}</span>
                           </div>
                           <h4 class="text-sm font-semibold line-through tracking-tight mt-0.5 ${isDark ? 'text-zinc-400' : 'text-stone-500'}">${it.name}</h4>
                         </div>
@@ -2481,10 +2492,10 @@
                       <span class="font-mono text-sm font-bold tracking-tight ${isDark ? 'text-white' : 'text-zinc-950'}">${it.price}</span>
                     </div>
                     <p class="text-[11px] mt-1.5 leading-relaxed ${isDark ? 'text-zinc-400' : 'text-zinc-600'}">${it.desc}</p>
-                    ${it.pairing ? `<p class="text-[10px] text-accent-400 mt-1.5 italic">🍷 Anbefalt vin: ${it.pairing}</p>` : ''}
+                    ${it.pairing ? `<p class="text-[10px] text-accent-400 mt-1.5 italic">🍷 ${lang === 'no' ? 'Anbefalt vin' : 'Wine pairing'}: ${it.pairing}</p>` : ''}
                     ${it.allergens ? `
                       <div class="mt-2.5 pt-2 ${isDark ? 'border-t border-zinc-800/60' : 'border-t border-stone-100'} flex flex-wrap gap-1">
-                        <span class="text-[9px] px-2 py-0.5 rounded-md ${isDark ? 'bg-zinc-800/70 text-zinc-400 border border-zinc-700/60' : 'bg-stone-100 text-stone-600 border border-stone-200'} font-medium">Allergener: ${it.allergens}</span>
+                        <span class="text-[9px] px-2 py-0.5 rounded-md ${isDark ? 'bg-zinc-800/70 text-zinc-400 border border-zinc-700/60' : 'bg-stone-100 text-stone-600 border border-stone-200'} font-medium">${lang === 'no' ? 'Allergener' : 'Allergens'}: ${it.allergens}</span>
                       </div>
                     ` : ''}
                   </article>
@@ -2495,25 +2506,34 @@
         }
 
         container.innerHTML = `
-          <!-- Topp bar: Native NFC & status -->
+          <!-- Topp bar: Native NFC & status med språkknapp -->
           <div class="px-5 pt-3 pb-2 flex items-center justify-between text-[11px] font-semibold border-b ${isDark ? 'border-zinc-900 bg-zinc-950/90' : 'border-stone-200 bg-stone-50/95'} sticky top-0 z-30 backdrop-blur">
             <span class="flex items-center gap-1.5">
               <span class="h-2 w-2 rounded-full bg-accent-500 animate-pulse"></span>
-              <span class="${isDark ? 'text-zinc-400' : 'text-zinc-600'} font-medium text-[11px]">Digital meny</span>
+              <span class="${isDark ? 'text-zinc-400' : 'text-zinc-600'} font-medium text-[11px]">${lang === 'no' ? 'Digital meny' : 'Digital Menu'}</span>
             </span>
-            <span class="text-[10px] uppercase tracking-wider font-mono flex items-center gap-1 ${isDark ? 'text-zinc-600' : 'text-zinc-500'}">
-              <svg class="h-3 w-3 ${isDark ? 'text-accent-500' : 'text-accent-600'} inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M8.5 16.5a5 5 0 0 1 0-7" stroke-linecap="round"/>
-                <path d="M12 19a8.5 8.5 0 0 1 0-12" stroke-linecap="round"/>
-                <path d="M15.5 21.5a12 12 0 0 1 0-17" stroke-linecap="round"/>
-              </svg>
-              <span>NFC Tilkoblet</span>
-            </span>
+            <div class="flex items-center gap-2">
+              <button
+                onclick="toggleFullDemoLang()"
+                class="px-2 py-0.5 rounded text-[10px] font-mono border font-semibold ${isDark ? 'bg-zinc-900 border-zinc-800 text-zinc-300 hover:text-white' : 'bg-white border-stone-200 text-zinc-700 hover:text-zinc-950'}"
+                title="Bytt språk mellom norsk og engelsk"
+              >
+                ${lang.toUpperCase()} · ${lang === 'no' ? 'Bytt til EN' : 'Switch to NO'}
+              </button>
+              <span class="text-[10px] uppercase tracking-wider font-mono flex items-center gap-1 ${isDark ? 'text-zinc-600' : 'text-zinc-500'}">
+                <svg class="h-3 w-3 ${isDark ? 'text-accent-500' : 'text-accent-600'} inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M8.5 16.5a5 5 0 0 1 0-7" stroke-linecap="round"/>
+                  <path d="M12 19a8.5 8.5 0 0 1 0-12" stroke-linecap="round"/>
+                  <path d="M15.5 21.5a12 12 0 0 1 0-17" stroke-linecap="round"/>
+                </svg>
+                <span>${lang === 'no' ? 'NFC Tilkoblet' : 'NFC Connected'}</span>
+              </span>
+            </div>
           </div>
 
           <!-- Header -->
           <header class="p-4 text-center ${headerBg}">
-            <span class="text-[9px] font-semibold uppercase tracking-widest ${isDark ? 'text-zinc-500' : 'text-amber-800'}">${data.tagline || 'Meny'}</span>
+            <span class="text-[9px] font-semibold uppercase tracking-widest ${isDark ? 'text-zinc-500' : 'text-amber-800'}">${data.tagline || (lang === 'no' ? 'Meny' : 'Menu')}</span>
             <h3 class="text-base font-bold uppercase tracking-tight mt-1 ${isDark ? 'text-white' : 'text-zinc-950'}">${data.title}</h3>
             <p class="text-[11px] mt-1 max-w-xs mx-auto leading-relaxed ${isDark ? 'text-zinc-400' : 'text-zinc-600'}">${data.desc}</p>
             
@@ -2521,7 +2541,7 @@
             <div class="mt-3 relative max-w-xs mx-auto">
               <input
                 type="text"
-                placeholder="Søk retter eller allergener..."
+                placeholder="${lang === 'no' ? 'Søk retter eller allergener...' : 'Search dishes or allergens...'}"
                 value="${searchQuery}"
                 oninput="handleFullDemoSearch(event)"
                 class="w-full rounded-xl ${isDark ? 'bg-zinc-900 border-zinc-800 text-white placeholder:text-zinc-500' : 'bg-white border-stone-200 text-zinc-900 placeholder:text-zinc-400'} border px-3 py-1.5 text-xs focus:outline-none"
@@ -2537,10 +2557,10 @@
           <!-- Bunn -->
           <footer class="p-3 border-t ${isDark ? 'border-zinc-900 bg-zinc-950/95' : 'border-stone-200 bg-stone-50/95'} text-center sticky bottom-0 z-20">
             <div class="text-[9px] text-zinc-500 space-y-0.5">
-              <p class="font-medium">SmakSync™ · Drevet av kontaktløs NFC · Ingen app kreves</p>
+              <p class="font-medium">${lang === 'no' ? 'SmakSync™ · Drevet av kontaktløs NFC · Ingen app kreves' : 'SmakSync™ · Powered by contactless NFC · No app required'}</p>
               <p class="text-accent-500 font-mono text-[9px] flex items-center justify-center gap-1">
                 <span class="h-1.5 w-1.5 rounded-full bg-accent-500 animate-pulse"></span>
-                <span>Sanntidssynk aktiv</span>
+                <span>${lang === 'no' ? 'Sanntidssynk aktiv' : 'Realtime sync active'}</span>
               </p>
             </div>
           </footer>

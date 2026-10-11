@@ -163,17 +163,30 @@
           </div>
 
           <!-- Snarveier -->
-          <div class="flex items-center gap-3">
+          <div class="flex items-center gap-2">
             <a
               id="open-guest-menu-btn"
               href="#"
               target="_blank"
               rel="noopener noreferrer"
-              class="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold text-white bg-zinc-950 hover:bg-zinc-800 rounded-lg transition-all shadow-xs active:scale-95"
-              title="Åpne gjestens mobilmeny i ny fane for å teste sanntidssynk"
+              class="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-semibold text-white bg-zinc-950 hover:bg-zinc-800 rounded-lg transition-all shadow-xs active:scale-95"
+              title="Åpne gjestens mobilmeny (Norsk)"
             >
-              <span>Åpne Gjestemeny (NFC)</span>
+              <span>🇳🇴 Gjestemeny</span>
               <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+              </svg>
+            </a>
+            <a
+              id="open-guest-menu-en-btn"
+              href="#"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-semibold text-zinc-800 hover:text-zinc-950 bg-white hover:bg-zinc-100 rounded-lg transition-all border border-zinc-200 shadow-2xs active:scale-95"
+              title="Test gjestemenyen på engelsk"
+            >
+              <span>🇬🇧 English</span>
+              <svg class="h-3 w-3 text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
               </svg>
             </a>
@@ -587,10 +600,63 @@ service cloud.firestore {
                 </label>
                 <textarea
                   id="dish-desc"
-                  rows="3"
+                  rows="2"
                   placeholder="F.eks. 200g kvernet storfe, trøffelmajones, briochebrød og syltet rødløk."
                   class="w-full rounded-lg border border-zinc-300 bg-zinc-50/50 px-3 py-2 text-sm text-zinc-900 placeholder-zinc-400 focus:bg-white focus:border-zinc-950 focus:outline-none transition-colors"
                 ></textarea>
+              </div>
+
+              <!-- Flerspråklig & Allergener -->
+              <div class="rounded-xl border border-zinc-200 bg-zinc-50/70 p-3 space-y-2.5">
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-semibold text-zinc-900 flex items-center gap-1.5">
+                    <span>🌐 Flerspråklig & Allergener</span>
+                  </span>
+                  <button
+                    type="button"
+                    onclick="autoFillDishTranslation('add')"
+                    class="text-[11px] font-semibold text-accent-700 hover:text-accent-800 bg-accent-50 hover:bg-accent-100 border border-accent-200 px-2 py-0.5 rounded-md transition-colors flex items-center gap-1 shadow-2xs"
+                    title="Oversett automatisk til engelsk"
+                  >
+                    <span>✨ Auto-oversett til EN</span>
+                  </button>
+                </div>
+
+                <div>
+                  <label for="dish-allergens" class="block text-[11px] font-medium text-zinc-600 mb-1">
+                    Allergener (f.eks. Gluten, Melk, Egg)
+                  </label>
+                  <input
+                    type="text"
+                    id="dish-allergens"
+                    placeholder="Gluten (hvete), Melk, Egg"
+                    class="w-full rounded-lg border border-zinc-300 bg-white px-2.5 py-1.5 text-xs text-zinc-900 placeholder-zinc-400 focus:border-zinc-950 focus:outline-none transition-colors"
+                  />
+                </div>
+
+                <div>
+                  <label for="dish-name-en" class="block text-[11px] font-medium text-zinc-600 mb-1">
+                    Engelsk navn (vises til turister / EN)
+                  </label>
+                  <input
+                    type="text"
+                    id="dish-name-en"
+                    placeholder="E.g. Truffle & Dry-Aged Burger"
+                    class="w-full rounded-lg border border-zinc-300 bg-white px-2.5 py-1.5 text-xs text-zinc-900 placeholder-zinc-400 focus:border-zinc-950 focus:outline-none transition-colors"
+                  />
+                </div>
+
+                <div>
+                  <label for="dish-desc-en" class="block text-[11px] font-medium text-zinc-600 mb-1">
+                    Engelsk beskrivelse
+                  </label>
+                  <textarea
+                    id="dish-desc-en"
+                    rows="2"
+                    placeholder="E.g. 200g minced beef, truffle mayo, cheddar..."
+                    class="w-full rounded-lg border border-zinc-300 bg-white px-2.5 py-1.5 text-xs text-zinc-900 placeholder-zinc-400 focus:border-zinc-950 focus:outline-none transition-colors"
+                  ></textarea>
+                </div>
               </div>
 
               <!-- Checkbox for "Utsolgt" -->
@@ -788,9 +854,62 @@ service cloud.firestore {
             </label>
             <textarea
               id="edit-dish-desc"
-              rows="3"
+              rows="2"
               class="w-full rounded-lg border border-zinc-300 bg-zinc-50/50 px-3 py-2 text-sm text-zinc-900 placeholder-zinc-400 focus:bg-white focus:border-zinc-950 focus:outline-none transition-colors"
             ></textarea>
+          </div>
+
+          <!-- Flerspråklig & Allergener for redigering -->
+          <div class="rounded-xl border border-zinc-200 bg-zinc-50/70 p-3 space-y-2.5">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-semibold text-zinc-900 flex items-center gap-1.5">
+                <span>🌐 Flerspråklig & Allergener</span>
+              </span>
+              <button
+                type="button"
+                onclick="autoFillDishTranslation('edit')"
+                class="text-[11px] font-semibold text-accent-700 hover:text-accent-800 bg-accent-50 hover:bg-accent-100 border border-accent-200 px-2 py-0.5 rounded-md transition-colors flex items-center gap-1 shadow-2xs"
+                title="Oversett automatisk til engelsk"
+              >
+                <span>✨ Auto-oversett til EN</span>
+              </button>
+            </div>
+
+            <div>
+              <label for="edit-dish-allergens" class="block text-[11px] font-medium text-zinc-600 mb-1">
+                Allergener (f.eks. Gluten, Melk, Egg)
+              </label>
+              <input
+                type="text"
+                id="edit-dish-allergens"
+                placeholder="Gluten (hvete), Melk, Egg"
+                class="w-full rounded-lg border border-zinc-300 bg-white px-2.5 py-1.5 text-xs text-zinc-900 placeholder-zinc-400 focus:border-zinc-950 focus:outline-none transition-colors"
+              />
+            </div>
+
+            <div>
+              <label for="edit-dish-name-en" class="block text-[11px] font-medium text-zinc-600 mb-1">
+                Engelsk navn (vises til turister / EN)
+              </label>
+              <input
+                type="text"
+                id="edit-dish-name-en"
+                placeholder="E.g. Pan-Seared Halibut"
+                class="w-full rounded-lg border border-zinc-300 bg-white px-2.5 py-1.5 text-xs text-zinc-900 placeholder-zinc-400 focus:border-zinc-950 focus:outline-none transition-colors"
+              />
+            </div>
+
+            <div>
+              <label for="edit-dish-desc-en" class="block text-[11px] font-medium text-zinc-600 mb-1">
+                Engelsk beskrivelse
+              </label>
+              <textarea
+                id="edit-dish-desc-en"
+                rows="2"
+                placeholder="E.g. Braised leeks, ramson oil..."
+                class="w-full rounded-lg border border-zinc-300 bg-white px-2.5 py-1.5 text-xs text-zinc-900 placeholder-zinc-400 focus:border-zinc-950 focus:outline-none transition-colors"
+              ></textarea>
+            </div>
           </div>
 
           <!-- Status Utsolgt checkbox -->
@@ -881,8 +1000,13 @@ service cloud.firestore {
 
       // Sett lenker til meny.html med samme ID
       const guestMenuUrl = `meny.html?id=${encodeURIComponent(restaurantId)}`;
-      document.getElementById('open-guest-menu-btn').href = guestMenuUrl;
-      document.getElementById('footer-menu-link').href = guestMenuUrl;
+      const guestMenuEnUrl = `meny.html?id=${encodeURIComponent(restaurantId)}&lang=en`;
+      const noMenuBtn = document.getElementById('open-guest-menu-btn');
+      if (noMenuBtn) noMenuBtn.href = guestMenuUrl;
+      const enMenuBtn = document.getElementById('open-guest-menu-en-btn');
+      if (enMenuBtn) enMenuBtn.href = guestMenuEnUrl;
+      const footerLink = document.getElementById('footer-menu-link');
+      if (footerLink) footerLink.href = guestMenuUrl;
       document.getElementById('header-restaurant-id').innerText = restaurantId;
       document.getElementById('firestore-path-label').innerText = `restaurants/${restaurantId}/menu_items`;
 
@@ -915,65 +1039,89 @@ service cloud.firestore {
         {
           id: 'dish-1',
           name: 'Truffle & Dry-Aged Burger',
+          name_en: 'Truffle & Dry-Aged Burger',
           description: '200g kvernet norsk storfe, trøffelmajones, lagret cheddar og smørstekt brioche.',
+          description_en: '200g minced Norwegian beef, truffle mayonnaise, aged cheddar cheese and butter-toasted brioche bun.',
           price: 225,
           category: 'Hovedrett',
+          allergens: 'Gluten (hvete), Melk, Egg',
           sold_out: false
         },
         {
           id: 'dish-2',
           name: 'Pannestekt Kveite',
+          name_en: 'Pan-Seared Halibut',
           description: 'Bresert purreløk, ramsløkolje og champagne beurre blanc.',
+          description_en: 'Braised leeks, wild ramson garlic oil and champagne beurre blanc.',
           price: 365,
           category: 'Hovedrett',
+          allergens: 'Fisk, Melk, Sulfitt',
           sold_out: false
         },
         {
           id: 'dish-3',
           name: 'Dagens Fangst: Villtorsk',
+          name_en: 'Catch of the Day: Wild Arctic Cod',
           description: 'Saltbakt sellerirot, Sandefjordsmør og friterte kapers.',
+          description_en: 'Salt-baked celeriac root, rich Sandefjord butter sauce and crispy fried capers.',
           price: 315,
           category: 'Hovedrett',
+          allergens: 'Fisk, Melk, Selleri',
           sold_out: true
         },
         {
           id: 'dish-4',
           name: 'Villkveite Ceviche',
+          name_en: 'Wild Halibut Ceviche',
           description: 'Tindved, sjalottløk, koriander og sprø jordskokkchips.',
+          description_en: 'Arctic sea buckthorn, pickled shallots, fresh coriander and crispy sunchoke chips.',
           price: 175,
           category: 'Forrett',
+          allergens: 'Fisk',
           sold_out: false
         },
         {
           id: 'dish-5',
           name: 'Husets Focaccia & Pisket Smør',
+          name_en: 'House Sourdough Focaccia & Whipped Butter',
           description: 'Nybakt surdeigsfocaccia med rosmarin og havsalt fra Røros.',
+          description_en: 'Freshly baked sourdough focaccia with rosemary and sea salt from Røros.',
           price: 65,
           category: 'Forrett',
+          allergens: 'Gluten (hvete), Melk',
           sold_out: false
         },
         {
           id: 'dish-6',
           name: 'Multer & Røros-is',
+          name_en: 'Arctic Cloudberries & Røros Ice Cream',
           description: 'Villmulter, karamellisert hvit sjokolade og tindvedsirup.',
+          description_en: 'Wild handpicked cloudberries, caramelized white chocolate crumble and sea buckthorn syrup.',
           price: 165,
           category: 'Desserter',
+          allergens: 'Melk, Soya',
           sold_out: false
         },
         {
           id: 'dish-7',
           name: 'Nøgne Ø IPA (0.33l)',
+          name_en: 'Nøgne Ø IPA (0.33l)',
           description: 'Klassisk håndverks-IPA med rik humleprofil og frisk sitrus.',
+          description_en: 'Classic Norwegian craft IPA with generous hop profile and vibrant citrus notes.',
           price: 115,
           category: 'Drikke',
+          allergens: 'Gluten (bygg)',
           sold_out: false
         },
         {
           id: 'dish-8',
           name: 'Nordic Old Fashioned',
+          name_en: 'Nordic Old Fashioned',
           description: 'Fatlagret akevitt, rugbourbon, røsslyngsirup og appelsinolje.',
+          description_en: 'Oak cask-aged Norwegian aquavit, rye whiskey, heather honey syrup and aromatic orange oil.',
           price: 175,
           category: 'Drikke',
+          allergens: 'Ingen kjente allergener',
           sold_out: false
         }
       ];
@@ -1259,7 +1407,10 @@ service cloud.firestore {
             for (const dish of DEFAULT_DISHES) {
               await addDoc(menuCol, {
                 name: dish.name,
+                name_en: dish.name_en || '',
                 description: dish.description,
+                description_en: dish.description_en || '',
+                allergens: dish.allergens || '',
                 price: dish.price,
                 category: dish.category,
                 sold_out: dish.sold_out === true,
@@ -1301,7 +1452,10 @@ service cloud.firestore {
                   items.push({
                     id: docSnap.id,
                     name: d.name || 'Uten navn',
+                    name_en: d.name_en || '',
                     description: d.description || d.desc || '',
+                    description_en: d.description_en || d.desc_en || '',
+                    allergens: d.allergens || '',
                     price: typeof d.price === 'number' ? d.price : parseFloat(d.price) || 0,
                     category: d.category || 'Hovedrett',
                     sold_out: d.sold_out === true || d.soldOut === true
@@ -1393,10 +1547,27 @@ service cloud.firestore {
             <tr class="hover:bg-zinc-50/80 transition-colors">
               <!-- Rett & Beskrivelse -->
               <td class="py-3 px-3.5">
-                <div class="font-semibold text-zinc-950 ${isSoldOut ? 'line-through text-zinc-400' : ''}">
-                  ${escapeHtml(dish.name)}
+                <div class="flex items-center gap-2 flex-wrap">
+                  <span class="font-semibold text-zinc-950 ${isSoldOut ? 'line-through text-zinc-400' : ''}">
+                    ${escapeHtml(dish.name)}
+                  </span>
+                  ${dish.name_en ? `
+                    <span class="inline-flex items-center gap-1 text-[10px] font-medium text-emerald-700 bg-emerald-50 px-1.5 py-0.2 rounded border border-emerald-200" title="Engelsk oversettelse aktiv">
+                      🇬🇧 ${escapeHtml(dish.name_en)}
+                    </span>
+                  ` : `
+                    <span class="inline-flex items-center gap-1 text-[10px] font-medium text-zinc-500 bg-zinc-100 px-1.5 py-0.2 rounded border border-zinc-200" title="Bruker automatisk oversettelsesmotor">
+                      🌐 Auto-EN
+                    </span>
+                  `}
                 </div>
                 ${dish.description ? `<div class="text-[11px] text-zinc-500 mt-0.5 line-clamp-1">${escapeHtml(dish.description)}</div>` : ''}
+                ${dish.allergens ? `
+                  <div class="text-[10px] text-amber-700 font-medium mt-1 flex items-center gap-1">
+                    <span>⚠️ Allergener:</span>
+                    <span>${escapeHtml(dish.allergens)}</span>
+                  </div>
+                ` : ''}
               </td>
 
               <!-- Kategori -->
@@ -1663,6 +1834,9 @@ service cloud.firestore {
         const catIn = document.getElementById('edit-dish-category');
         const descIn = document.getElementById('edit-dish-desc');
         const soldIn = document.getElementById('edit-dish-soldout');
+        const allergensIn = document.getElementById('edit-dish-allergens');
+        const nameEnIn = document.getElementById('edit-dish-name-en');
+        const descEnIn = document.getElementById('edit-dish-desc-en');
 
         renderCategoryControls();
 
@@ -1671,6 +1845,9 @@ service cloud.firestore {
         if (priceIn) priceIn.value = dish.price;
         if (catIn) catIn.value = dish.category;
         if (descIn) descIn.value = dish.description || '';
+        if (allergensIn) allergensIn.value = dish.allergens || '';
+        if (nameEnIn) nameEnIn.value = dish.name_en || '';
+        if (descEnIn) descEnIn.value = dish.description_en || '';
         if (soldIn) soldIn.checked = (dish.sold_out === true);
 
         if (modal) modal.classList.remove('hidden');
@@ -1681,6 +1858,126 @@ service cloud.firestore {
         if (modal) modal.classList.add('hidden');
       };
 
+      window.autoFillDishTranslation = function(mode) {
+        const isEdit = mode === 'edit';
+        const nameIn = document.getElementById(isEdit ? 'edit-dish-name' : 'dish-name');
+        const descIn = document.getElementById(isEdit ? 'edit-dish-desc' : 'dish-desc');
+        const nameEnIn = document.getElementById(isEdit ? 'edit-dish-name-en' : 'dish-name-en');
+        const descEnIn = document.getElementById(isEdit ? 'edit-dish-desc-en' : 'dish-desc-en');
+
+        const noName = (nameIn ? nameIn.value : '').trim();
+        const noDesc = (descIn ? descIn.value : '').trim();
+
+        if (!noName) {
+          alert('Skriv inn et norsk navn på retten først.');
+          return;
+        }
+
+        let enName = '';
+        let enDesc = '';
+
+        const DICT = {
+          'Truffle & Dry-Aged Burger': {
+            name: 'Truffle & Dry-Aged Burger',
+            desc: '200g minced Norwegian beef, truffle mayonnaise, aged cheddar cheese and butter-toasted brioche bun.'
+          },
+          'Pannestekt Kveite': {
+            name: 'Pan-Seared Halibut',
+            desc: 'Braised leeks, wild ramson garlic oil and champagne beurre blanc.'
+          },
+          'Dagens Fangst: Villtorsk': {
+            name: 'Catch of the Day: Wild Arctic Cod',
+            desc: 'Salt-baked celeriac root, rich Sandefjord butter sauce and crispy fried capers.'
+          },
+          'Villkveite Ceviche': {
+            name: 'Wild Halibut Ceviche',
+            desc: 'Arctic sea buckthorn, pickled shallots, fresh coriander and crispy sunchoke chips.'
+          },
+          'Husets Focaccia & Pisket Smør': {
+            name: 'House Sourdough Focaccia & Whipped Butter',
+            desc: 'Freshly baked sourdough focaccia with rosemary and sea salt from Røros.'
+          },
+          'Multer & Røros-is': {
+            name: 'Arctic Cloudberries & Røros Ice Cream',
+            desc: 'Wild handpicked cloudberries, caramelized white chocolate crumble and sea buckthorn syrup.'
+          },
+          'Nøgne Ø IPA (0.33l)': {
+            name: 'Nøgne Ø IPA (0.33l)',
+            desc: 'Classic Norwegian craft IPA with generous hop profile and vibrant citrus notes.'
+          },
+          'Nordic Old Fashioned': {
+            name: 'Nordic Old Fashioned',
+            desc: 'Oak cask-aged Norwegian aquavit, rye whiskey, heather honey syrup and aromatic orange oil.'
+          }
+        };
+
+        if (DICT[noName]) {
+          enName = DICT[noName].name;
+          enDesc = DICT[noName].desc;
+        }
+
+        const GLOSSARY = [
+          [/\bkvernet norsk storfe\b/gi, 'minced Norwegian beef'],
+          [/\bnorsk storfe\b/gi, 'Norwegian beef'],
+          [/\btrøffelmajones\b/gi, 'truffle mayonnaise'],
+          [/\blagret cheddar\b/gi, 'aged cheddar'],
+          [/\bsmørstekt brioche\b/gi, 'butter-toasted brioche'],
+          [/\bbresert purreløk\b/gi, 'braised leeks'],
+          [/\bramsløkolje\b/gi, 'wild ramson garlic oil'],
+          [/\bchampagne beurre blanc\b/gi, 'champagne beurre blanc'],
+          [/\bsaltbakt sellerirot\b/gi, 'salt-baked celeriac root'],
+          [/\bSandefjordsmør\b/gi, 'Sandefjord butter sauce'],
+          [/\bfriterte kapers\b/gi, 'crispy fried capers'],
+          [/\btindved\b/gi, 'sea buckthorn'],
+          [/\bsjalottløk\b/gi, 'shallots'],
+          [/\bkoriander\b/gi, 'fresh coriander'],
+          [/\bsprø jordskokkchips\b/gi, 'crispy sunchoke chips'],
+          [/\bnybakt surdeigsfocaccia\b/gi, 'freshly baked sourdough focaccia'],
+          [/\bsurdeigsfocaccia\b/gi, 'sourdough focaccia'],
+          [/\brosmarin\b/gi, 'rosemary'],
+          [/\bhavsalt fra Røros\b/gi, 'sea salt from Røros'],
+          [/\bvillmulter\b/gi, 'wild cloudberries'],
+          [/\bmulter\b/gi, 'cloudberries'],
+          [/\bkaramellisert hvit sjokolade\b/gi, 'caramelized white chocolate'],
+          [/\btindvedsirup\b/gi, 'sea buckthorn syrup'],
+          [/\blaks\b/gi, 'salmon'],
+          [/\børret\b/gi, 'trout'],
+          [/\btorsk\b/gi, 'cod'],
+          [/\bkveite\b/gi, 'halibut'],
+          [/\bkylling\b/gi, 'chicken'],
+          [/\breker\b/gi, 'prawns'],
+          [/\bpotetmos\b/gi, 'mashed potatoes'],
+          [/\bpoteter\b/gi, 'potatoes'],
+          [/\bsalat\b/gi, 'salad'],
+          [/\bsuppe\b/gi, 'soup'],
+          [/\bhjemmelaget\b/gi, 'homemade'],
+          [/\bgrillet\b/gi, 'grilled'],
+          [/\bstekt\b/gi, 'pan-seared'],
+          [/\brøkt\b/gi, 'smoked'],
+          [/\bfersk\b/gi, 'fresh'],
+          [/\bserveres med\b/gi, 'served with'],
+          [/\bmed\b/gi, 'with'],
+          [/\bog\b/gi, 'and']
+        ];
+
+        if (!enName) {
+          let t = noName;
+          GLOSSARY.forEach(([p, r]) => { t = t.replace(p, r); });
+          enName = t;
+        }
+
+        if (!enDesc && noDesc) {
+          let t = noDesc;
+          GLOSSARY.forEach(([p, r]) => { t = t.replace(p, r); });
+          enDesc = t;
+        }
+
+        if (nameEnIn) nameEnIn.value = enName;
+        if (descEnIn && enDesc) descEnIn.value = enDesc;
+
+        showToast('✓ Automatisk oversatt til engelsk!');
+      };
+
       window.handleSaveEditDish = async function(e) {
         e.preventDefault();
         const idIn = document.getElementById('edit-dish-id');
@@ -1689,6 +1986,9 @@ service cloud.firestore {
         const catIn = document.getElementById('edit-dish-category');
         const descIn = document.getElementById('edit-dish-desc');
         const soldIn = document.getElementById('edit-dish-soldout');
+        const allergensIn = document.getElementById('edit-dish-allergens');
+        const nameEnIn = document.getElementById('edit-dish-name-en');
+        const descEnIn = document.getElementById('edit-dish-desc-en');
         const btn = document.getElementById('edit-dish-save-btn');
 
         const dishId = idIn ? idIn.value : '';
@@ -1697,6 +1997,9 @@ service cloud.firestore {
         const category = catIn ? catIn.value : 'Hovedrett';
         const description = descIn ? descIn.value.trim() : '';
         const sold_out = soldIn ? soldIn.checked : false;
+        const allergens = allergensIn ? allergensIn.value.trim() : '';
+        const name_en = nameEnIn ? nameEnIn.value.trim() : '';
+        const description_en = descEnIn ? descEnIn.value.trim() : '';
 
         if (!dishId || !name) return;
 
@@ -1707,9 +2010,12 @@ service cloud.firestore {
             const dishRef = doc(db, 'restaurants', restaurantId, 'menu_items', dishId);
             await updateDoc(dishRef, {
               name,
+              name_en,
               price,
               category,
               description,
+              description_en,
+              allergens,
               sold_out,
               updated_at: new Date().toISOString()
             });
@@ -1717,9 +2023,12 @@ service cloud.firestore {
             const item = dishesList.find(d => d.id === dishId);
             if (item) {
               item.name = name;
+              item.name_en = name_en;
               item.price = price;
               item.category = category;
               item.description = description;
+              item.description_en = description_en;
+              item.allergens = allergens;
               item.sold_out = sold_out;
               saveFallbackDishes(dishesList);
               renderTable();
@@ -1744,12 +2053,18 @@ service cloud.firestore {
         const catInput = document.getElementById('dish-category');
         const descInput = document.getElementById('dish-desc');
         const soldOutInput = document.getElementById('dish-soldout');
+        const allergensInput = document.getElementById('dish-allergens');
+        const nameEnInput = document.getElementById('dish-name-en');
+        const descEnInput = document.getElementById('dish-desc-en');
 
         const newDish = {
           name: nameInput.value.trim(),
+          name_en: nameEnInput ? nameEnInput.value.trim() : '',
           price: parseFloat(priceInput.value),
           category: catInput.value,
           description: descInput.value.trim(),
+          description_en: descEnInput ? descEnInput.value.trim() : '',
+          allergens: allergensInput ? allergensInput.value.trim() : '',
           sold_out: soldOutInput.checked,
           created_at: new Date().toISOString()
         };
