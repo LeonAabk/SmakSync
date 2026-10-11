@@ -109,7 +109,7 @@
         <h1 class="text-2xl font-bold tracking-tight text-white mt-1 uppercase" id="guest-restaurant-title">
           Laster meny...
         </h1>
-        <p class="text-xs text-zinc-400 mt-1 max-w-xs mx-auto">
+        <p class="text-xs text-zinc-400 mt-1 max-w-xs mx-auto" id="restaurant-description">
           Sesongens råvarer og klassiske favoritter. Velkommen til bords.
         </p>
       </header>
@@ -119,42 +119,14 @@
       <!-- ========================================== -->
       <div class="sticky top-[37px] z-20 bg-zinc-950/95 backdrop-blur-md border-b border-zinc-900 px-4 py-3 space-y-2.5">
         
-        <!-- Horisontalt scrollbare kategori-knapper -->
-        <div class="flex items-center gap-2 overflow-x-auto no-scrollbar py-0.5">
+        <!-- Horisontalt scrollbare kategori-knapper (dynamisk generert) -->
+        <div class="flex items-center gap-2 overflow-x-auto no-scrollbar py-0.5" id="guest-categories-container">
           <button
             onclick="setGuestFilter('Alle')"
             id="g-btn-Alle"
             class="guest-cat-btn px-3.5 py-1.5 rounded-full text-xs font-semibold bg-white text-zinc-950 transition-all shrink-0 shadow-xs"
           >
             Alle retter
-          </button>
-          <button
-            onclick="setGuestFilter('Hovedrett')"
-            id="g-btn-Hovedrett"
-            class="guest-cat-btn px-3.5 py-1.5 rounded-full text-xs font-medium text-zinc-400 hover:text-white bg-zinc-900 border border-zinc-800/80 transition-all shrink-0"
-          >
-            Hovedretter
-          </button>
-          <button
-            onclick="setGuestFilter('Forrett')"
-            id="g-btn-Forrett"
-            class="guest-cat-btn px-3.5 py-1.5 rounded-full text-xs font-medium text-zinc-400 hover:text-white bg-zinc-900 border border-zinc-800/80 transition-all shrink-0"
-          >
-            Forretter
-          </button>
-          <button
-            onclick="setGuestFilter('Desserter')"
-            id="g-btn-Desserter"
-            class="guest-cat-btn px-3.5 py-1.5 rounded-full text-xs font-medium text-zinc-400 hover:text-white bg-zinc-900 border border-zinc-800/80 transition-all shrink-0"
-          >
-            Desserter
-          </button>
-          <button
-            onclick="setGuestFilter('Drikke')"
-            id="g-btn-Drikke"
-            class="guest-cat-btn px-3.5 py-1.5 rounded-full text-xs font-medium text-zinc-400 hover:text-white bg-zinc-900 border border-zinc-800/80 transition-all shrink-0"
-          >
-            Drikke & Vin
           </button>
         </div>
 
@@ -335,31 +307,119 @@
       let menuItems = [];
       let activeCategory = 'Alle';
       let searchQuery = '';
+      let guestCategories = ['Hovedrett', 'Forrett', 'Desserter', 'Drikke'];
       const LOCAL_ITEMS_KEY = `smaksync_items_${restaurantId}`;
+      const LOCAL_META_KEY = `smaksync_restaurant_meta_${restaurantId}`;
 
-      // Hent restaurant metadata (navn, logo)
-      async function loadRestaurantInfo() {
+      function renderGuestCategories() {
+        const container = document.getElementById('guest-categories-container');
+        if (!container) return;
+
+        let html = `
+          <button
+            onclick="setGuestFilter('Alle')"
+            id="g-btn-Alle"
+            class="guest-cat-btn px-3.5 py-1.5 rounded-full text-xs font-semibold ${activeCategory === 'Alle' ? 'bg-white text-zinc-950 shadow-xs' : 'text-zinc-400 hover:text-white bg-zinc-900 border border-zinc-800/80'} transition-all shrink-0"
+          >
+            Alle retter
+          </button>
+        `;
+
+        guestCategories.forEach(cat => {
+          const isAct = activeCategory === cat;
+          html += `
+            <button
+              onclick="setGuestFilter('${escapeHtml(cat)}')"
+              id="g-btn-${escapeHtml(cat)}"
+              class="guest-cat-btn px-3.5 py-1.5 rounded-full text-xs font-semibold ${isAct ? 'bg-white text-zinc-950 shadow-xs' : 'text-zinc-400 hover:text-white bg-zinc-900 border border-zinc-800/80'} transition-all shrink-0"
+            >
+              ${escapeHtml(cat)}
+            </button>
+          `;
+        });
+
+        container.innerHTML = html;
+      }
+
+      function applyRestaurantData(data) {
         let name = restaurantId.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+        let taglineAbove = 'Fine Dining & Vinbar';
+        let taglineBelow = 'Sesongens råvarer og klassiske favoritter. Velkommen til bords.';
+
+        if (data) {
+          if (data.name) name = data.name;
+          if (data.tagline_above) taglineAbove = data.tagline_above;
+          if (data.tagline_below) taglineBelow = data.tagline_below;
+          else if (data.description) taglineBelow = data.description;
+
+          if (Array.isArray(data.categories) && data.categories.length > 0) {
+            guestCategories = data.categories;
+          }
+        }
+
+        const titleElem = document.getElementById('guest-restaurant-title');
+        if (titleElem) titleElem.innerText = name;
+        document.title = `${name} - Digital Meny`;
+
+        const taglineElem = document.getElementById('restaurant-tagline');
+        if (taglineElem) taglineElem.innerText = taglineAbove;
+
+        const descElem = document.getElementById('restaurant-description');
+        if (descElem) descElem.innerText = taglineBelow;
+
+        renderGuestCategories();
+      }
+
+      // Hent restaurant metadata (navn, logo, tekster og kategorier)
+      async function loadRestaurantInfo() {
         if (isRealFirebase && db) {
           try {
-            const snap = await getDoc(doc(db, 'restaurants', restaurantId));
+            const restRef = doc(db, 'restaurants', restaurantId);
+            const snap = await getDoc(restRef);
             if (snap.exists()) {
-              const data = snap.data();
-              if (data.name) name = data.name;
+              applyRestaurantData(snap.data());
+            } else {
+              applyRestaurantData(null);
             }
+
+            // Lytt i sanntid på restaurantens overskrifter og kategorier
+            onSnapshot(restRef, (s) => {
+              if (s.exists()) {
+                applyRestaurantData(s.data());
+                renderMenu();
+              }
+            });
           } catch (e) {
             console.warn('Kunne ikke hente restaurantinfo fra Firestore:', e);
+            loadFallbackMetadata();
           }
         } else {
+          loadFallbackMetadata();
+        }
+      }
+
+      function loadFallbackMetadata() {
+        let meta = null;
+        try {
+          const stored = localStorage.getItem(LOCAL_META_KEY);
+          if (stored) meta = JSON.parse(stored);
+        } catch {}
+
+        if (!meta) {
           try {
             const all = JSON.parse(localStorage.getItem('smaksync_firestore_restaurants') || '[]');
             const found = all.find(r => r.id === restaurantId);
-            if (found && found.name) name = found.name;
+            if (found) meta = found;
           } catch {}
         }
 
-        document.getElementById('guest-restaurant-title').innerText = name;
-        document.title = `${name} - Digital Meny`;
+        applyRestaurantData(meta);
+
+        window.addEventListener('storage', (e) => {
+          if (e.key === LOCAL_META_KEY || e.key === 'smaksync_firestore_restaurants') {
+            loadFallbackMetadata();
+          }
+        });
       }
 
       loadRestaurantInfo();
@@ -550,16 +610,7 @@
       // Filterkategori endring
       window.setGuestFilter = function(cat) {
         activeCategory = cat;
-        ['Alle', 'Hovedrett', 'Forrett', 'Desserter', 'Drikke'].forEach(c => {
-          const btn = document.getElementById(`g-btn-${c}`);
-          if (btn) {
-            if (c === cat) {
-              btn.className = 'guest-cat-btn px-3.5 py-1.5 rounded-full text-xs font-semibold bg-white text-zinc-950 transition-all shrink-0 shadow-xs';
-            } else {
-              btn.className = 'guest-cat-btn px-3.5 py-1.5 rounded-full text-xs font-medium text-zinc-400 hover:text-white bg-zinc-900 border border-zinc-800/80 transition-all shrink-0';
-            }
-          }
-        });
+        renderGuestCategories();
         renderMenu();
       };
 
