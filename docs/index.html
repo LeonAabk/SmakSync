@@ -40,24 +40,36 @@
         },
       };
     </script>
-    <style>
-      /* Subtile detaljer for skandinavisk minimalisme */
-      body {
-        font-family: 'Inter', sans-serif;
-        -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
-      }
-      /* Skjul scrollbar for mockups men behold scrolling */
-      .no-scrollbar::-webkit-scrollbar {
-        display: none;
-      }
-      .no-scrollbar {
-        -ms-overflow-style: none;
-        scrollbar-width: none;
-      }
-    </style>
+    <style>body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;font-family:Inter,sans-serif}.no-scrollbar::-webkit-scrollbar{display:none}.no-scrollbar{-ms-overflow-style:none;scrollbar-width:none}</style>
   </head>
   <body class="bg-zinc-50 text-zinc-900 selection:bg-accent-100 selection:text-accent-700 antialiased">
+
+    <!-- ========================================== -->
+    <!-- 0. AABAK STUDIO ØKOSYSTEM TOPPLINJE        -->
+    <!-- ========================================== -->
+    <aside aria-label="Aabak Studio Økosystem" class="bg-zinc-950 text-zinc-300 border-b border-zinc-800 text-xs py-2 px-4 transition-all">
+      <div class="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-2">
+        <div class="flex items-center gap-2">
+          <span class="inline-flex items-center gap-1 rounded bg-zinc-800 px-2 py-0.5 text-[10px] font-semibold text-zinc-300 tracking-wide uppercase">
+            Aabak Studio Økosystem
+          </span>
+          <span class="text-zinc-400 text-xs hidden sm:inline">Helhetlige digitale løsninger for serveringssteder og restauranter</span>
+        </div>
+        <div class="flex items-center gap-4 text-xs">
+          <a
+            href="https://aabakstudio.com/NfcReview/"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-amber-300 hover:text-amber-200 font-medium inline-flex items-center gap-1.5 transition-colors"
+          >
+            <span>⭐ Se også Google NFC Review Cards</span>
+            <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+    </aside>
 
     <!-- ========================================== -->
     <!-- 1. NAVIGASJON (HEADER)                     -->
@@ -79,10 +91,21 @@
         <nav class="hidden md:flex items-center gap-6 text-sm font-medium text-zinc-600">
           <a href="#konsept" class="hover:text-zinc-950 transition-colors">Konsept</a>
           <a href="#demoer" class="hover:text-zinc-950 transition-colors">Demoer</a>
+          <a href="#pakkelosning" class="hover:text-zinc-950 font-semibold text-zinc-900 transition-colors flex items-center gap-1.5">
+            <span>Pakkeløsning</span>
+            <span class="text-[10px] bg-accent-100 text-accent-800 font-bold px-1.5 py-0.2 rounded">Meny + Review</span>
+          </a>
           <a href="#for-restauranter" class="hover:text-zinc-950 transition-colors">For Restauranter</a>
           <span class="text-zinc-300">|</span>
-          <a href="superadmin.html" class="hover:text-zinc-950 text-zinc-700 font-medium transition-colors flex items-center gap-1">
-            <span>Superadmin</span>
+          <a
+            href="https://aabakstudio.com/NfcReview/"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="hover:text-zinc-950 text-zinc-700 font-medium transition-colors flex items-center gap-1 group"
+            title="Åpne Google NFC Review Cards på Aabak Studio"
+          >
+            <span>Google Review-kort</span>
+            <svg class="h-3 w-3 text-zinc-400 group-hover:text-zinc-900 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
           </a>
           <a href="meny.html?id=restaurant_eik_og_gran" target="_blank" class="hover:text-zinc-950 text-zinc-800 font-semibold transition-colors flex items-center gap-1">
             <span>NFC-Meny</span>
@@ -116,7 +139,20 @@
         <div class="flex flex-col space-y-3 text-sm font-medium text-zinc-700">
           <a href="#konsept" onclick="toggleMobileMenu()" class="py-1 hover:text-zinc-950">Konsept</a>
           <a href="#demoer" onclick="toggleMobileMenu()" class="py-1 hover:text-zinc-950">Demoer</a>
+          <a href="#pakkelosning" onclick="toggleMobileMenu()" class="py-1 font-semibold text-zinc-950 flex items-center justify-between">
+            <span>Pakkeløsning (Meny + Review)</span>
+            <span class="text-[10px] bg-accent-100 text-accent-800 font-bold px-1.5 py-0.2 rounded">Anbefalt</span>
+          </a>
           <a href="#for-restauranter" onclick="toggleMobileMenu()" class="py-1 hover:text-zinc-950">For Restauranter</a>
+          <a
+            href="https://aabakstudio.com/NfcReview/"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="py-1 text-amber-700 font-semibold flex items-center justify-between border-t border-zinc-100 pt-2"
+          >
+            <span>⭐ Google Review-kort (Aabak Studio)</span>
+            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+          </a>
           <button onclick="toggleMobileMenu(); openContactModal();" class="text-left py-1 text-accent-700 font-semibold">
             Kontakt for priser & info
           </button>
@@ -789,6 +825,265 @@
       </section>
 
       <!-- ========================================== -->
+      <!-- NY SEKSJON: KOMPLETT RESTAURANTPAKKE       -->
+      <!-- SMAKSYNC MENY + AABAK STUDIO GOOGLE REVIEW -->
+      <!-- ========================================== -->
+      <section id="pakkelosning" class="py-20 sm:py-28 bg-gradient-to-b from-zinc-50 via-white to-zinc-50 border-b border-zinc-200/80">
+        <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+          
+          <!-- Seksjon Header -->
+          <div class="max-w-3xl space-y-3 mb-14 text-left">
+            <div class="inline-flex items-center gap-2 rounded-full border border-zinc-200 bg-white px-3 py-1 text-xs font-semibold text-zinc-800 shadow-2xs">
+              <span class="h-2 w-2 rounded-full bg-amber-500 animate-pulse"></span>
+              <span>Aabak Studio Økosystem · Helhetlig Restaurantløsning</span>
+            </div>
+            <h2 class="text-2xl sm:text-4xl font-bold tracking-tight text-zinc-950 leading-tight">
+              To komplementære kort. Én komplett opplevelse for gjestene.
+            </h2>
+            <p class="text-base sm:text-lg text-zinc-600 font-normal leading-relaxed">
+              Gjester tæpper for digital meny ved bordet – og tæpper for 5 stjerner ved kassen. 
+              Som en del av <strong>Aabak Studio</strong> kobler vi sammen drift og omdømmevekst for norske serveringssteder.
+            </p>
+          </div>
+
+          <!-- To-korts sammenstilling -->
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
+            
+            <!-- Kort 1: SmakSync Bordkort (Meny & Drift) -->
+            <div class="rounded-3xl border border-zinc-200 bg-white p-6 sm:p-8 shadow-xs flex flex-col justify-between relative overflow-hidden group hover:border-zinc-300 transition-all">
+              <div class="space-y-6">
+                <!-- Header med tag -->
+                <div class="flex items-center justify-between">
+                  <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200">
+                    <span class="h-1.5 w-1.5 rounded-full bg-emerald-600"></span>
+                    Plasseres på hvert spisebord
+                  </span>
+                  <span class="text-xs font-mono text-zinc-500 font-medium">SmakSync Meny</span>
+                </div>
+
+                <!-- Visuell NFC Bordkort Mockup -->
+                <div class="rounded-2xl bg-zinc-950 p-5 text-white shadow-md relative overflow-hidden border border-zinc-800">
+                  <div class="flex items-start justify-between">
+                    <div>
+                      <div class="text-[10px] uppercase tracking-widest text-emerald-400 font-mono font-semibold">NFC & QR Bordkort</div>
+                      <h4 class="text-base font-bold text-white mt-1">Bord 14 · Restaurant Eik & Gran</h4>
+                      <p class="text-xs text-zinc-400 mt-0.5">Tæpp telefonen mot kortet eller skann QR</p>
+                    </div>
+                    <!-- NFC wave icon -->
+                    <div class="h-10 w-10 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center text-emerald-400 shrink-0">
+                      <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M8.5 16.5a5 5 0 0 1 0-7" stroke-linecap="round"/>
+                        <path d="M12 19a8.5 8.5 0 0 1 0-12" stroke-linecap="round"/>
+                        <path d="M15.5 21.5a12 12 0 0 1 0-17" stroke-linecap="round"/>
+                      </svg>
+                    </div>
+                  </div>
+
+                  <div class="mt-4 pt-3 border-t border-zinc-800/80 flex items-center justify-between text-xs text-zinc-400">
+                    <div class="flex items-center gap-2">
+                      <span class="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                      <span class="text-zinc-300 font-medium text-[11px]">Sanntidssynkronisert meny</span>
+                    </div>
+                    <span class="font-mono text-[11px] text-zinc-500">Mattilsyn-godkjent</span>
+                  </div>
+                </div>
+
+                <!-- Produktbeskrivelse -->
+                <div class="space-y-3 text-left">
+                  <h3 class="text-lg font-bold text-zinc-950">Digitale Menyer & Kontaktløse Bordkort</h3>
+                  <p class="text-xs sm:text-sm text-zinc-600 leading-relaxed">
+                    Erstatter slitne papirmenyer med lynraske digitale menyer tilpasset alle smarttelefoner. Oppdater dagens fangst og priser på sekunder.
+                  </p>
+
+                  <!-- Nøkkelpunkter -->
+                  <ul class="space-y-2 pt-2 text-xs sm:text-sm text-zinc-700">
+                    <li class="flex items-center gap-2.5">
+                      <svg class="h-4 w-4 text-emerald-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                      <span><strong>0.4s innlasting:</strong> Åpnes direkte i nettleseren – ingen app-nedlasting</span>
+                    </li>
+                    <li class="flex items-center gap-2.5">
+                      <svg class="h-4 w-4 text-emerald-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                      <span><strong>Full allergenmerking:</strong> Alle 14 lovpålagte allergener tydelig markert</span>
+                    </li>
+                    <li class="flex items-center gap-2.5">
+                      <svg class="h-4 w-4 text-emerald-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                      <span><strong>Eget kontrollpanel:</strong> Merk retter som utsolgt i kveld med ett klikk</span>
+                    </li>
+                    <li class="flex items-center gap-2.5">
+                      <svg class="h-4 w-4 text-emerald-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                      <span><strong>Topp kvalitet:</strong> Leveres i matt sort akryl eller ekte naturlig eiketre</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+
+              <!-- Handlinger for venstre kort -->
+              <div class="pt-6 mt-6 border-t border-zinc-100 flex items-center justify-between gap-3">
+                <a
+                  href="meny.html?id=restaurant_eik_og_gran"
+                  target="_blank"
+                  class="text-xs font-semibold text-emerald-700 hover:text-emerald-800 inline-flex items-center gap-1 hover:underline"
+                >
+                  <span>Opplev ekte demo-meny</span>
+                  <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                </a>
+                <button
+                  onclick="openContactModal()"
+                  class="px-4 py-2 rounded-lg bg-zinc-950 text-white text-xs font-semibold hover:bg-zinc-800 transition-all shadow-xs"
+                >
+                  Bestill menykort
+                </button>
+              </div>
+            </div>
+
+            <!-- Kort 2: Aabak Studio Google NFC Review Cards (Omdømme & Kasse) -->
+            <div class="rounded-3xl border border-zinc-200 bg-white p-6 sm:p-8 shadow-xs flex flex-col justify-between relative overflow-hidden group hover:border-zinc-300 transition-all">
+              <div class="space-y-6">
+                <!-- Header med tag -->
+                <div class="flex items-center justify-between">
+                  <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-amber-50 text-amber-800 border border-amber-200">
+                    <span class="h-1.5 w-1.5 rounded-full bg-amber-500"></span>
+                    Plasseres ved kassen, baren eller utgangen
+                  </span>
+                  <span class="text-xs font-mono text-zinc-500 font-medium">aabakstudio.com</span>
+                </div>
+
+                <!-- Visuell Google Review Kort Mockup -->
+                <div class="rounded-2xl bg-zinc-950 p-5 text-white shadow-md relative overflow-hidden border border-zinc-800">
+                  <div class="flex items-start justify-between">
+                    <div>
+                      <div class="flex items-center gap-1.5 mb-1">
+                        <!-- Google "G" farget ikon -->
+                        <svg class="h-4 w-4" viewBox="0 0 24 24">
+                          <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                          <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                          <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+                          <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+                        </svg>
+                        <span class="text-[10px] uppercase tracking-widest text-zinc-300 font-mono font-semibold">Google Review NFC Card</span>
+                      </div>
+                      <h4 class="text-base font-bold text-white">«Anmeld oss på Google»</h4>
+                      <div class="flex items-center gap-1 mt-1 text-amber-400">
+                        <span class="text-sm">★★★★★</span>
+                        <span class="text-xs text-zinc-300 font-medium ml-1">5.0 på Google Maps</span>
+                      </div>
+                    </div>
+                    <!-- NFC wave icon -->
+                    <div class="h-10 w-10 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center text-amber-400 shrink-0">
+                      <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M8.5 16.5a5 5 0 0 1 0-7" stroke-linecap="round"/>
+                        <path d="M12 19a8.5 8.5 0 0 1 0-12" stroke-linecap="round"/>
+                        <path d="M15.5 21.5a12 12 0 0 1 0-17" stroke-linecap="round"/>
+                      </svg>
+                    </div>
+                  </div>
+
+                  <div class="mt-4 pt-3 border-t border-zinc-800/80 flex items-center justify-between text-xs text-zinc-400">
+                    <div class="flex items-center gap-1.5 text-zinc-300">
+                      <span>Tæpp med mobil ved betaling</span>
+                    </div>
+                    <span class="font-mono text-[11px] text-amber-300 font-semibold">1-tæpp til 5 stjerner</span>
+                  </div>
+                </div>
+
+                <!-- Produktbeskrivelse -->
+                <div class="space-y-3 text-left">
+                  <h3 class="text-lg font-bold text-zinc-950">Aabak Studio Google NFC Review Cards</h3>
+                  <p class="text-xs sm:text-sm text-zinc-600 leading-relaxed">
+                    Fornøyde gjester glemmer ofte å legge igjen en vurdering når de forlater lokalet. Med 1-tæpp ved betalingen samler du inn 3–5x flere anmeldelser.
+                  </p>
+
+                  <!-- Nøkkelpunkter -->
+                  <ul class="space-y-2 pt-2 text-xs sm:text-sm text-zinc-700">
+                    <li class="flex items-center gap-2.5">
+                      <svg class="h-4 w-4 text-amber-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                      <span><strong>1-tæpp direkte til anmeldelse:</strong> Ingen søking, ingen tasting – åpner Google umiddelbart</span>
+                    </li>
+                    <li class="flex items-center gap-2.5">
+                      <svg class="h-4 w-4 text-amber-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                      <span><strong>Klatre til topps på Google Maps:</strong> Flere anmeldelser gir høyere lokal rangering</span>
+                    </li>
+                    <li class="flex items-center gap-2.5">
+                      <svg class="h-4 w-4 text-amber-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                      <span><strong>0,- i månedsgebyr:</strong> Engangskjøp – kortet fungerer evig uten løpende lisenser</span>
+                    </li>
+                    <li class="flex items-center gap-2.5">
+                      <svg class="h-4 w-4 text-amber-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                      <span><strong>Norsk leverandør:</strong> Rask produksjon og personlig oppfølging fra Leon Aabak</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+
+              <!-- Handlinger for høyre kort -->
+              <div class="pt-6 mt-6 border-t border-zinc-100 flex items-center justify-between gap-3">
+                <a
+                  href="https://aabakstudio.com/NfcReview/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="text-xs font-semibold text-amber-700 hover:text-amber-800 inline-flex items-center gap-1 hover:underline"
+                >
+                  <span>Utforsk på aabakstudio.com</span>
+                  <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                </a>
+                <a
+                  href="https://aabakstudio.com/NfcReview/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="px-4 py-2 rounded-lg bg-amber-500 hover:bg-amber-600 text-zinc-950 text-xs font-bold transition-all shadow-xs inline-flex items-center gap-1.5"
+                >
+                  <span>Bestill Review Cards</span>
+                  <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                </a>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Synergiboks / Pakketilbud -->
+          <div class="mt-12 rounded-3xl bg-zinc-950 text-white p-7 sm:p-10 border border-zinc-800 shadow-xl relative overflow-hidden">
+            <div class="absolute -right-12 -bottom-12 w-64 h-64 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="absolute -left-12 -top-12 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+            <div class="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+              <div class="lg:col-span-8 space-y-3 text-left">
+                <div class="inline-flex items-center gap-2 rounded-full bg-zinc-800/80 px-3 py-1 text-xs font-semibold text-amber-300 border border-zinc-700">
+                  <span>★ Samlet Restaurantpakke</span>
+                  <span class="text-zinc-500">·</span>
+                  <span class="text-zinc-300">Pakkepris & felles oppsett</span>
+                </div>
+                <h3 class="text-xl sm:text-3xl font-bold tracking-tight text-white leading-tight">
+                  Kombiner menykort og anmeldelseskort – få spesialpris
+                </h3>
+                <p class="text-sm text-zinc-300 leading-relaxed max-w-2xl">
+                  Bestill både SmakSync-bordkort for menyvisning og Aabak Studio Google NFC Review Cards for disken samlet. 
+                  Vi matcher designprofilen på begge korttypene slik at restauranten fremstår 100% helhetlig for gjestene.
+                </p>
+              </div>
+
+              <div class="lg:col-span-4 flex flex-col sm:flex-row lg:flex-col gap-3 justify-center">
+                <button
+                  onclick="openContactModalWithTopic('pakke', true)"
+                  class="w-full inline-flex items-center justify-center rounded-xl bg-white px-5 py-3 text-xs sm:text-sm font-bold text-zinc-950 transition-all hover:bg-zinc-100 active:scale-98 shadow-md"
+                >
+                  <span>Be om uforpliktende pakketilbud</span>
+                </button>
+                <a
+                  href="https://aabakstudio.com/NfcReview/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="w-full inline-flex items-center justify-center rounded-xl border border-zinc-700 bg-zinc-900/80 px-5 py-2.5 text-xs sm:text-sm font-semibold text-zinc-200 transition-all hover:bg-zinc-800 hover:text-white"
+                >
+                  <span>Se priser på aabakstudio.com ↗</span>
+                </a>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ========================================== -->
       <!-- 5. SEKSJON: KUNDEPORTALEN (FOR RESTAURANTER)-->
       <!-- ========================================== -->
       <section id="for-restauranter" class="py-20 sm:py-28 bg-white border-b border-zinc-200/80">
@@ -1085,57 +1380,107 @@
         <div class="grid grid-cols-1 md:grid-cols-12 gap-10 pb-12 border-b border-zinc-800">
           
           <!-- Hovedbudskap / CTA -->
-          <div class="md:col-span-6 space-y-4">
+          <div class="md:col-span-5 space-y-4">
             <div class="flex items-center gap-2">
               <div class="flex h-7 w-7 items-center justify-center rounded-md bg-white text-zinc-950 font-bold text-xs">
-                SM
+                SS
               </div>
               <span class="text-lg font-bold tracking-tight text-white">SmakSync</span>
+              <span class="text-[11px] text-zinc-400 font-normal">by Aabak Studio</span>
             </div>
             <h3 class="text-xl sm:text-2xl font-bold tracking-tight text-white">
               Klar for å oppgradere din restaurant?
             </h3>
             <p class="text-sm text-zinc-400 max-w-md">
-              Ta kontakt med oss i dag for prisoversikt, rådgivning og mer informasjon om NFC-menyer for ditt serveringssted.
+              Ta kontakt for en komplett restaurantpakke: SmakSync for bordmenyer og Aabak Studio Google NFC Review Cards for disken.
             </p>
-            <button
-              onclick="openContactModal()"
-              class="inline-flex items-center rounded-lg bg-white px-4 py-2 text-xs sm:text-sm font-semibold text-zinc-950 transition-all hover:bg-zinc-100 active:scale-98"
-            >
-              Kontakt for priser og informasjon
-            </button>
+            <div class="flex flex-wrap items-center gap-3 pt-1">
+              <button
+                onclick="openContactModalWithTopic('pakke', true)"
+                class="inline-flex items-center rounded-lg bg-white px-4 py-2 text-xs sm:text-sm font-semibold text-zinc-950 transition-all hover:bg-zinc-100 active:scale-98 shadow-sm"
+              >
+                Be om pakketilbud
+              </button>
+              <a
+                href="https://aabakstudio.com/NfcReview/"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex items-center gap-1.5 rounded-lg border border-zinc-700 bg-zinc-900 px-3.5 py-2 text-xs font-medium text-amber-300 hover:text-white hover:border-zinc-500 transition-colors"
+              >
+                <span>⭐ Google Review Cards</span>
+                <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+              </a>
+            </div>
+          </div>
+
+          <!-- Aabak Studio Økosystem -->
+          <div class="md:col-span-3 space-y-2 text-sm">
+            <h4 class="text-xs font-semibold uppercase tracking-wider text-amber-400">Aabak Studio Økosystem</h4>
+            <ul class="space-y-2 text-zinc-400 text-xs sm:text-sm pt-1">
+              <li>
+                <a
+                  href="https://aabakstudio.com/NfcReview/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="text-zinc-200 hover:text-amber-300 font-medium transition-colors flex items-center justify-between group"
+                >
+                  <span>Google NFC Review Cards</span>
+                  <svg class="h-3 w-3 text-zinc-500 group-hover:text-amber-300 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                </a>
+              </li>
+              <li>
+                <a href="#pakkelosning" class="hover:text-white transition-colors">
+                  Restaurant-Pakke (Meny + Review)
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://aabakstudio.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="hover:text-white transition-colors flex items-center justify-between group"
+                >
+                  <span>Aabak Studio Designbyrå</span>
+                  <svg class="h-3 w-3 text-zinc-500 group-hover:text-white transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                </a>
+              </li>
+              <li>
+                <a href="superadmin.html" class="hover:text-white transition-colors">
+                  Byråportal / Superadmin
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Løsninger for restauranter -->
+          <div class="md:col-span-2 space-y-2 text-sm">
+            <h4 class="text-xs font-semibold uppercase tracking-wider text-zinc-400">SmakSync Meny</h4>
+            <ul class="space-y-1.5 text-zinc-400 text-xs sm:text-sm pt-1">
+              <li><a href="#demoer" class="hover:text-white transition-colors">NFC-bordkort i akryl</a></li>
+              <li><a href="#demoer" class="hover:text-white transition-colors">NFC-bordkort i eiketre</a></li>
+              <li><a href="#for-restauranter" class="hover:text-white transition-colors">Live kontrollpanel</a></li>
+              <li><a href="meny.html?id=restaurant_eik_og_gran" target="_blank" class="hover:text-white transition-colors">Live gjestemeny</a></li>
+            </ul>
           </div>
 
           <!-- Kontaktinformasjon -->
-          <div class="md:col-span-3 space-y-2 text-sm">
-            <h4 class="text-xs font-semibold uppercase tracking-wider text-zinc-400">Kontakt & Byrå</h4>
-            <p class="text-zinc-300">SmakSync Studio AS</p>
-            <p class="text-zinc-400">Dronning Eufemias gate 16</p>
-            <p class="text-zinc-400">0191 Oslo, Norge</p>
-            <p class="pt-2 text-zinc-300 hover:text-white transition-colors">
+          <div class="md:col-span-2 space-y-2 text-sm">
+            <h4 class="text-xs font-semibold uppercase tracking-wider text-zinc-400">Kontakt</h4>
+            <p class="text-zinc-300 font-medium">Leon Aabak</p>
+            <p class="text-zinc-400 text-xs">Aabak Studio / SmakSync</p>
+            <p class="pt-1 text-zinc-300 hover:text-white transition-colors text-xs">
               <a href="mailto:hei@smaksync.no" class="underline underline-offset-4 decoration-zinc-700">hei@smaksync.no</a>
             </p>
-            <p class="text-zinc-400">+47 22 10 90 00</p>
-          </div>
-
-          <!-- Lenker og sertifisering -->
-          <div class="md:col-span-3 space-y-2 text-sm">
-            <h4 class="text-xs font-semibold uppercase tracking-wider text-zinc-400">Løsninger</h4>
-            <ul class="space-y-1.5 text-zinc-400 text-xs sm:text-sm">
-              <li><a href="#demoer" class="hover:text-white transition-colors">NFC-bordkort i matt akryl</a></li>
-              <li><a href="#demoer" class="hover:text-white transition-colors">NFC-bordkort i eiketre</a></li>
-              <li><a href="#for-restauranter" class="hover:text-white transition-colors">Sanntids kontrollpanel</a></li>
-              <li><a href="#for-restauranter" class="hover:text-white transition-colors">Full-Service oppdateringer</a></li>
-            </ul>
+            <p class="text-zinc-400 text-xs">+47 22 10 90 00</p>
           </div>
 
         </div>
 
         <!-- Copyright -->
         <div class="pt-8 flex flex-col sm:flex-row items-center justify-between text-xs text-zinc-400 gap-4">
-          <p>© 2026 SmakSync AS. Alle rettigheter reservert. Org.nr: 928 412 881 MVA.</p>
+          <p>© 2026 Aabak Studio / SmakSync. Alle rettigheter reservert.</p>
           <div class="flex items-center gap-6">
-            <span>Utviklet i Norge</span>
+            <span>Utviklet i Norge av Aabak Studio</span>
             <span>·</span>
             <span>GDPR-kompatibel</span>
             <span>·</span>
@@ -1471,10 +1816,29 @@
             <label class="block text-xs font-semibold text-zinc-700 mb-1">Hva ønsker du informasjon om?</label>
             <select id="contact-topic" class="w-full rounded-lg border border-zinc-300 px-3 py-2 text-sm text-zinc-900 focus:border-zinc-900 focus:outline-none bg-white">
               <option value="priser">Priser og abonnementsmodeller</option>
-              <option value="komplett">Komplett oppsett (NFC-bordkort + digital meny)</option>
+              <option value="komplett">Komplett menyoppsett (NFC-bordkort + digital meny)</option>
+              <option value="pakke">Komplett pakke: SmakSync Meny + Aabak Studio Google Review-kort</option>
+              <option value="review_kun">Kun Google NFC Review-kort (Aabak Studio)</option>
               <option value="funksjoner">Spørsmål om funksjoner & kontrollpanel</option>
               <option value="annet">Annet</option>
             </select>
+          </div>
+
+          <!-- Tilvalg: Google Review Cards fra Aabak Studio -->
+          <div class="rounded-xl border border-amber-200 bg-amber-50/60 p-3">
+            <label class="flex items-start gap-2.5 cursor-pointer">
+              <input
+                type="checkbox"
+                id="contact-include-review"
+                class="mt-0.5 h-4 w-4 rounded border-amber-300 text-zinc-950 focus:ring-zinc-900 cursor-pointer"
+              />
+              <span class="text-xs text-zinc-800 leading-tight">
+                <span class="font-semibold text-zinc-950">Inkluder Google NFC Review Cards i tilbudet</span>
+                <span class="block text-[11px] text-zinc-600 font-normal mt-0.5">
+                  Få samlet spesialpris på bordkort og Aabak Studio disk-kort for Google-anmeldelser.
+                </span>
+              </span>
+            </label>
           </div>
 
           <div>
@@ -1909,6 +2273,19 @@
         const modal = document.getElementById('book-demo-modal');
         if (modal) modal.classList.remove('hidden');
       }
+
+      function openContactModalWithTopic(topic, checkReview = false) {
+        openContactModal();
+        const select = document.getElementById('contact-topic');
+        if (select && topic) {
+          select.value = topic;
+        }
+        const reviewBox = document.getElementById('contact-include-review');
+        if (reviewBox && checkReview) {
+          reviewBox.checked = true;
+        }
+      }
+
       function openDemoModal() {
         openContactModal();
       }
@@ -1964,6 +2341,7 @@
                   email: { stringValue: inquiry.email || '' },
                   topic: { stringValue: inquiry.topic || '' },
                   topic_label: { stringValue: inquiry.topic_label || '' },
+                  include_review_cards: { booleanValue: !!inquiry.include_review_cards },
                   message: { stringValue: inquiry.message || '' },
                   created_at: { stringValue: inquiry.created_at || new Date().toISOString() },
                   status: { stringValue: inquiry.status || 'ny' },
@@ -1987,6 +2365,7 @@
         const topicSelect = document.getElementById('contact-topic');
         const topic = topicSelect?.value || 'priser';
         const topicLabel = topicSelect?.options[topicSelect.selectedIndex]?.text || topic;
+        const includeReview = document.getElementById('contact-include-review')?.checked || false;
         const message = (document.getElementById('contact-message')?.value || '').trim();
 
         const newInquiry = {
@@ -1997,10 +2376,11 @@
           email: email,
           topic: topic,
           topic_label: topicLabel,
+          include_review_cards: includeReview,
           message: message,
           created_at: new Date().toISOString(),
           status: 'ny',
-          source: 'Kontakt for priser & info'
+          source: 'SmakSync Web (Aabak Studio)'
         };
 
         await saveInquiryToDatabase(newInquiry);

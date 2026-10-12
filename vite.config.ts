@@ -8,11 +8,19 @@ export default defineConfig(() => {
     base: './',
     build: {
       outDir: 'docs',
+      rollupOptions: {
+        input: {
+          main: path.resolve(import.meta.dirname, 'index.html'),
+          admin: path.resolve(import.meta.dirname, 'admin.html'),
+          meny: path.resolve(import.meta.dirname, 'meny.html'),
+          superadmin: path.resolve(import.meta.dirname, 'superadmin.html'),
+        },
+      },
     },
     plugins: [react(), tailwindcss()],
     resolve: {
       alias: {
-        '@': path.resolve(__dirname, '.'),
+        '@': path.resolve(import.meta.dirname, '.'),
       },
     },
     server: {

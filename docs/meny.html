@@ -34,21 +34,9 @@
         },
       };
     </script>
-    <style>
-      body {
-        font-family: 'Inter', sans-serif;
-        -webkit-font-smoothing: antialiased;
-        -webkit-tap-highlight-color: transparent;
-      }
-      /* Skjul scrollbar for horisontale tabs men behold scrolling */
-      .no-scrollbar::-webkit-scrollbar {
-        display: none;
-      }
-      .no-scrollbar {
-        -ms-overflow-style: none;
-        scrollbar-width: none;
-      }
-    </style>
+    <style>body{-webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent;font-family:Inter,sans-serif}.no-scrollbar::-webkit-scrollbar{display:none}.no-scrollbar{-ms-overflow-style:none;scrollbar-width:none}</style>
+    <script type="module" crossorigin src="./assets/meny-Dg8WldU4.js"></script>
+    <link rel="modulepreload" crossorigin href="./assets/modulepreload-polyfill-P2Xu9kJm.js">
   </head>
   <body class="bg-zinc-950 text-zinc-100 min-h-screen flex flex-col justify-between selection:bg-zinc-800">
 
@@ -85,21 +73,53 @@
     <div id="valid-menu-container" class="w-full max-w-md mx-auto min-h-screen flex flex-col bg-zinc-950 border-x border-zinc-900 shadow-2xl relative">
       
       <!-- ========================================== -->
-      <!-- MOBIL TOPPLINJE & SPRÅKVELGER              -->
+      <!-- MOBIL TOPPLINJE & STATUS & SPRÅK           -->
       <!-- ========================================== -->
-      <div class="px-4 pt-3 pb-2 flex items-center justify-between text-[11px] font-semibold text-zinc-500 border-b border-zinc-900 bg-zinc-950/95 backdrop-blur sticky top-0 z-30">
+      <div class="px-4 pt-2.5 pb-2 flex items-center justify-between text-[11px] font-semibold text-zinc-500 border-b border-zinc-900 bg-zinc-950/90 backdrop-blur sticky top-0 z-30">
         <span class="flex items-center gap-1.5">
           <span class="h-2 w-2 rounded-full bg-accent-500 animate-pulse"></span>
-          <span class="text-zinc-300 font-medium" id="ui-label-digital-menu">Digital meny</span>
+          <span class="text-zinc-400 font-medium" id="ui-label-digital-menu">Digital meny</span>
         </span>
         
-        <!-- Flerspråklig hurtigvalg med flagg -->
-        <div class="flex items-center gap-0.5 bg-zinc-900/90 rounded-full p-0.5 border border-zinc-800 text-[10px]">
-          <button onclick="setGuestLanguage('no')" id="lang-btn-no" class="px-2 py-0.5 rounded-full transition-all text-white bg-zinc-800 font-bold" title="Norsk">🇳🇴 NO</button>
-          <button onclick="setGuestLanguage('en')" id="lang-btn-en" class="px-2 py-0.5 rounded-full transition-all text-zinc-400 hover:text-white" title="English">🇬🇧 EN</button>
-          <button onclick="setGuestLanguage('de')" id="lang-btn-de" class="px-2 py-0.5 rounded-full transition-all text-zinc-400 hover:text-white" title="Deutsch">🇩🇪 DE</button>
-          <button onclick="setGuestLanguage('es')" id="lang-btn-es" class="px-2 py-0.5 rounded-full transition-all text-zinc-400 hover:text-white" title="Español">🇪🇸 ES</button>
-          <button onclick="setGuestLanguage('fr')" id="lang-btn-fr" class="px-2 py-0.5 rounded-full transition-all text-zinc-400 hover:text-white" title="Français">🇫🇷 FR</button>
+        <div class="flex items-center gap-2.5">
+          <span class="text-[10px] uppercase tracking-wider text-zinc-600 font-mono hidden sm:flex items-center gap-1">
+            <svg class="h-3 w-3 text-accent-500 inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M8.5 16.5a5 5 0 0 1 0-7" stroke-linecap="round"/>
+              <path d="M12 19a8.5 8.5 0 0 1 0-12" stroke-linecap="round"/>
+            </svg>
+            <span id="ui-label-nfc-status">NFC Tilkoblet</span>
+          </span>
+
+          <!-- SPRÅKVELGER / TRANSLATION ALTERNATIVE -->
+          <div class="inline-flex items-center bg-zinc-900 border border-zinc-800 rounded-full p-0.5 shadow-2xs">
+            <button
+              type="button"
+              onclick="setGuestLanguage('no')"
+              id="lang-btn-no"
+              class="px-2 py-0.5 rounded-full text-[10px] font-semibold transition-all bg-white text-zinc-950 shadow-xs"
+              title="Norsk meny"
+            >
+              🇳🇴 NO
+            </button>
+            <button
+              type="button"
+              onclick="setGuestLanguage('en')"
+              id="lang-btn-en"
+              class="px-2 py-0.5 rounded-full text-[10px] font-semibold transition-all text-zinc-400 hover:text-white"
+              title="English menu"
+            >
+              🇬🇧 EN
+            </button>
+            <button
+              type="button"
+              onclick="openLanguageModal()"
+              id="lang-btn-more"
+              class="px-1.5 py-0.5 rounded-full text-[10px] text-zinc-400 hover:text-white transition-all border-l border-zinc-800 ml-0.5"
+              title="Flere språk & oversettelsesalternativer"
+            >
+              🌐
+            </button>
+          </div>
         </div>
       </div>
 
@@ -123,6 +143,13 @@
         <p class="text-xs text-zinc-400 mt-1 max-w-xs mx-auto leading-relaxed" id="restaurant-description">
           Sesongens råvarer og klassiske favoritter. Velkommen til bords.
         </p>
+
+        <!-- SUBTIL SPRÅK-INDIKATOR UNDER HEADER -->
+        <div id="active-lang-banner" class="hidden mt-3 inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-zinc-900/90 border border-zinc-800 text-[10px] text-zinc-400">
+          <span id="active-lang-badge-icon">🇬🇧</span>
+          <span id="active-lang-badge-text">English menu translation active</span>
+          <button onclick="openLanguageModal()" class="text-accent-400 hover:underline font-medium ml-1" id="active-lang-badge-change">Endre</button>
+        </div>
       </header>
 
       <!-- ========================================== -->
@@ -176,1126 +203,66 @@
       <!-- ========================================== -->
       <footer class="p-4 border-t border-zinc-900 bg-zinc-950/90 backdrop-blur sticky bottom-0 z-20">
         <div class="text-center text-[10px] text-zinc-400 space-y-1">
-          <p>SmakSync™ · Drevet av kontaktløs NFC · Ingen app kreves</p>
+          <p id="ui-label-footer">SmakSync™ · Drevet av kontaktløs NFC · Ingen app kreves</p>
           <p id="live-sync-indicator" class="text-zinc-500 font-mono">Tilkoblet Firebase Realtime</p>
         </div>
       </footer>
 
     </div>
 
+    <!-- ========================================== -->
+    <!-- MODAL: SPRÅK & OVERSETTELSESALTERNATIV     -->
+    <!-- ========================================== -->
+    <div id="language-modal" class="fixed inset-0 z-50 hidden bg-zinc-950/80 backdrop-blur-sm flex items-end sm:items-center justify-center p-3 sm:p-4">
+      <div class="w-full max-w-sm bg-zinc-900 border border-zinc-800 rounded-3xl p-5 shadow-2xl text-left space-y-4">
+        <div class="flex items-center justify-between border-b border-zinc-800 pb-3">
+          <div class="flex items-center gap-2">
+            <span class="text-xl">🌐</span>
+            <div>
+              <h3 class="text-sm font-bold text-white" id="modal-lang-title">Språk & Oversettelse</h3>
+              <p class="text-[11px] text-zinc-400" id="modal-lang-subtitle">Velg språk for restaurantmenyen</p>
+            </div>
+          </div>
+          <button onclick="closeLanguageModal()" class="text-zinc-400 hover:text-white p-1 rounded-lg">✕</button>
+        </div>
+
+        <!-- Språkvalg alternativer -->
+        <div class="grid grid-cols-1 gap-2" id="lang-options-list">
+          <!-- Populereres dynamisk i JS -->
+        </div>
+
+        <!-- Alternativ: Tospråklig visning toggle -->
+        <div class="rounded-2xl bg-zinc-950/60 border border-zinc-800/80 p-3.5 space-y-2">
+          <div class="flex items-center justify-between gap-3">
+            <div>
+              <span class="text-xs font-semibold text-white block" id="label-bilingual-toggle">Tospråklig visning</span>
+              <span class="text-[10px] text-zinc-400 block leading-tight mt-0.5" id="desc-bilingual-toggle">Vis originalt norsk navn under for enkel bestilling hos servitøren</span>
+            </div>
+            <label class="relative inline-flex items-center cursor-pointer shrink-0">
+              <input type="checkbox" id="bilingual-checkbox" onchange="toggleBilingualMode(this.checked)" class="sr-only peer" checked>
+              <div class="w-9 h-5 bg-zinc-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-zinc-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-accent-500"></div>
+            </label>
+          </div>
+        </div>
+
+        <!-- Info om auto-oversettelse -->
+        <div class="px-3 py-2 rounded-xl bg-accent-950/30 border border-accent-900/40 text-[10px] text-accent-300 flex items-center gap-2">
+          <span>✨</span>
+          <span id="label-auto-translate-info">Intelligent kulinarisk oversettelse for alle retter og allergener.</span>
+        </div>
+
+        <button
+          onclick="closeLanguageModal()"
+          class="w-full py-2.5 rounded-xl bg-white hover:bg-zinc-200 text-zinc-950 text-xs font-bold transition-all shadow-md"
+          id="btn-close-lang-modal"
+        >
+          Lukk
+        </button>
+      </div>
+    </div>
+
     <!-- ============================================================================ -->
     <!-- FIREBASE v9 MODULAR SDK & LOGIKK FOR MENY                                    -->
     <!-- ============================================================================ -->
-    <script type="module">
-      // ============================================================================
-      // SETT INN FIREBASE CONFIG HER
-      // ============================================================================
-      const DEFAULT_FIREBASE_CONFIG = {
-        apiKey: "AIzaSyBqhHxR2alXm667KkJSJ8eiLxzsOLZui9U",
-        authDomain: "smaksync.firebaseapp.com",
-        projectId: "smaksync",
-        storageBucket: "smaksync.firebasestorage.app",
-        messagingSenderId: "247220233955",
-        appId: "1:247220233955:web:4dd3a6269394575f2347d6",
-        measurementId: "G-9XXCYSG5C2"
-      };
-
-      // Importer Firebase v9 Modular SDK via CDN
-      import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
-      import { 
-        getFirestore, 
-        collection, 
-        doc, 
-        getDoc, 
-        onSnapshot 
-      } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
-
-      // 1. URL-Routing: Hent '?id=' fra URL-en for å laste ned riktig meny (standard: restaurant_eik_og_gran)
-      const urlParams = new URLSearchParams(window.location.search);
-      let restaurantId = urlParams.get('id');
-      if (!restaurantId || restaurantId.trim() === '') {
-        restaurantId = 'restaurant_eik_og_gran';
-      }
-
-      const invalidView = document.getElementById('invalid-menu-view');
-      const validContainer = document.getElementById('valid-menu-container');
-
-      if (invalidView) invalidView.classList.add('hidden');
-      if (validContainer) validContainer.classList.remove('hidden');
-
-      // Hent konfigurering (enten fra koden eller fra nettleser-lagret konfig)
-      let activeConfig = DEFAULT_FIREBASE_CONFIG;
-      try {
-        const saved = localStorage.getItem('smaksync_firebase_config');
-        if (saved) activeConfig = JSON.parse(saved);
-      } catch (e) {
-        console.warn('Kunne ikke lese lagret config', e);
-      }
-
-      let db = null;
-      let isRealFirebase = false;
-      const isPlaceholder = !activeConfig.apiKey || activeConfig.apiKey === "DIN_API_KEY";
-
-      if (!isPlaceholder) {
-        try {
-          const app = initializeApp(activeConfig);
-          db = getFirestore(app);
-          isRealFirebase = true;
-          console.log('✓ Firebase Firestore tilkoblet live i gjestemeny for:', restaurantId);
-        } catch (err) {
-          console.error('Feil ved initialisering av Firebase:', err);
-        }
-      }
-
-      // ============================================================================
-      // FLERSPRÅKLIG MOTOR (MULTILINGUAL SYSTEM: NO, EN, DE, ES, FR)
-      // ============================================================================
-      const UI_TEXTS = {
-        no: {
-          digital_menu: 'Digital meny',
-          nfc_connected: 'NFC Tilkoblet',
-          tagline_default: 'Fine Dining & Vinbar',
-          desc_default: 'Sesongens råvarer og klassiske favoritter. Velkommen til bords.',
-          all_dishes: 'Alle retter',
-          search_placeholder: 'Søk etter rett eller ingrediens...',
-          sold_out: 'Utsolgt i kveld',
-          no_dishes: 'Ingen retter funnet i denne visningen.',
-          no_dishes_sub: 'Prøv et annet søkeord eller velg en annen kategori.',
-          loading: 'Laster inn fersk meny...',
-          footer_nfc: 'SmakSync™ · Drevet av kontaktløs NFC · Ingen app kreves',
-          live_sync: 'Sanntidssynk aktiv',
-          allergens_label: 'Allergener',
-          currency_suffix: ',-',
-          empty_cloud: 'Det er for øyeblikket ingen aktive retter i menyen. Vennligst henvend deg til restaurantens personale.'
-        },
-        en: {
-          digital_menu: 'Digital Menu',
-          nfc_connected: 'NFC Connected',
-          tagline_default: 'Fine Dining & Wine Bar',
-          desc_default: 'Seasonal local ingredients and culinary classics. Welcome to our table.',
-          all_dishes: 'All dishes',
-          search_placeholder: 'Search for dish or ingredient...',
-          sold_out: 'Sold out tonight',
-          no_dishes: 'No dishes found in this view.',
-          no_dishes_sub: 'Try another search term or pick a different category.',
-          loading: 'Loading fresh menu...',
-          footer_nfc: 'SmakSync™ · Powered by contactless NFC · No app required',
-          live_sync: 'Realtime sync active',
-          allergens_label: 'Allergens',
-          currency_suffix: ' kr',
-          empty_cloud: 'The menu is currently being updated. Please consult our staff.'
-        },
-        de: {
-          digital_menu: 'Digitale Speisekarte',
-          nfc_connected: 'NFC Verbunden',
-          tagline_default: 'Fine Dining & Weinbar',
-          desc_default: 'Saisonale Zutaten und kulinarische Klassiker. Herzlich willkommen.',
-          all_dishes: 'Alle Gerichte',
-          search_placeholder: 'Nach Gericht oder Zutat suchen...',
-          sold_out: 'Heute Abend ausverkauft',
-          no_dishes: 'Keine Gerichte gefunden.',
-          no_dishes_sub: 'Versuchen Sie einen anderen Suchbegriff oder eine andere Kategorie.',
-          loading: 'Lade frische Speisekarte...',
-          footer_nfc: 'SmakSync™ · Kontaktloses NFC · Keine App erforderlich',
-          live_sync: 'Echtzeit-Synchronisierung aktiv',
-          allergens_label: 'Allergene',
-          currency_suffix: ' kr',
-          empty_cloud: 'Die Speisekarte wird gerade aktualisiert. Bitte wenden Sie sich an das Personal.'
-        },
-        es: {
-          digital_menu: 'Menú Digital',
-          nfc_connected: 'NFC Conectado',
-          tagline_default: 'Alta Cocina & Bar de Vinos',
-          desc_default: 'Ingredientes de temporada y clásicos culinarios. Bienvenidos a la mesa.',
-          all_dishes: 'Todos los platos',
-          search_placeholder: 'Buscar plato o ingrediente...',
-          sold_out: 'Agotado esta noche',
-          no_dishes: 'No se encontraron platos.',
-          no_dishes_sub: 'Prueba otro término de búsqueda o selecciona otra categoría.',
-          loading: 'Cargando menú...',
-          footer_nfc: 'SmakSync™ · Funciona con NFC sin contacto · No requiere app',
-          live_sync: 'Sincronización en tiempo real activa',
-          allergens_label: 'Alérgenos',
-          currency_suffix: ' kr',
-          empty_cloud: 'El menú se está actualizando. Por favor consulte con el personal.'
-        },
-        fr: {
-          digital_menu: 'Menu Numérique',
-          nfc_connected: 'NFC Connecté',
-          tagline_default: 'Haute Gastronomie & Bar à Vin',
-          desc_default: 'Produits de saison et spécialités culinaires. Bienvenue à table.',
-          all_dishes: 'Tous les plats',
-          search_placeholder: 'Rechercher un plat ou un ingrédient...',
-          sold_out: 'Épuisé ce soir',
-          no_dishes: 'Aucun plat trouvé.',
-          no_dishes_sub: 'Essayez un autre mot-clé ou choisissez une autre catégorie.',
-          loading: 'Chargement du menu...',
-          footer_nfc: 'SmakSync™ · Technologie NFC sans contact · Sans application',
-          live_sync: 'Synchronisation en direct active',
-          allergens_label: 'Allergènes',
-          currency_suffix: ' kr',
-          empty_cloud: 'Le menu est en cours de mise à jour. Veuillez vous adresser au personnel.'
-        }
-      };
-
-      const CATEGORY_TRANSLATIONS = {
-        'Hovedrett': { en: 'Mains', de: 'Hauptgerichte', es: 'Principales', fr: 'Plats' },
-        'Hovedretter': { en: 'Mains', de: 'Hauptgerichte', es: 'Principales', fr: 'Plats' },
-        'Forrett': { en: 'Starters', de: 'Vorspeisen', es: 'Entrantes', fr: 'Entrées' },
-        'Forretter': { en: 'Starters', de: 'Vorspeisen', es: 'Entrantes', fr: 'Entrées' },
-        'Desserter': { en: 'Desserts', de: 'Desserts', es: 'Postres', fr: 'Desserts' },
-        'Dessert': { en: 'Desserts', de: 'Desserts', es: 'Postres', fr: 'Desserts' },
-        'Drikke': { en: 'Drinks', de: 'Getränke', es: 'Bebidas', fr: 'Boissons' },
-        'Bakst': { en: 'Bakery', de: 'Gebäck', es: 'Panadería', fr: 'Boulangerie' },
-        'Kaffe': { en: 'Coffee', de: 'Kaffee', es: 'Café', fr: 'Café' },
-        'Spesialkaffe': { en: 'Specialty Coffee', de: 'Spezialitätenkaffee', es: 'Café Especial', fr: 'Café Spécial' },
-        'Cocktails': { en: 'Cocktails', de: 'Cocktails', es: 'Cócteles', fr: 'Cocktails' },
-        'Signaturcocktails': { en: 'Signatures', de: 'Signature-Cocktails', es: 'Cócteles de Autor', fr: 'Signatures' },
-        'Vin': { en: 'Wine', de: 'Wein', es: 'Vino', fr: 'Vin' },
-        'Øl': { en: 'Beer', de: 'Bier', es: 'Cerveza', fr: 'Bière' },
-        'Småretter': { en: 'Small Plates', de: 'Kleine Gerichte', es: 'Tapas', fr: 'Petits Plats' },
-        'Snacks': { en: 'Snacks', de: 'Snacks', es: 'Aperitivos', fr: 'Encas' }
-      };
-
-      const DISH_TRANSLATIONS = {
-        'Truffle & Dry-Aged Burger': {
-          name: {
-            en: 'Truffle & Dry-Aged Burger',
-            de: 'Trüffel & Dry-Aged Burger',
-            es: 'Hamburguesa de Vaca Madurada y Trufa',
-            fr: 'Burger Truffe & Bœuf Maturé'
-          },
-          desc: {
-            en: '200g minced Norwegian beef, truffle mayonnaise, aged cheddar cheese and butter-toasted brioche bun.',
-            de: '200g norwegisches Rindfleisch, Trüffelmayonnaise, gereifter Cheddarkäse und gebuttertes Brioche-Brötchen.',
-            es: '200g de carne de res noruega, mayonesa de trufa, cheddar curado y pan brioche a la mantequilla.',
-            fr: '200g de bœuf norvégien haché, mayonnaise à la truffe, cheddar affiné et brioche toastée au beurre.'
-          },
-          allergens: {
-            no: 'Gluten (hvete), Melk, Egg',
-            en: 'Gluten (wheat), Milk, Egg',
-            de: 'Gluten (Weizen), Milch, Ei',
-            es: 'Gluten (trigo), Leche, Huevo',
-            fr: 'Gluten (blé), Lait, Œuf'
-          }
-        },
-        'Pannestekt Kveite': {
-          name: {
-            en: 'Pan-Seared Halibut',
-            de: 'Gebratener Heilbutt',
-            es: 'Fletán Salvaje a la Plancha',
-            fr: 'Flétan Poêlé'
-          },
-          desc: {
-            en: 'Braised leeks, wild ramson garlic oil and champagne beurre blanc.',
-            de: 'Geschmorter Lauch, Bärlauchöl und Champagner-Beurre-Blanc.',
-            es: 'Puerros braseados, aceite de ajo silvestre y beurre blanc al champán.',
-            fr: 'Poireaux braisés, huile d\'ail des ours et beurre blanc au champagne.'
-          },
-          allergens: {
-            no: 'Fisk, Melk, Sulfitt',
-            en: 'Fish, Milk, Sulphites',
-            de: 'Fisch, Milch, Sulfite',
-            es: 'Pescado, Leche, Sulfitos',
-            fr: 'Poisson, Lait, Sulfites'
-          }
-        },
-        'Dagens Fangst: Villtorsk': {
-          name: {
-            en: 'Catch of the Day: Wild Arctic Cod',
-            de: 'Fang des Tages: Wildkabeljau',
-            es: 'Pesca del Día: Bacalao Salvaje',
-            fr: 'Pêche du Jour: Cabillaud Sauvage'
-          },
-          desc: {
-            en: 'Salt-baked celeriac root, rich Sandefjord butter sauce and crispy fried capers.',
-            de: 'Salzgebackene Selleriewurzel, Sandefjord-Buttersauce und frittierte Kapern.',
-            es: 'Raíz de apionabo a la sal, salsa de mantequilla Sandefjord y alcaparras fritas crujientes.',
-            fr: 'Céleri-rave cuit au sel, sauce au beurre de Sandefjord et câpres frites croustillantes.'
-          },
-          allergens: {
-            no: 'Fisk, Melk, Selleri',
-            en: 'Fish, Milk, Celery',
-            de: 'Fisch, Milch, Sellerie',
-            es: 'Pescado, Leche, Apio',
-            fr: 'Poisson, Lait, Céleri'
-          }
-        },
-        'Villkveite Ceviche': {
-          name: {
-            en: 'Wild Halibut Ceviche',
-            de: 'Ceviche vom Wildheilbutt',
-            es: 'Ceviche de Fletán Salvaje',
-            fr: 'Ceviche de Flétan Sauvage'
-          },
-          desc: {
-            en: 'Arctic sea buckthorn, pickled shallots, fresh coriander and crispy sunchoke chips.',
-            de: 'Arktischer Sanddorn, eingelegte Schalotten, frischer Koriander und knusprige Topinambur-Chips.',
-            es: 'Espino amarillo ártico, chalotas encurtidas, cilantro fresco y crujientes de tupinambo.',
-            fr: 'Argousier arctique, échalotes marinées, coriandre fraîche et chips croustillantes de topinambour.'
-          },
-          allergens: {
-            no: 'Fisk',
-            en: 'Fish',
-            de: 'Fisch',
-            es: 'Pescado',
-            fr: 'Poisson'
-          }
-        },
-        'Husets Focaccia & Pisket Smør': {
-          name: {
-            en: 'House Sourdough Focaccia & Whipped Butter',
-            de: 'Hausgemachte Focaccia & Aufgeschlagene Butter',
-            es: 'Focaccia de Masa Madre y Mantequilla Batida',
-            fr: 'Focaccia au Levain & Beurre Fouetté Maison'
-          },
-          desc: {
-            en: 'Freshly baked sourdough focaccia with rosemary and sea salt from Røros.',
-            de: 'Frisch gebackene Sauerteig-Focaccia mit Rosmarin und Meersalz aus Røros.',
-            es: 'Focaccia de masa madre recién horneada con romero y flor de sal de Røros.',
-            fr: 'Focaccia au levain tout juste sortie du four au romarin et sel marin de Røros.'
-          },
-          allergens: {
-            no: 'Gluten (hvete), Melk',
-            en: 'Gluten (wheat), Milk',
-            de: 'Gluten (Weizen), Milch',
-            es: 'Gluten (trigo), Leche',
-            fr: 'Gluten (blé), Lait'
-          }
-        },
-        'Multer & Røros-is': {
-          name: {
-            en: 'Arctic Cloudberries & Røros Ice Cream',
-            de: 'Arktische Moltebeeren & Røros-Eiscreme',
-            es: 'Moras Árticas y Helado Artesanal Røros',
-            fr: 'Mûres Arctiques & Glace Artisanale de Røros'
-          },
-          desc: {
-            en: 'Wild handpicked cloudberries, caramelized white chocolate crumble and sea buckthorn syrup.',
-            de: 'Wild gepflückte Moltebeeren, karamellisierte weiße Schokolade und Sanddornsirup.',
-            es: 'Moras de los pantanos silvestres, crumble de chocolate blanco caramelizado y sirope de espino amarillo.',
-            fr: 'Plaquesbières sauvages, crumble de chocolat blanc caramélisé et sirop d\'argousier.'
-          },
-          allergens: {
-            no: 'Melk, Soya',
-            en: 'Milk, Soy',
-            de: 'Milch, Soja',
-            es: 'Leche, Soja',
-            fr: 'Lait, Soja'
-          }
-        },
-        'Nøgne Ø IPA (0.33l)': {
-          name: {
-            en: 'Nøgne Ø IPA (0.33l)',
-            de: 'Nøgne Ø IPA (0,33l)',
-            es: 'Nøgne Ø IPA (0,33l)',
-            fr: 'Nøgne Ø IPA (0,33l)'
-          },
-          desc: {
-            en: 'Iconic Norwegian craft IPA with generous hop profile and vibrant citrus notes.',
-            de: 'Ikonisches norwegisches Craft-IPA mit reichem Hopfenprofil und frischen Zitrusnoten.',
-            es: 'Icónica cerveza artesanal IPA noruega con generoso lúpulo y notas cítricas.',
-            fr: 'IPA artisanale norvégienne réputée, profil houblonné intense et notes d\'agrumes.'
-          },
-          allergens: {
-            no: 'Gluten (bygg)',
-            en: 'Gluten (barley)',
-            de: 'Gluten (Gerste)',
-            es: 'Gluten (cebada)',
-            fr: 'Gluten (orge)'
-          }
-        },
-        'Nordic Old Fashioned': {
-          name: {
-            en: 'Nordic Old Fashioned',
-            de: 'Nordic Old Fashioned',
-            es: 'Nordic Old Fashioned',
-            fr: 'Nordic Old Fashioned'
-          },
-          desc: {
-            en: 'Oak cask-aged Norwegian aquavit, rye whiskey, heather honey syrup and aromatic orange oil.',
-            de: 'Fassgereifter norwegischer Aquavit, Rye Whiskey, Heidekrautsirup und aromatisches Orangenöl.',
-            es: 'Aquavit noruego envejecido en roble, whisky de centeno, sirope de miel de brezo y aceite de naranja.',
-            fr: 'Aquavit norvégien affiné en fût de chêne, rye whiskey, sirop de bruyère et zeste d\'orange aromatique.'
-          },
-          allergens: {
-            no: 'Ingen kjente allergener',
-            en: 'No known allergens',
-            de: 'Keine bekannten Allergene',
-            es: 'Sin alérgenos conocidos',
-            fr: 'Sans allergènes connus'
-          }
-        }
-      };
-
-      const CULINARY_GLOSSARY = {
-        en: [
-          [/\bkvernet norsk storfe\b/gi, 'minced Norwegian beef'],
-          [/\bnorsk storfe\b/gi, 'Norwegian beef'],
-          [/\btrøffelmajones\b/gi, 'truffle mayonnaise'],
-          [/\blagret cheddar\b/gi, 'aged cheddar'],
-          [/\bsmørstekt brioche\b/gi, 'butter-toasted brioche'],
-          [/\bbresert purreløk\b/gi, 'braised leeks'],
-          [/\bramsløkolje\b/gi, 'ramson wild garlic oil'],
-          [/\bchampagne beurre blanc\b/gi, 'champagne beurre blanc'],
-          [/\bsaltbakt sellerirot\b/gi, 'salt-baked celeriac root'],
-          [/\bSandefjordsmør\b/gi, 'traditional Sandefjord butter sauce'],
-          [/\bfriterte kapers\b/gi, 'crispy fried capers'],
-          [/\btindved\b/gi, 'sea buckthorn'],
-          [/\bsjalottløk\b/gi, 'shallots'],
-          [/\bkoriander\b/gi, 'fresh coriander'],
-          [/\bsprø jordskokkchips\b/gi, 'crispy sunchoke chips'],
-          [/\bnybakt surdeigsfocaccia\b/gi, 'freshly baked sourdough focaccia'],
-          [/\bsurdeigsfocaccia\b/gi, 'sourdough focaccia'],
-          [/\brosmarin\b/gi, 'rosemary'],
-          [/\bhavsalt fra Røros\b/gi, 'sea salt from Røros'],
-          [/\bvillmulter\b/gi, 'wild Arctic cloudberries'],
-          [/\bmulter\b/gi, 'cloudberries'],
-          [/\bkaramellisert hvit sjokolade\b/gi, 'caramelized white chocolate'],
-          [/\btindvedsirup\b/gi, 'sea buckthorn syrup'],
-          [/\bhåndverks-IPA\b/gi, 'craft IPA'],
-          [/\bfatlagret akevitt\b/gi, 'cask-aged aquavit'],
-          [/\bakevitt\b/gi, 'aquavit'],
-          [/\brugbourbon\b/gi, 'rye bourbon'],
-          [/\brøsslyngsirup\b/gi, 'heather honey syrup'],
-          [/\bappelsinolje\b/gi, 'orange oil'],
-          [/\blaks\b/gi, 'salmon'],
-          [/\børret\b/gi, 'trout'],
-          [/\btorsk\b/gi, 'cod'],
-          [/\bkveite\b/gi, 'halibut'],
-          [/\bkylling\b/gi, 'chicken'],
-          [/\breker\b/gi, 'prawns'],
-          [/\bpotetmos\b/gi, 'mashed potatoes'],
-          [/\bovnsbakte poteter\b/gi, 'roasted potatoes'],
-          [/\bpoteter\b/gi, 'potatoes'],
-          [/\bsalat\b/gi, 'salad'],
-          [/\bsuppe\b/gi, 'soup'],
-          [/\bhjemmelaget\b/gi, 'homemade'],
-          [/\bgrillet\b/gi, 'grilled'],
-          [/\bstekt\b/gi, 'pan-seared'],
-          [/\brøkt\b/gi, 'smoked'],
-          [/\bfersk\b/gi, 'fresh'],
-          [/\bserveres med\b/gi, 'served with'],
-          [/\bmed\b/gi, 'with'],
-          [/\bog\b/gi, 'and']
-        ],
-        de: [
-          [/\bkvernet norsk storfe\b/gi, 'norwegisches Rinderhack'],
-          [/\btrøffelmajones\b/gi, 'Trüffelmayonnaise'],
-          [/\blagret cheddar\b/gi, 'gereifter Cheddar'],
-          [/\bsmørstekt brioche\b/gi, 'gebutterte Brioche'],
-          [/\bbresert purreløk\b/gi, 'geschmorter Lauch'],
-          [/\bramsløkolje\b/gi, 'Bärlauchöl'],
-          [/\bsaltbakt sellerirot\b/gi, 'salzgebackene Selleriewurzel'],
-          [/\bSandefjordsmør\b/gi, 'Sandefjord-Buttersauce'],
-          [/\bfriterte kapers\b/gi, 'frittierte Kapern'],
-          [/\btindved\b/gi, 'Sanddorn'],
-          [/\bsjalottløk\b/gi, 'Schalotten'],
-          [/\bkoriander\b/gi, 'Koriander'],
-          [/\bvillmulter\b/gi, 'wilde Moltebeeren'],
-          [/\blaks\b/gi, 'Lachs'],
-          [/\btorsk\b/gi, 'Kabeljau'],
-          [/\bkveite\b/gi, 'Heilbutt'],
-          [/\bkylling\b/gi, 'Hähnchen'],
-          [/\bpotetmos\b/gi, 'Kartoffelpüree'],
-          [/\bgrillet\b/gi, 'gegrillt'],
-          [/\bstekt\b/gi, 'gebraten'],
-          [/\brøkt\b/gi, 'geräuchert'],
-          [/\bserveres med\b/gi, 'serviert mit'],
-          [/\bmed\b/gi, 'mit'],
-          [/\bog\b/gi, 'und']
-        ],
-        es: [
-          [/\bkvernet norsk storfe\b/gi, 'carne picada de res noruega'],
-          [/\btrøffelmajones\b/gi, 'mayonesa de trufa'],
-          [/\blagret cheddar\b/gi, 'cheddar curado'],
-          [/\bsmørstekt brioche\b/gi, 'brioche tostado a la mantequilla'],
-          [/\bbresert purreløk\b/gi, 'puerro braseado'],
-          [/\bramsløkolje\b/gi, 'aceite de ajo silvestre'],
-          [/\bsaltbakt sellerirot\b/gi, 'apionabo a la sal'],
-          [/\bSandefjordsmør\b/gi, 'mantequilla Sandefjord'],
-          [/\bfriterte kapers\b/gi, 'alcaparras fritas'],
-          [/\btindved\b/gi, 'espino amarillo'],
-          [/\bsjalottløk\b/gi, 'chalotas'],
-          [/\bvillmulter\b/gi, 'moras árticas silvestres'],
-          [/\blaks\b/gi, 'salmón'],
-          [/\btorsk\b/gi, 'bacalao'],
-          [/\bkveite\b/gi, 'fletán'],
-          [/\bkylling\b/gi, 'pollo'],
-          [/\bpotetmos\b/gi, 'puré de patatas'],
-          [/\bgrillet\b/gi, 'a la parrilla'],
-          [/\bstekt\b/gi, 'a la plancha'],
-          [/\brøkt\b/gi, 'ahumado'],
-          [/\bserveres med\b/gi, 'servido con'],
-          [/\bmed\b/gi, 'con'],
-          [/\bog\b/gi, 'y']
-        ],
-        fr: [
-          [/\bkvernet norsk storfe\b/gi, 'bœuf norvégien haché'],
-          [/\btrøffelmajones\b/gi, 'mayonnaise à la truffe'],
-          [/\blagret cheddar\b/gi, 'cheddar affiné'],
-          [/\bsmørstekt brioche\b/gi, 'brioche toastée au beurre'],
-          [/\bbresert purreløk\b/gi, 'poireaux braisés'],
-          [/\bramsløkolje\b/gi, 'huile d\'ail des ours'],
-          [/\bsaltbakt sellerirot\b/gi, 'céleri-rave au sel'],
-          [/\bSandefjordsmør\b/gi, 'beurre Sandefjord'],
-          [/\bfriterte kapers\b/gi, 'câpres frites'],
-          [/\btindved\b/gi, 'argousier'],
-          [/\bsjalottløk\b/gi, 'échalotes'],
-          [/\bvillmulter\b/gi, 'plaquesbières arctiques'],
-          [/\blaks\b/gi, 'saumon'],
-          [/\btorsk\b/gi, 'cabillaud'],
-          [/\bkveite\b/gi, 'flétan'],
-          [/\bkylling\b/gi, 'poulet'],
-          [/\bpotetmos\b/gi, 'purée de pommes de terre'],
-          [/\bgrillet\b/gi, 'grillé'],
-          [/\bstekt\b/gi, 'poêlé'],
-          [/\brøkt\b/gi, 'fumé'],
-          [/\bserveres med\b/gi, 'servi avec'],
-          [/\bmed\b/gi, 'avec'],
-          [/\bog\b/gi, 'et']
-        ]
-      };
-
-      const ALLERGEN_TERMS = {
-        en: {
-          'gluten': 'Gluten',
-          'hvete': 'wheat',
-          'bygg': 'barley',
-          'rug': 'rye',
-          'melk': 'Milk',
-          'egg': 'Egg',
-          'fisk': 'Fish',
-          'skalldyr': 'Shellfish',
-          'bløtdyr': 'Molluscs',
-          'soya': 'Soy',
-          'nøtter': 'Nuts',
-          'peanøtter': 'Peanuts',
-          'selleri': 'Celery',
-          'sennep': 'Mustard',
-          'sesam': 'Sesame',
-          'sulfitt': 'Sulphites'
-        },
-        de: {
-          'gluten': 'Gluten',
-          'hvete': 'Weizen',
-          'bygg': 'Gerste',
-          'rug': 'Roggen',
-          'melk': 'Milch',
-          'egg': 'Ei',
-          'fisk': 'Fisch',
-          'skalldyr': 'Krebstiere',
-          'bløtdyr': 'Weichtiere',
-          'soya': 'Soja',
-          'nøtter': 'Schalenfrüchte',
-          'peanøtter': 'Erdnüsse',
-          'selleri': 'Sellerie',
-          'sennep': 'Senf',
-          'sesam': 'Sesam',
-          'sulfitt': 'Sulfite'
-        },
-        es: {
-          'gluten': 'Gluten',
-          'hvete': 'trigo',
-          'bygg': 'cebada',
-          'rug': 'centeno',
-          'melk': 'Leche',
-          'egg': 'Huevo',
-          'fisk': 'Pescado',
-          'skalldyr': 'Crustáceos',
-          'bløtdyr': 'Moluscos',
-          'soya': 'Soja',
-          'nøtter': 'Frutos de cáscara',
-          'peanøtter': 'Cacahuetes',
-          'selleri': 'Apio',
-          'sennep': 'Mostaza',
-          'sesam': 'Sésamo',
-          'sulfitt': 'Sulfitos'
-        },
-        fr: {
-          'gluten': 'Gluten',
-          'hvete': 'blé',
-          'bygg': 'orge',
-          'rug': 'seigle',
-          'melk': 'Lait',
-          'egg': 'Œuf',
-          'fisk': 'Poisson',
-          'skalldyr': 'Crustacés',
-          'bløtdyr': 'Mollusques',
-          'soya': 'Soja',
-          'nøtter': 'Fruits à coque',
-          'peanøtter': 'Arachides',
-          'selleri': 'Céleri',
-          'sennep': 'Moutarde',
-          'sesam': 'Sésame',
-          'sulfitt': 'Sulfites'
-        }
-      };
-
-      // Bestem aktivt gjestespråk (NO som standard for norske enheter, EN for utenlandske)
-      let currentLang = 'no';
-      const requestedLang = urlParams.get('lang');
-      const savedLang = localStorage.getItem('smaksync_guest_lang');
-      const navLang = (navigator.language || navigator.userLanguage || '').toLowerCase();
-
-      if (requestedLang && ['no', 'en', 'de', 'es', 'fr'].includes(requestedLang.toLowerCase())) {
-        currentLang = requestedLang.toLowerCase();
-      } else if (savedLang && ['no', 'en', 'de', 'es', 'fr'].includes(savedLang)) {
-        currentLang = savedLang;
-      } else if (navLang.startsWith('nb') || navLang.startsWith('nn') || navLang.startsWith('no')) {
-        currentLang = 'no';
-      } else if (navLang.startsWith('de')) {
-        currentLang = 'de';
-      } else if (navLang.startsWith('es')) {
-        currentLang = 'es';
-      } else if (navLang.startsWith('fr')) {
-        currentLang = 'fr';
-      } else {
-        currentLang = 'en'; // Internasjonale turister og gjester får automatisk engelsk
-      }
-
-      function autoTranslateNorwegian(text, targetLang) {
-        if (!text || targetLang === 'no') return text;
-        const glossary = CULINARY_GLOSSARY[targetLang] || CULINARY_GLOSSARY.en;
-        let translated = text;
-        glossary.forEach(([pattern, repl]) => {
-          translated = translated.replace(pattern, repl);
-        });
-        return translated;
-      }
-
-      function getCategoryLabel(cat, lang) {
-        if (lang === 'no') return cat;
-        if (CATEGORY_TRANSLATIONS[cat] && CATEGORY_TRANSLATIONS[cat][lang]) {
-          return CATEGORY_TRANSLATIONS[cat][lang];
-        }
-        return cat;
-      }
-
-      function getDishDetails(dish, lang) {
-        if (lang === 'no') {
-          return {
-            name: dish.name,
-            desc: dish.description || '',
-            category: dish.category,
-            allergens: dish.allergens || (DISH_TRANSLATIONS[dish.name] && DISH_TRANSLATIONS[dish.name].allergens ? DISH_TRANSLATIONS[dish.name].allergens.no : '')
-          };
-        }
-
-        // Sjekk om retten har eksplisitt lagret oversettelse
-        let name = dish['name_' + lang] || dish.name_en || '';
-        let desc = dish['description_' + lang] || dish.description_en || '';
-        let allergens = dish['allergens_' + lang] || dish.allergens_en || '';
-
-        // Sjekk i predefinert ordbok
-        if (DISH_TRANSLATIONS[dish.name]) {
-          const dict = DISH_TRANSLATIONS[dish.name];
-          if (!name && dict.name && dict.name[lang]) name = dict.name[lang];
-          if (!desc && dict.desc && dict.desc[lang]) desc = dict.desc[lang];
-          if (!allergens && dict.allergens && dict.allergens[lang]) allergens = dict.allergens[lang];
-        }
-
-        // Hvis fortsatt mangler, kjør intelligent kulinarisk automatisk oversettelse
-        if (!name) name = autoTranslateNorwegian(dish.name, lang);
-        if (!desc && dish.description) desc = autoTranslateNorwegian(dish.description, lang);
-
-        if (!allergens && dish.allergens) {
-          let a = dish.allergens;
-          const map = ALLERGEN_TERMS[lang] || ALLERGEN_TERMS.en;
-          Object.keys(map).forEach(key => {
-            const re = new RegExp(`\\b${key}\\b`, 'gi');
-            a = a.replace(re, map[key]);
-          });
-          allergens = a;
-        }
-
-        return {
-          name: name || dish.name,
-          desc: desc || (dish.description || ''),
-          category: getCategoryLabel(dish.category, lang),
-          allergens: allergens || ''
-        };
-      }
-
-      // Skifte språk fra UI
-      window.setGuestLanguage = function(lang) {
-        if (!['no', 'en', 'de', 'es', 'fr'].includes(lang)) return;
-        currentLang = lang;
-        try {
-          localStorage.setItem('smaksync_guest_lang', lang);
-        } catch {}
-
-        // Oppdater språkknapper
-        ['no', 'en', 'de', 'es', 'fr'].forEach(code => {
-          const btn = document.getElementById(`lang-btn-${code}`);
-          if (btn) {
-            if (code === lang) {
-              btn.className = 'px-2 py-0.5 rounded-full transition-all text-white bg-zinc-800 font-bold shadow-2xs';
-            } else {
-              btn.className = 'px-2 py-0.5 rounded-full transition-all text-zinc-400 hover:text-white bg-transparent';
-            }
-          }
-        });
-
-        // Oppdater UI etiketter
-        const texts = UI_TEXTS[lang];
-        const uiDigital = document.getElementById('ui-label-digital-menu');
-        if (uiDigital) uiDigital.innerText = texts.digital_menu;
-
-        const uiNfc = document.getElementById('ui-label-nfc');
-        if (uiNfc) uiNfc.innerText = texts.nfc_connected;
-
-        const searchInput = document.getElementById('menu-search-input');
-        if (searchInput) searchInput.placeholder = texts.search_placeholder;
-
-        // Oppdater restaurantbeskrivelse om den er standard
-        const descEl = document.getElementById('restaurant-description');
-        const taglineEl = document.getElementById('restaurant-tagline');
-        if (descEl && (!currentRestaurantData || !currentRestaurantData.tagline_below)) {
-          descEl.innerText = texts.desc_default;
-        }
-        if (taglineEl && (!currentRestaurantData || !currentRestaurantData.tagline_above)) {
-          taglineEl.innerText = texts.tagline_default;
-        }
-
-        renderGuestCategories();
-        renderMenu();
-      };
-
-      // Standardretter for demo
-      const DEFAULT_DISHES = [
-        {
-          id: 'dish-1',
-          name: 'Truffle & Dry-Aged Burger',
-          description: '200g kvernet norsk storfe, trøffelmajones, lagret cheddar og smørstekt brioche.',
-          price: 225,
-          category: 'Hovedrett',
-          allergens: 'Gluten (hvete), Melk, Egg',
-          sold_out: false
-        },
-        {
-          id: 'dish-2',
-          name: 'Pannestekt Kveite',
-          description: 'Bresert purreløk, ramsløkolje og champagne beurre blanc.',
-          price: 365,
-          category: 'Hovedrett',
-          allergens: 'Fisk, Melk, Sulfitt',
-          sold_out: false
-        },
-        {
-          id: 'dish-3',
-          name: 'Dagens Fangst: Villtorsk',
-          description: 'Saltbakt sellerirot, Sandefjordsmør og friterte kapers.',
-          price: 315,
-          category: 'Hovedrett',
-          allergens: 'Fisk, Melk, Selleri',
-          sold_out: true
-        },
-        {
-          id: 'dish-4',
-          name: 'Villkveite Ceviche',
-          description: 'Tindved, sjalottløk, koriander og sprø jordskokkchips.',
-          price: 175,
-          category: 'Forrett',
-          allergens: 'Fisk',
-          sold_out: false
-        },
-        {
-          id: 'dish-5',
-          name: 'Husets Focaccia & Pisket Smør',
-          description: 'Nybakt surdeigsfocaccia med rosmarin og havsalt fra Røros.',
-          price: 65,
-          category: 'Forrett',
-          allergens: 'Gluten (hvete), Melk',
-          sold_out: false
-        },
-        {
-          id: 'dish-6',
-          name: 'Multer & Røros-is',
-          description: 'Villmulter, karamellisert hvit sjokolade og tindvedsirup.',
-          price: 165,
-          category: 'Desserter',
-          allergens: 'Melk, Soya',
-          sold_out: false
-        },
-        {
-          id: 'dish-7',
-          name: 'Nøgne Ø IPA (0.33l)',
-          description: 'Klassisk håndverks-IPA med rik humleprofil og frisk sitrus.',
-          price: 115,
-          category: 'Drikke',
-          allergens: 'Gluten (bygg)',
-          sold_out: false
-        },
-        {
-          id: 'dish-8',
-          name: 'Nordic Old Fashioned',
-          description: 'Fatlagret akevitt, rugbourbon, røsslyngsirup og appelsinolje.',
-          price: 175,
-          category: 'Drikke',
-          allergens: 'Ingen kjente allergener',
-          sold_out: false
-        }
-      ];
-
-      let menuItems = [];
-      let activeCategory = 'Alle';
-      let searchQuery = '';
-      let guestCategories = ['Hovedrett', 'Forrett', 'Desserter', 'Drikke'];
-      let currentRestaurantData = null;
-      const LOCAL_ITEMS_KEY = `smaksync_items_${restaurantId}`;
-      const LOCAL_META_KEY = `smaksync_restaurant_meta_${restaurantId}`;
-
-      function renderGuestCategories() {
-        const container = document.getElementById('guest-categories-container');
-        if (!container) return;
-
-        const texts = UI_TEXTS[currentLang];
-        let html = `
-          <button
-            onclick="setGuestFilter('Alle')"
-            id="g-btn-Alle"
-            class="guest-cat-btn px-3.5 py-1.5 rounded-full text-xs font-semibold ${activeCategory === 'Alle' ? 'bg-white text-zinc-950 shadow-xs' : 'text-zinc-400 hover:text-white bg-zinc-900 border border-zinc-800/80'} transition-all shrink-0"
-          >
-            ${texts.all_dishes}
-          </button>
-        `;
-
-        guestCategories.forEach(cat => {
-          const isAct = activeCategory === cat;
-          const localizedName = getCategoryLabel(cat, currentLang);
-          html += `
-            <button
-              onclick="setGuestFilter('${escapeHtml(cat)}')"
-              id="g-btn-${escapeHtml(cat)}"
-              class="guest-cat-btn px-3.5 py-1.5 rounded-full text-xs font-semibold ${isAct ? 'bg-white text-zinc-950 shadow-xs' : 'text-zinc-400 hover:text-white bg-zinc-900 border border-zinc-800/80'} transition-all shrink-0"
-            >
-              ${escapeHtml(localizedName)}
-            </button>
-          `;
-        });
-
-        container.innerHTML = html;
-      }
-
-      function applyRestaurantData(data) {
-        currentRestaurantData = data;
-        let name = restaurantId.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-        let taglineAbove = UI_TEXTS[currentLang].tagline_default;
-        let taglineBelow = UI_TEXTS[currentLang].desc_default;
-
-        if (data) {
-          if (data.name) name = data.name;
-          if (data.tagline_above) taglineAbove = data.tagline_above;
-          if (data.tagline_below) taglineBelow = data.tagline_below;
-          else if (data.description) taglineBelow = data.description;
-
-          if (Array.isArray(data.categories) && data.categories.length > 0) {
-            guestCategories = data.categories;
-          }
-        }
-
-        const titleElem = document.getElementById('guest-restaurant-title');
-        if (titleElem) titleElem.innerText = name;
-        document.title = `${name} - ${UI_TEXTS[currentLang].digital_menu}`;
-
-        const taglineElem = document.getElementById('restaurant-tagline');
-        if (taglineElem) taglineElem.innerText = taglineAbove;
-
-        const descElem = document.getElementById('restaurant-description');
-        if (descElem) descElem.innerText = taglineBelow;
-
-        renderGuestCategories();
-      }
-
-      // Hent restaurant metadata (navn, logo, tekster og kategorier)
-      async function loadRestaurantInfo() {
-        if (isRealFirebase && db) {
-          try {
-            const restRef = doc(db, 'restaurants', restaurantId);
-            const snap = await getDoc(restRef);
-            if (snap.exists()) {
-              applyRestaurantData(snap.data());
-            } else {
-              applyRestaurantData(null);
-            }
-
-            // Lytt i sanntid på restaurantens overskrifter og kategorier
-            onSnapshot(restRef, (s) => {
-              if (s.exists()) {
-                applyRestaurantData(s.data());
-                renderMenu();
-              }
-            });
-          } catch (e) {
-            console.warn('Kunne ikke hente restaurantinfo fra Firestore:', e);
-            loadFallbackMetadata();
-          }
-        } else {
-          loadFallbackMetadata();
-        }
-      }
-
-      function loadFallbackMetadata() {
-        let meta = null;
-        try {
-          const stored = localStorage.getItem(LOCAL_META_KEY);
-          if (stored) meta = JSON.parse(stored);
-        } catch {}
-
-        if (!meta) {
-          try {
-            const all = JSON.parse(localStorage.getItem('smaksync_firestore_restaurants') || '[]');
-            const found = all.find(r => r.id === restaurantId);
-            if (found) meta = found;
-          } catch {}
-        }
-
-        applyRestaurantData(meta);
-
-        window.addEventListener('storage', (e) => {
-          if (e.key === LOCAL_META_KEY || e.key === 'smaksync_firestore_restaurants') {
-            loadFallbackMetadata();
-          }
-        });
-      }
-
-      loadRestaurantInfo();
-
-      // 5. Sett opp 'onSnapshot' (sanntidslytting) mot Firebase Firestore
-      function updateLiveStatus(statusText, isSuccess) {
-        const ind = document.getElementById('live-sync-indicator');
-        if (!ind) return;
-        if (isSuccess) {
-          ind.className = 'text-accent-400 font-mono text-[11px] font-semibold';
-          ind.innerText = `● ${statusText}`;
-        } else {
-          ind.className = 'text-rose-400 font-mono text-[11px] font-semibold';
-          ind.innerText = `▲ ${statusText}`;
-        }
-      }
-
-      if (isRealFirebase && db) {
-        try {
-          const menuCol = collection(db, 'restaurants', restaurantId, 'menu_items');
-          onSnapshot(menuCol, (snapshot) => {
-            if (snapshot.empty) {
-              updateLiveStatus('Firestore tilkoblet · 0 retter funnet i skyen', true);
-              const container = document.getElementById('menu-items-container');
-              if (container) {
-                container.innerHTML = `
-                  <div class="py-16 text-center text-zinc-400 space-y-3 p-4 bg-zinc-900/60 rounded-2xl border border-zinc-800">
-                    <p class="text-xs font-semibold text-white">${UI_TEXTS[currentLang].loading}</p>
-                    <p class="text-[11px] text-zinc-400">
-                      ${UI_TEXTS[currentLang].empty_cloud}
-                    </p>
-                  </div>
-                `;
-              }
-              return;
-            }
-
-            const items = [];
-            snapshot.forEach(docSnap => {
-              const d = docSnap.data();
-              items.push({
-                id: docSnap.id,
-                name: d.name || 'Uten navn',
-                name_en: d.name_en || '',
-                name_de: d.name_de || '',
-                name_es: d.name_es || '',
-                name_fr: d.name_fr || '',
-                description: d.description || d.desc || '',
-                description_en: d.description_en || d.desc_en || '',
-                description_de: d.description_de || '',
-                description_es: d.description_es || '',
-                description_fr: d.description_fr || '',
-                price: typeof d.price === 'number' ? d.price : parseFloat(d.price) || 0,
-                category: d.category || 'Hovedrett',
-                category_en: d.category_en || '',
-                allergens: d.allergens || '',
-                allergens_en: d.allergens_en || '',
-                sold_out: d.sold_out === true || d.soldOut === true
-              });
-            });
-
-            menuItems = items;
-            updateLiveStatus('Sky-synkronisert live', true);
-            renderMenu();
-          }, (err) => {
-            console.error('onSnapshot feil i gjestemeny:', err);
-            updateLiveStatus(`Firestore avvist: ${err.code || 'permission-denied'}`, false);
-            initFallbackStorage();
-          });
-        } catch (err) {
-          console.warn('Feil ved onSnapshot initialisering:', err);
-          updateLiveStatus(`Firestore feil: ${err.code || 'offline'}`, false);
-          initFallbackStorage();
-        }
-      } else {
-        initFallbackStorage();
-      }
-
-      function initFallbackStorage() {
-        const stored = localStorage.getItem(LOCAL_ITEMS_KEY);
-        if (!stored) {
-          localStorage.setItem(LOCAL_ITEMS_KEY, JSON.stringify(DEFAULT_DISHES));
-          menuItems = DEFAULT_DISHES;
-        } else {
-          try {
-            menuItems = JSON.parse(stored);
-          } catch {
-            menuItems = DEFAULT_DISHES;
-          }
-        }
-        renderMenu();
-
-        // Lytt på storage-event for sanntidstest i demo-modus på tvers av vinduer
-        window.addEventListener('storage', (e) => {
-          if (e.key === LOCAL_ITEMS_KEY) {
-            menuItems = JSON.parse(localStorage.getItem(LOCAL_ITEMS_KEY) || '[]');
-            renderMenu();
-          }
-        });
-      }
-
-      // Rendrer meny-kortene dynamisk med flerspråklig støtte
-      function renderMenu() {
-        const container = document.getElementById('menu-items-container');
-        if (!container) return;
-
-        const texts = UI_TEXTS[currentLang];
-
-        // Filtrer basert på kategori og søketekst (søket matcher både norsk og oversatt tekst)
-        const filtered = menuItems.filter(dish => {
-          if (activeCategory !== 'Alle' && dish.category !== activeCategory) {
-            return false;
-          }
-          if (searchQuery) {
-            const q = searchQuery.toLowerCase();
-            const loc = getDishDetails(dish, currentLang);
-            const matchOrigName = (dish.name || '').toLowerCase().includes(q);
-            const matchOrigDesc = (dish.description || '').toLowerCase().includes(q);
-            const matchLocName = (loc.name || '').toLowerCase().includes(q);
-            const matchLocDesc = (loc.desc || '').toLowerCase().includes(q);
-            const matchAllergens = (loc.allergens || '').toLowerCase().includes(q);
-            if (!matchOrigName && !matchOrigDesc && !matchLocName && !matchLocDesc && !matchAllergens) return false;
-          }
-          return true;
-        });
-
-        if (filtered.length === 0) {
-          container.innerHTML = `
-            <div class="py-16 text-center text-zinc-500 space-y-2">
-              <svg class="h-8 w-8 mx-auto text-zinc-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
-              </svg>
-              <p class="text-xs font-medium text-zinc-400">${texts.no_dishes}</p>
-              <p class="text-[11px] text-zinc-600">${texts.no_dishes_sub}</p>
-            </div>
-          `;
-          return;
-        }
-
-        container.innerHTML = filtered.map(dish => {
-          const isSoldOut = dish.sold_out === true;
-          const loc = getDishDetails(dish, currentLang);
-          const priceDisplay = currentLang === 'no' ? `${dish.price},-` : `${dish.price} kr`;
-
-          // Utsolgt styling: tydelig grå "Utsolgt"-tag og overstreket pris
-          if (isSoldOut) {
-            return `
-              <article class="p-4 rounded-2xl bg-zinc-900/40 border border-zinc-800/60 opacity-60 transition-all">
-                <div class="flex items-start justify-between gap-3">
-                  <div class="space-y-1">
-                    <div class="flex items-center gap-2">
-                      <span class="inline-block text-[10px] font-semibold text-zinc-500 uppercase tracking-wider">
-                        ${escapeHtml(loc.category)}
-                      </span>
-                      <span class="inline-block text-[10px] font-semibold px-2 py-0.5 rounded-full bg-zinc-800 text-zinc-400 border border-zinc-700">
-                        ${texts.sold_out}
-                      </span>
-                    </div>
-                    <h3 class="text-sm font-semibold text-zinc-400 line-through">
-                      ${escapeHtml(loc.name)}
-                    </h3>
-                  </div>
-                  <div class="text-right">
-                    <span class="font-mono text-sm text-zinc-500 line-through">
-                      ${priceDisplay}
-                    </span>
-                  </div>
-                </div>
-                ${loc.desc ? `<p class="text-xs text-zinc-500 mt-2 leading-relaxed">${escapeHtml(loc.desc)}</p>` : ''}
-                ${loc.allergens ? `
-                  <div class="mt-2 pt-2 border-t border-zinc-800/40 text-[10px] text-zinc-500 flex items-center gap-1">
-                    <span class="font-medium text-zinc-600">${texts.allergens_label}:</span>
-                    <span>${escapeHtml(loc.allergens)}</span>
-                  </div>
-                ` : ''}
-              </article>
-            `;
-          }
-
-          // Aktiv tilgjengelig rett
-          return `
-            <article class="p-4 rounded-2xl bg-zinc-900/80 border border-zinc-850 hover:border-zinc-700 transition-all shadow-xs group">
-              <div class="flex items-start justify-between gap-3">
-                <div class="space-y-1 flex-1">
-                  <span class="inline-block text-[10px] font-semibold text-zinc-500 uppercase tracking-wider">
-                    ${escapeHtml(loc.category)}
-                  </span>
-                  <h3 class="text-base font-semibold text-white tracking-tight group-hover:text-accent-400 transition-colors">
-                    ${escapeHtml(loc.name)}
-                  </h3>
-                </div>
-                <div class="text-right shrink-0">
-                  <span class="font-mono text-base font-bold text-white tracking-tight">
-                    ${priceDisplay}
-                  </span>
-                </div>
-              </div>
-              ${loc.desc ? `<p class="text-xs text-zinc-400 mt-2 leading-relaxed">${escapeHtml(loc.desc)}</p>` : ''}
-              ${loc.allergens ? `
-                <div class="mt-2.5 pt-2 border-t border-zinc-800/60 flex items-center gap-1 text-[10px] text-zinc-400">
-                  <span class="font-semibold text-zinc-500">${texts.allergens_label}:</span>
-                  <span class="text-zinc-400">${escapeHtml(loc.allergens)}</span>
-                </div>
-              ` : ''}
-            </article>
-          `;
-        }).join('');
-
-        // Oppdater tidsstempel og bunntekst
-        const ind = document.getElementById('live-sync-indicator');
-        if (ind) {
-          const now = new Date();
-          const t = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`;
-          ind.innerText = `${texts.live_sync} · kl. ${t}`;
-        }
-      }
-
-      // Initialiser språkindikatorer ved start
-      setGuestLanguage(currentLang);
-
-      // Filterkategori endring
-      window.setGuestFilter = function(cat) {
-        activeCategory = cat;
-        renderGuestCategories();
-        renderMenu();
-      };
-
-      window.handleSearch = function(e) {
-        searchQuery = e.target.value.trim();
-        renderMenu();
-      };
-
-      function escapeHtml(string) {
-        if (!string) return '';
-        const div = document.createElement('div');
-        div.innerText = string;
-        return div.innerHTML;
-      }
-    </script>
   </body>
 </html>
