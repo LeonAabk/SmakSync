@@ -337,6 +337,13 @@ service cloud.firestore {
                 <span>Kopier NFC-lenke</span>
               </button>
               <button
+                onclick="copyEnMenuLink()"
+                class="flex-1 md:flex-initial inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg bg-zinc-100 hover:bg-zinc-200 text-zinc-800 text-xs font-semibold border border-zinc-200 shadow-2xs transition-all active:scale-95"
+                title="Kopier engelsk menylenke for internasjonale gjester eller bordkort"
+              >
+                <span>🇬🇧 Kopier EN</span>
+              </button>
+              <button
                 onclick="toggleQrModal()"
                 class="inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg bg-zinc-100 hover:bg-zinc-200 text-zinc-800 text-xs font-medium border border-zinc-200 transition-colors"
                 title="Vis QR-kode for å teste med mobilkamera"
@@ -2160,6 +2167,22 @@ service cloud.firestore {
           });
         } else {
           prompt('Kopier NFC-lenken her:', fullUrl);
+        }
+      };
+
+      // Kopier engelsk meny-lenke
+      window.copyEnMenuLink = function() {
+        const fullUrl = window.location.origin + window.location.pathname.replace('admin.html', '') + guestMenuEnUrl;
+        const input = document.getElementById('live-nfc-url-input');
+        if (input) input.value = fullUrl;
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(fullUrl).then(() => {
+            showToast('✓ Engelsk NFC-menylenke kopiert til utklippstavlen!');
+          }).catch(() => {
+            prompt('Kopier engelsk NFC-lenke her:', fullUrl);
+          });
+        } else {
+          prompt('Kopier engelsk NFC-lenke her:', fullUrl);
         }
       };
 
