@@ -150,6 +150,19 @@
           </button>
 
           <a
+            href="https://aabakstudio.com/NfcReview/"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="hidden md:inline-flex items-center gap-1.5 px-3 py-2 text-xs font-semibold text-amber-800 hover:text-amber-950 bg-amber-50 hover:bg-amber-100 rounded-lg transition-all border border-amber-200"
+            title="Åpne Aabak Studio Google NFC Review Cards"
+          >
+            <span>⭐ Aabak Studio Review Cards</span>
+            <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+            </svg>
+          </a>
+
+          <a
             href="index.html"
             class="inline-flex items-center px-3 py-2 text-xs font-medium text-zinc-600 hover:text-zinc-950 hover:bg-zinc-100 rounded-lg transition-all border border-zinc-200"
           >
@@ -1650,6 +1663,7 @@ Vennligst ta vare på koden for å administrere menyen.`;
                 email: d.email || '',
                 topic: d.topic || 'priser',
                 topic_label: d.topic_label || d.topic || 'Priser',
+                include_review_cards: !!d.include_review_cards,
                 message: d.message || '',
                 created_at: d.created_at || new Date().toISOString(),
                 status: d.status || 'ny',
@@ -1777,25 +1791,26 @@ Vennligst ta vare på koden for å administrere menyen.`;
 
         tbody.innerHTML = filtered.map(inq => {
           const isNew = inq.status === 'ny';
-          const mailSubject = encodeURIComponent(`SmakSync: Priser og informasjon for ${inq.restaurant_name || 'din restaurant'}`);
+          const wantsReview = inq.include_review_cards || inq.topic === 'pakke';
+          const mailSubject = encodeURIComponent(`SmakSync & Aabak Studio: Priser og informasjon for ${inq.restaurant_name || 'din restaurant'}`);
           const mailBody = encodeURIComponent(`Hei ${inq.contact_person || ''}!
 
 Takk for din henvendelse vedrørende «${inq.topic_label || 'Priser og informasjon'}» for ${inq.restaurant_name || 'din restaurant'}.
 
-Vi oversender med dette informasjon og prisoversikt for SmakSync sine digitale menyer og kontaktløse NFC-bordkort.
+Vi oversender med dette informasjon og prisoversikt for SmakSync sine digitale menyer og kontaktløse NFC-bordkort.${wantsReview ? '\n\nVi har også inkludert tilbud på Aabak Studio Google NFC Review Cards for disken/kassen slik at dere kan samle inn flere 5-stjerners anmeldelser fra fornøyde gjester parallelt med bordmenyene.' : ''}
 
 ${inq.message ? `Angående din kommentar:\n> "${inq.message}"\n\n` : ''}Våre pakker inkluderer:
 • Fullt oppsatt digital meny med live sanntidssynk
 • Personlig kontrollpanel for umiddelbar redigering av retter og priser
-• Valgfrie høykvalitets NFC- og QR-menykort for bordene
-• Ingen app-nedlasting påkrevd for gjestene
+• Valgfrie høykvalitets NFC- og QR-menykort for bordene (akryl eller eik)
+${wantsReview ? '• Aabak Studio Google NFC Review Cards for disken (1-tæpp rett til Google-anmeldelse)\n' : ''}• Ingen app-nedlasting påkrevd for gjestene
 
 Har du anledning til en kort prat på telefon (${inq.phone || 'ditt oppgitte nummer'}) denne uken, eller ønsker du at vi oversender et skreddersydd pristilbud direkte på e-post?
 
 Med vennlig hilsen,
-Leon / SmakSync Studio
+Leon / SmakSync Studio (Aabak Studio)
 hei@smaksync.no · +47 22 10 90 00
-https://smaksync.no`);
+https://smaksync.no · https://aabakstudio.com/NfcReview/`);
 
           const mailtoHref = `mailto:${encodeURIComponent(inq.email)}?subject=${mailSubject}&body=${mailBody}`;
           const telHref = inq.phone ? `tel:${inq.phone.replace(/[^0-9+]/g, '')}` : '#';
@@ -1848,9 +1863,16 @@ https://smaksync.no`);
 
               <!-- Kategori & Melding -->
               <td class="py-3 px-3.5 max-w-xs">
-                <span class="inline-block text-[11px] font-semibold text-zinc-700 bg-zinc-100 border border-zinc-200 px-2 py-0.5 rounded mb-1">
-                  ${escapeHtml(inq.topic_label || 'Priser')}
-                </span>
+                <div class="flex flex-wrap items-center gap-1 mb-1">
+                  <span class="inline-block text-[11px] font-semibold text-zinc-700 bg-zinc-100 border border-zinc-200 px-2 py-0.5 rounded">
+                    ${escapeHtml(inq.topic_label || 'Priser')}
+                  </span>
+                  ${wantsReview ? `
+                    <span class="inline-flex items-center gap-1 text-[10px] font-bold bg-amber-50 text-amber-800 border border-amber-300 px-1.5 py-0.5 rounded" title="Kunden ønsker også tilbud på Google NFC Review Cards">
+                      <span>⭐ + Review-kort</span>
+                    </span>
+                  ` : ''}
+                </div>
                 ${inq.message ? `
                   <p class="text-xs text-zinc-600 line-clamp-2 italic" title="${escapeHtml(inq.message)}">
                     "${escapeHtml(inq.message)}"
