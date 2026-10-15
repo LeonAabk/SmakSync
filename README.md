@@ -1,4 +1,4 @@
-# SmartMeny 🍽️📱
+# SmakSync 🍽️📱
 
 > **Fremtidens meny ligger allerede på bordet.**  
 > Skandinavisk B2B SaaS-portefølje og demoside for NFC-menykort (fysiske bordkort) og skreddersydde, lynraske digitale menyer til restauranter, caféer og utesteder.
@@ -43,7 +43,7 @@
 
 1. **Klon repositoriet:**
    ```bash
-   git clone https://github.com/<ditt-brukernavn>/smartmeny.git
+   git clone https://github.com/<ditt-brukernavn>/SmakSync.git
    cd smartmeny
    ```
 
