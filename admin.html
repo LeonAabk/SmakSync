@@ -283,93 +283,61 @@ service cloud.firestore {
           </button>
         </div>
 
-        <!-- Informasjonsbanner om prototypen -->
-        <section class="bg-gradient-to-r from-zinc-900 to-zinc-950 text-white rounded-2xl p-5 sm:p-6 shadow-md border border-zinc-800 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-          <div class="space-y-1">
-            <span class="text-xs font-semibold uppercase tracking-wider text-accent-400">Firebase Firestore Realtime</span>
-            <h2 class="text-lg font-bold" id="banner-welcome-text">Restaurantkontroll</h2>
-            <p class="text-xs sm:text-sm text-zinc-300 max-w-2xl leading-relaxed">
-              Endringer lagres direkte i Firestore under samlingen <code class="text-accent-400 font-mono" id="firestore-path-label">restaurants/.../menu_items</code>. Når du setter en rett til «Utsolgt» her, oppdateres gjestemenyen automatisk i sanntid uten at gjesten må oppdatere nettsiden.
-            </p>
-          </div>
-          <div class="flex items-center gap-2">
-            <button
-              onclick="copyMenuLink()"
-              class="px-3 py-2 text-xs font-medium text-zinc-300 hover:text-white bg-zinc-800 hover:bg-zinc-700 rounded-lg border border-zinc-700 transition-colors flex items-center gap-1.5"
-            >
-              <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/>
-              </svg>
-              <span>Kopier NFC-lenke</span>
-            </button>
-          </div>
-        </section>
+        <!-- ========================================================= -->
+        <!-- HOVED-FANER FOR KONTROLLPANEL (UTVIDET MENYTILPASSING)      -->
+        <!-- ========================================================= -->
+        <nav class="bg-white rounded-2xl p-1.5 border border-zinc-200 shadow-xs flex items-center gap-1.5 overflow-x-auto no-scrollbar">
+          <button
+            type="button"
+            onclick="switchAdminTab('menu')"
+            id="tab-btn-menu"
+            class="admin-tab-btn flex-1 py-2.5 px-3.5 rounded-xl text-xs sm:text-sm font-semibold transition-all flex items-center justify-center gap-2 bg-zinc-950 text-white shadow-xs shrink-0"
+          >
+            <span>🍽️</span>
+            <span>Meny & Retter</span>
+          </button>
+          <button
+            type="button"
+            onclick="switchAdminTab('design')"
+            id="tab-btn-design"
+            class="admin-tab-btn flex-1 py-2.5 px-3.5 rounded-xl text-xs sm:text-sm font-semibold transition-all flex items-center justify-center gap-2 text-zinc-600 hover:text-zinc-950 hover:bg-zinc-100 shrink-0"
+          >
+            <span>🎨</span>
+            <span>Design & Tema</span>
+          </button>
+          <button
+            type="button"
+            onclick="switchAdminTab('operations')"
+            id="tab-btn-operations"
+            class="admin-tab-btn flex-1 py-2.5 px-3.5 rounded-xl text-xs sm:text-sm font-semibold transition-all flex items-center justify-center gap-2 text-zinc-600 hover:text-zinc-950 hover:bg-zinc-100 shrink-0"
+          >
+            <span>⚙️</span>
+            <span>Drift, WiFi & Service</span>
+          </button>
+          <button
+            type="button"
+            onclick="switchAdminTab('nfc')"
+            id="tab-btn-nfc"
+            class="admin-tab-btn flex-1 py-2.5 px-3.5 rounded-xl text-xs sm:text-sm font-semibold transition-all flex items-center justify-center gap-2 text-zinc-600 hover:text-zinc-950 hover:bg-zinc-100 shrink-0"
+          >
+            <span>📱</span>
+            <span>Bordkort & NFC</span>
+          </button>
+          <button
+            type="button"
+            onclick="switchAdminTab('preview')"
+            id="tab-btn-preview"
+            class="admin-tab-btn flex-1 py-2.5 px-3.5 rounded-xl text-xs sm:text-sm font-semibold transition-all flex items-center justify-center gap-2 text-zinc-600 hover:text-zinc-950 hover:bg-zinc-100 shrink-0"
+          >
+            <span>👁️</span>
+            <span>Live Simulator</span>
+          </button>
+        </nav>
 
-        <!-- NFC-tag & Synkroniserings-veileder -->
-        <section class="bg-white rounded-2xl p-5 border-2 border-accent-200 shadow-xs space-y-3">
-          <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-3">
-            <div class="flex items-center gap-3">
-              <div class="h-10 w-10 rounded-xl bg-accent-50 text-accent-700 flex items-center justify-center shrink-0 border border-accent-200">
-                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/>
-                </svg>
-              </div>
-              <div>
-                <div class="flex items-center gap-2">
-                  <h3 class="text-sm font-bold text-zinc-950">NFC-brikke & Telefon-synkronisering</h3>
-                  <span class="inline-flex items-center gap-1 text-[11px] font-semibold text-accent-700 bg-accent-50 px-2 py-0.5 rounded-full border border-accent-200">
-                    <span class="h-1.5 w-1.5 rounded-full bg-accent-600 animate-pulse"></span>
-                    Firebase Firestore Live
-                  </span>
-                </div>
-                <p class="text-xs text-zinc-600 mt-0.5">
-                  Denne lenken må være programmert inn på NFC-taggen din for at telefonen din skal motta endringene live:
-                </p>
-              </div>
-            </div>
-
-            <div class="flex items-center gap-2 w-full md:w-auto">
-              <button
-                onclick="copyMenuLink()"
-                class="flex-1 md:flex-initial inline-flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-lg bg-zinc-950 hover:bg-zinc-800 text-white text-xs font-semibold shadow-xs transition-all active:scale-95"
-              >
-                <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/>
-                </svg>
-                <span>Kopier NFC-lenke</span>
-              </button>
-              <button
-                onclick="copyEnMenuLink()"
-                class="flex-1 md:flex-initial inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg bg-zinc-100 hover:bg-zinc-200 text-zinc-800 text-xs font-semibold border border-zinc-200 shadow-2xs transition-all active:scale-95"
-                title="Kopier engelsk menylenke for internasjonale gjester eller bordkort"
-              >
-                <span>🇬🇧 Kopier EN</span>
-              </button>
-              <button
-                onclick="toggleQrModal()"
-                class="inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg bg-zinc-100 hover:bg-zinc-200 text-zinc-800 text-xs font-medium border border-zinc-200 transition-colors"
-                title="Vis QR-kode for å teste med mobilkamera"
-              >
-                <svg class="h-3.5 w-3.5 text-zinc-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"/>
-                </svg>
-                <span>Vis QR</span>
-              </button>
-            </div>
-          </div>
-
-          <!-- URL input-felt som viser den eksakte NFC URL-en -->
-          <div class="flex items-center gap-2 bg-zinc-50 rounded-xl p-2.5 border border-zinc-200">
-            <span class="text-[11px] font-mono text-zinc-400 pl-1 uppercase font-semibold shrink-0">NFC URL:</span>
-            <input
-              id="live-nfc-url-input"
-              type="text"
-              readonly
-              class="w-full bg-transparent text-xs font-mono text-zinc-800 select-all focus:outline-none"
-              value="..."
-            />
-          </div>
-        </section>
+        <!-- ========================================================= -->
+        <!-- FANE 1: MENY & RETTER                                     -->
+        <!-- ========================================================= -->
+        <div id="tab-pane-menu" class="space-y-6">
 
         <!-- KPI statistikk-rutenett -->
         <section class="grid grid-cols-2 sm:grid-cols-4 gap-4">
@@ -602,6 +570,49 @@ service cloud.firestore {
                 </div>
               </div>
 
+              <!-- Merke (Badge) og Porsjonsinfo -->
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label for="dish-badge" class="block text-xs font-semibold text-zinc-700 mb-1">
+                    Merke (Badge)
+                  </label>
+                  <select
+                    id="dish-badge"
+                    class="w-full rounded-lg border border-zinc-300 bg-zinc-50/50 px-2.5 py-2 text-xs text-zinc-900 focus:bg-white focus:border-zinc-950 focus:outline-none transition-colors"
+                  >
+                    <option value="none">Ingen merke</option>
+                    <option value="special">⭐ Husets anbefaling</option>
+                    <option value="bestseller">🔥 Populær / Bestseller</option>
+                    <option value="vegan">🌱 Vegetar / Vegansk</option>
+                    <option value="new">✨ Nyhet</option>
+                  </select>
+                </div>
+                <div>
+                  <label for="dish-portion" class="block text-xs font-semibold text-zinc-700 mb-1">
+                    Mengde / Størrelse
+                  </label>
+                  <input
+                    type="text"
+                    id="dish-portion"
+                    placeholder="F.eks. 200g, 3 stk, For 2"
+                    class="w-full rounded-lg border border-zinc-300 bg-zinc-50/50 px-2.5 py-2 text-xs text-zinc-900 placeholder-zinc-400 focus:bg-white focus:border-zinc-950 focus:outline-none transition-colors"
+                  />
+                </div>
+              </div>
+
+              <!-- Bilde-URL for retten -->
+              <div>
+                <label for="dish-image-url" class="block text-xs font-semibold text-zinc-700 mb-1">
+                  Bilde-URL <span class="text-zinc-400 font-normal">(Valgfritt matbilde)</span>
+                </label>
+                <input
+                  type="url"
+                  id="dish-image-url"
+                  placeholder="https://images.unsplash.com/..."
+                  class="w-full rounded-lg border border-zinc-300 bg-zinc-50/50 px-3 py-2 text-xs text-zinc-900 placeholder-zinc-400 focus:bg-white focus:border-zinc-950 focus:outline-none transition-colors"
+                />
+              </div>
+
               <!-- Beskrivelse -->
               <div>
                 <label for="dish-desc" class="block text-xs font-semibold text-zinc-700 mb-1">
@@ -748,10 +759,636 @@ service cloud.firestore {
             </div>
 
           </section>
+        </div>
+      </div> <!-- Slutt tab-pane-menu -->
+
+      <!-- ========================================================= -->
+      <!-- FANE 2: DESIGN, FARGER & TEMA                             -->
+      <!-- ========================================================= -->
+      <div id="tab-pane-design" class="hidden space-y-6">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+
+          <!-- VENSTRE: Skjema for visuell styling -->
+          <section class="lg:col-span-7 bg-white rounded-2xl p-5 sm:p-6 border border-zinc-200 shadow-xs space-y-5">
+            <div class="border-b border-zinc-100 pb-3 flex items-start justify-between gap-3">
+              <div>
+                <div class="flex items-center gap-2">
+                  <span class="p-1.5 rounded-lg bg-zinc-100 text-zinc-900">
+                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"/>
+                    </svg>
+                  </span>
+                  <h3 class="text-base font-bold text-zinc-950">Design, Farger & Tema</h3>
+                </div>
+                <p class="text-xs text-zinc-500 mt-1">
+                  Skreddersy fargetone, mørk/lys visning, skrifttype og bilder for å matche restaurantens merkevare.
+                </p>
+              </div>
+            </div>
+
+            <form id="restaurant-design-form" onsubmit="handleSaveDesignSettings(event)" class="space-y-5 text-left">
+              
+              <!-- Aksentfarge / Fargetema -->
+              <div>
+                <label class="block text-xs font-semibold text-zinc-700 mb-2">
+                  Aksentfarge / Palett
+                </label>
+                <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5" id="color-palette-options">
+                  <button
+                    type="button"
+                    onclick="selectAccentColor('emerald')"
+                    data-color="emerald"
+                    class="color-pick-btn border-2 border-emerald-500 bg-emerald-50 text-emerald-950 rounded-xl p-3 flex items-center gap-2.5 text-xs font-semibold transition-all shadow-xs"
+                  >
+                    <span class="h-5 w-5 rounded-full bg-emerald-500 shrink-0 shadow-inner"></span>
+                    <span>Smaragd (Standard)</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onclick="selectAccentColor('gold')"
+                    data-color="gold"
+                    class="color-pick-btn border border-zinc-200 hover:border-amber-400 bg-white text-zinc-800 rounded-xl p-3 flex items-center gap-2.5 text-xs font-semibold transition-all"
+                  >
+                    <span class="h-5 w-5 rounded-full bg-amber-400 shrink-0 shadow-inner"></span>
+                    <span>Gull / Vinbar</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onclick="selectAccentColor('rose')"
+                    data-color="rose"
+                    class="color-pick-btn border border-zinc-200 hover:border-rose-400 bg-white text-zinc-800 rounded-xl p-3 flex items-center gap-2.5 text-xs font-semibold transition-all"
+                  >
+                    <span class="h-5 w-5 rounded-full bg-rose-500 shrink-0 shadow-inner"></span>
+                    <span>Bistro Rose</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onclick="selectAccentColor('orange')"
+                    data-color="orange"
+                    class="color-pick-btn border border-zinc-200 hover:border-orange-400 bg-white text-zinc-800 rounded-xl p-3 flex items-center gap-2.5 text-xs font-semibold transition-all"
+                  >
+                    <span class="h-5 w-5 rounded-full bg-orange-500 shrink-0 shadow-inner"></span>
+                    <span>Varm Oransje</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onclick="selectAccentColor('blue')"
+                    data-color="blue"
+                    class="color-pick-btn border border-zinc-200 hover:border-sky-400 bg-white text-zinc-800 rounded-xl p-3 flex items-center gap-2.5 text-xs font-semibold transition-all"
+                  >
+                    <span class="h-5 w-5 rounded-full bg-sky-500 shrink-0 shadow-inner"></span>
+                    <span>Kystblå / Hav</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onclick="selectAccentColor('slate')"
+                    data-color="slate"
+                    class="color-pick-btn border border-zinc-200 hover:border-zinc-400 bg-white text-zinc-800 rounded-xl p-3 flex items-center gap-2.5 text-xs font-semibold transition-all"
+                  >
+                    <span class="h-5 w-5 rounded-full bg-zinc-600 shrink-0 shadow-inner"></span>
+                    <span>Nordisk Skifer</span>
+                  </button>
+                </div>
+                <input type="hidden" id="input-accent-color" value="emerald" />
+              </div>
+
+              <!-- Visningsmodus (Mørk / Lys / Auto) -->
+              <div>
+                <label class="block text-xs font-semibold text-zinc-700 mb-2">
+                  Visningsmodus for gjesten
+                </label>
+                <div class="grid grid-cols-3 gap-2.5" id="theme-mode-options">
+                  <button
+                    type="button"
+                    onclick="selectThemeMode('dark')"
+                    data-mode="dark"
+                    class="theme-mode-btn border-2 border-zinc-950 bg-zinc-900 text-white rounded-xl p-3 text-center transition-all shadow-xs"
+                  >
+                    <div class="text-base mb-1">🌙</div>
+                    <div class="text-xs font-bold">Mørk kveld</div>
+                    <div class="text-[10px] text-zinc-400">Eksklusiv stemning</div>
+                  </button>
+
+                  <button
+                    type="button"
+                    onclick="selectThemeMode('light')"
+                    data-mode="light"
+                    class="theme-mode-btn border border-zinc-200 hover:border-zinc-400 bg-white text-zinc-900 rounded-xl p-3 text-center transition-all"
+                  >
+                    <div class="text-base mb-1">☀️</div>
+                    <div class="text-xs font-bold">Lys & Frisk</div>
+                    <div class="text-[10px] text-zinc-500">Kafé & Lunsj</div>
+                  </button>
+
+                  <button
+                    type="button"
+                    onclick="selectThemeMode('auto')"
+                    data-mode="auto"
+                    class="theme-mode-btn border border-zinc-200 hover:border-zinc-400 bg-white text-zinc-900 rounded-xl p-3 text-center transition-all"
+                  >
+                    <div class="text-base mb-1">🌓</div>
+                    <div class="text-xs font-bold">Auto</div>
+                    <div class="text-[10px] text-zinc-500">Følger telefon</div>
+                  </button>
+                </div>
+                <input type="hidden" id="input-theme-mode" value="dark" />
+              </div>
+
+              <!-- Typografi / Skrifttype -->
+              <div>
+                <label for="input-font-family" class="block text-xs font-semibold text-zinc-700 mb-1">
+                  Typografi (Skrifttype for overskrifter)
+                </label>
+                <select
+                  id="input-font-family"
+                  onchange="updateDesignPreview()"
+                  class="w-full rounded-lg border border-zinc-300 bg-zinc-50/50 px-3 py-2 text-xs text-zinc-900 focus:bg-white focus:border-zinc-950 focus:outline-none transition-colors"
+                >
+                  <option value="jakarta">Plus Jakarta Sans (Moderne, frisk, høy lesbarhet)</option>
+                  <option value="playfair">Playfair Display (Klassisk serif, fine dining & vinbar)</option>
+                  <option value="inter">Inter (Stram, minimalistisk & universell)</option>
+                </select>
+              </div>
+
+              <!-- Logo & Cover URLs -->
+              <div class="space-y-3 pt-2 border-t border-zinc-100">
+                <div>
+                  <label for="input-logo-url" class="block text-xs font-semibold text-zinc-700 mb-1">
+                    Logo-URL <span class="text-zinc-400 font-normal">(Vises øverst i menyheaderen)</span>
+                  </label>
+                  <input
+                    type="url"
+                    id="input-logo-url"
+                    oninput="updateDesignPreview()"
+                    placeholder="https://dittdomene.no/logo.png"
+                    class="w-full rounded-lg border border-zinc-300 bg-zinc-50/50 px-3 py-2 text-xs text-zinc-900 placeholder-zinc-400 focus:bg-white focus:border-zinc-950 focus:outline-none transition-colors"
+                  />
+                </div>
+
+                <div>
+                  <label for="input-cover-url" class="block text-xs font-semibold text-zinc-700 mb-1">
+                    Cover / Toppbilde-URL <span class="text-zinc-400 font-normal">(Valgfritt bakgrunnsbanner)</span>
+                  </label>
+                  <input
+                    type="url"
+                    id="input-cover-url"
+                    oninput="updateDesignPreview()"
+                    placeholder="https://images.unsplash.com/..."
+                    class="w-full rounded-lg border border-zinc-300 bg-zinc-50/50 px-3 py-2 text-xs text-zinc-900 placeholder-zinc-400 focus:bg-white focus:border-zinc-950 focus:outline-none transition-colors"
+                  />
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                id="save-design-btn"
+                class="w-full py-2.5 px-4 rounded-xl bg-zinc-950 hover:bg-zinc-800 text-white text-xs font-semibold transition-all shadow-xs flex items-center justify-center gap-2"
+              >
+                <span>Lagre design & tema i Firestore</span>
+              </button>
+            </form>
+          </section>
+
+          <!-- HØYRE: Visuelt forhåndsvisningskort -->
+          <section class="lg:col-span-5 bg-zinc-950 rounded-2xl p-5 sm:p-6 border border-zinc-800 text-white space-y-4 shadow-xl">
+            <div class="flex items-center justify-between pb-3 border-b border-zinc-800">
+              <span class="text-xs font-bold text-zinc-300 uppercase tracking-wider">Live Stil-Forhåndsvisning</span>
+              <span id="preview-badge-status" class="px-2 py-0.5 rounded-full text-[10px] font-mono bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+                Smaragd · Mørk
+              </span>
+            </div>
+
+            <div id="design-preview-mockup" class="rounded-xl border border-zinc-800 bg-zinc-900/90 p-4 space-y-3">
+              <div class="flex items-center gap-3">
+                <div id="preview-mockup-logo-box" class="h-10 w-10 rounded-xl bg-zinc-800 border border-zinc-700 flex items-center justify-center text-lg overflow-hidden shrink-0">
+                  <span id="preview-mockup-logo-fallback">🍽️</span>
+                  <img id="preview-mockup-logo-img" src="" alt="Logo" class="h-full w-full object-contain hidden" />
+                </div>
+                <div>
+                  <div id="preview-mockup-subtitle" class="text-[10px] uppercase tracking-wider text-emerald-400 font-medium">Fine Dining & Vinbar</div>
+                  <div id="preview-mockup-title" class="text-base font-bold text-white">Restaurant Eik og Gran</div>
+                </div>
+              </div>
+
+              <!-- Eksempel på en rett i valgt fargetone -->
+              <div class="pt-3 border-t border-zinc-800/80 space-y-2">
+                <div class="flex items-start justify-between">
+                  <div>
+                    <span id="preview-mockup-badge" class="inline-block text-[10px] font-bold px-2 py-0.5 rounded-md bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 mb-1">
+                      ⭐ Husets anbefaling
+                    </span>
+                    <h5 class="text-sm font-semibold text-white">Truffle & Dry-Aged Burger</h5>
+                    <p class="text-[11px] text-zinc-400">Kvernet norsk storfe, trøffelmajones og brioche.</p>
+                  </div>
+                  <div id="preview-mockup-price" class="text-sm font-bold text-emerald-400 font-mono">
+                    265,-
+                  </div>
+                </div>
+
+                <div class="pt-2 flex items-center justify-between text-[11px] text-zinc-500 border-t border-zinc-800/50">
+                  <span>Valgt font: <span id="preview-font-label" class="text-zinc-300 font-mono">Plus Jakarta Sans</span></span>
+                  <button type="button" onclick="switchAdminTab('preview')" class="text-emerald-400 hover:underline">
+                    Se full mobilvisning →
+                  </button>
+                </div>
+              </div>
+            </div>
+          </section>
 
         </div>
+      </div> <!-- Slutt tab-pane-design -->
 
-      </main>
+      <!-- ========================================================= -->
+      <!-- FANE 3: DRIFT, WIFI & SERVICE                             -->
+      <!-- ========================================================= -->
+      <div id="tab-pane-operations" class="hidden space-y-6">
+        <form id="restaurant-operations-form" onsubmit="handleSaveOperationsSettings(event)" class="space-y-6">
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+
+            <!-- Venstre kolonne: Kunngjøring & Tider -->
+            <div class="lg:col-span-6 space-y-6">
+
+              <!-- KORT 1: KUNNGJØRINGSBANNER -->
+              <div class="bg-white rounded-2xl p-5 sm:p-6 border border-zinc-200 shadow-xs space-y-4">
+                <div class="flex items-center justify-between border-b border-zinc-100 pb-3">
+                  <div>
+                    <h3 class="text-sm font-bold text-zinc-950 flex items-center gap-2">
+                      <span>📢</span>
+                      <span>Kunngjøringsbanner</span>
+                    </h3>
+                    <p class="text-xs text-zinc-500 mt-0.5">Vis et viktig varsel eller tilbud øverst for alle gjester</p>
+                  </div>
+                  <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" id="op-announcement-enabled" class="sr-only peer" />
+                    <div class="w-11 h-6 bg-zinc-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-zinc-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div>
+                  </label>
+                </div>
+
+                <div class="space-y-3">
+                  <div>
+                    <label for="op-announcement-type" class="block text-xs font-semibold text-zinc-700 mb-1">
+                      Bannertype / Farge
+                    </label>
+                    <select
+                      id="op-announcement-type"
+                      class="w-full rounded-lg border border-zinc-300 bg-zinc-50/50 px-3 py-2 text-xs text-zinc-900 focus:bg-white focus:border-zinc-950 focus:outline-none transition-colors"
+                    >
+                      <option value="info">ℹ️ Informasjon (Blå stripe)</option>
+                      <option value="warning">⚠️ Viktig melding / Kjøkkentid (Rav/Oransje)</option>
+                      <option value="success">🎉 Kampanje / Spesialtilbud (Smaragd/Grønn)</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label for="op-announcement-text" class="block text-xs font-semibold text-zinc-700 mb-1">
+                      Kunngjøringstekst
+                    </label>
+                    <input
+                      type="text"
+                      id="op-announcement-text"
+                      placeholder="F.eks. Kjøkkenet stenger 21:30 i kveld · Velkommen til bords!"
+                      class="w-full rounded-lg border border-zinc-300 bg-zinc-50/50 px-3 py-2 text-xs text-zinc-900 placeholder-zinc-400 focus:bg-white focus:border-zinc-950 focus:outline-none transition-colors"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <!-- KORT 2: ÅPNINGSTIDER & VALUTA -->
+              <div class="bg-white rounded-2xl p-5 sm:p-6 border border-zinc-200 shadow-xs space-y-4">
+                <div class="border-b border-zinc-100 pb-3">
+                  <h3 class="text-sm font-bold text-zinc-950 flex items-center gap-2">
+                    <span>🕒</span>
+                    <span>Tider & Valuta</span>
+                  </h3>
+                  <p class="text-xs text-zinc-500 mt-0.5">Tider gjesten ser i toppen av menyen, samt prisvisning</p>
+                </div>
+
+                <div class="space-y-3">
+                  <div>
+                    <label for="op-opening-hours" class="block text-xs font-semibold text-zinc-700 mb-1">
+                      Åpningstider / Kjøkkentider
+                    </label>
+                    <input
+                      type="text"
+                      id="op-opening-hours"
+                      placeholder="F.eks. Kjøkken åpent til 22:00 · Baren til 01:00"
+                      class="w-full rounded-lg border border-zinc-300 bg-zinc-50/50 px-3 py-2 text-xs text-zinc-900 placeholder-zinc-400 focus:bg-white focus:border-zinc-950 focus:outline-none transition-colors"
+                    />
+                  </div>
+
+                  <div>
+                    <label for="op-currency" class="block text-xs font-semibold text-zinc-700 mb-1">
+                      Valuta / Prisformat
+                    </label>
+                    <select
+                      id="op-currency"
+                      class="w-full rounded-lg border border-zinc-300 bg-zinc-50/50 px-3 py-2 text-xs text-zinc-900 focus:bg-white focus:border-zinc-950 focus:outline-none transition-colors"
+                    >
+                      <option value="kr">kr (f.eks. 245,- / 245 kr)</option>
+                      <option value="NOK">NOK (245 NOK)</option>
+                      <option value="SEK">SEK (245 SEK)</option>
+                      <option value="DKK">DKK (245 DKK)</option>
+                      <option value="€">€ Euro (€24.50)</option>
+                      <option value="$">$ USD ($24.50)</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Høyre kolonne: Gjestenett, Servitør & Google Reviews -->
+            <div class="lg:col-span-6 space-y-6">
+
+              <!-- KORT 3: GJESTENETT WIFI -->
+              <div class="bg-white rounded-2xl p-5 sm:p-6 border border-zinc-200 shadow-xs space-y-4">
+                <div class="flex items-center justify-between border-b border-zinc-100 pb-3">
+                  <div>
+                    <h3 class="text-sm font-bold text-zinc-950 flex items-center gap-2">
+                      <span>📶</span>
+                      <span>Gjestenett WiFi</span>
+                    </h3>
+                    <p class="text-xs text-zinc-500 mt-0.5">La gjestene koble seg på WiFi med ett klikk fra menyen</p>
+                  </div>
+                  <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" id="op-wifi-enabled" class="sr-only peer" />
+                    <div class="w-11 h-6 bg-zinc-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-zinc-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div>
+                  </label>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                  <div>
+                    <label for="op-wifi-ssid" class="block text-xs font-semibold text-zinc-700 mb-1">
+                      Nettverksnavn (SSID)
+                    </label>
+                    <input
+                      type="text"
+                      id="op-wifi-ssid"
+                      placeholder="F.eks. EikOgGran-Gjest"
+                      class="w-full rounded-lg border border-zinc-300 bg-zinc-50/50 px-3 py-2 text-xs text-zinc-900 placeholder-zinc-400 focus:bg-white focus:border-zinc-950 focus:outline-none transition-colors"
+                    />
+                  </div>
+
+                  <div>
+                    <label for="op-wifi-password" class="block text-xs font-semibold text-zinc-700 mb-1">
+                      Passord
+                    </label>
+                    <input
+                      type="text"
+                      id="op-wifi-password"
+                      placeholder="F.eks. velkommentilbords"
+                      class="w-full rounded-lg border border-zinc-300 bg-zinc-50/50 px-3 py-2 text-xs text-zinc-900 placeholder-zinc-400 focus:bg-white focus:border-zinc-950 focus:outline-none transition-colors"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <!-- KORT 4: TILKALL SERVITØR & GOOGLE REVIEW -->
+              <div class="bg-white rounded-2xl p-5 sm:p-6 border border-zinc-200 shadow-xs space-y-4">
+                <div class="flex items-center justify-between border-b border-zinc-100 pb-3">
+                  <div>
+                    <h3 class="text-sm font-bold text-zinc-950 flex items-center gap-2">
+                      <span>🔔</span>
+                      <span>Service-bjelle for bord</span>
+                    </h3>
+                    <p class="text-xs text-zinc-500 mt-0.5">Lar bordgjester (?bord=X) tilkalle servitør direkte fra menyen</p>
+                  </div>
+                  <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" id="op-service-bell-enabled" checked class="sr-only peer" />
+                    <div class="w-11 h-6 bg-zinc-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-zinc-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div>
+                  </label>
+                </div>
+
+                <!-- Google Review Seksjon -->
+                <div class="pt-2 border-t border-zinc-100 space-y-3">
+                  <div class="flex items-center justify-between">
+                    <div>
+                      <h4 class="text-xs font-bold text-zinc-950 flex items-center gap-1.5">
+                        <span>⭐</span>
+                        <span>Google Anmeldelser</span>
+                      </h4>
+                      <p class="text-[11px] text-zinc-500">Gi fornøyde gjester en direkteknapp til din Google Bedrift-profil</p>
+                    </div>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                      <input type="checkbox" id="op-google-review-enabled" checked class="sr-only peer" />
+                      <div class="w-11 h-6 bg-zinc-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-zinc-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div>
+                    </label>
+                  </div>
+
+                  <div>
+                    <label for="op-google-review-url" class="block text-xs font-semibold text-zinc-700 mb-1">
+                      Google Review-lenke
+                    </label>
+                    <input
+                      type="url"
+                      id="op-google-review-url"
+                      placeholder="https://g.page/r/ditt-sted/review"
+                      class="w-full rounded-lg border border-zinc-300 bg-zinc-50/50 px-3 py-2 text-xs text-zinc-900 placeholder-zinc-400 focus:bg-white focus:border-zinc-950 focus:outline-none transition-colors"
+                    />
+                  </div>
+
+                  <div>
+                    <label for="op-google-review-text" class="block text-xs font-semibold text-zinc-700 mb-1">
+                      Knappetekst for vurdering
+                    </label>
+                    <input
+                      type="text"
+                      id="op-google-review-text"
+                      placeholder="Fornøyd med opplevelsen? Gi oss 5 stjerner på Google ⭐"
+                      class="w-full rounded-lg border border-zinc-300 bg-zinc-50/50 px-3 py-2 text-xs text-zinc-900 placeholder-zinc-400 focus:bg-white focus:border-zinc-950 focus:outline-none transition-colors"
+                    />
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+
+          <div class="flex justify-end">
+            <button
+              type="submit"
+              id="save-operations-btn"
+              class="py-2.5 px-6 rounded-xl bg-zinc-950 hover:bg-zinc-800 text-white text-xs font-semibold transition-all shadow-xs flex items-center gap-2"
+            >
+              <span>Lagre alle driftsinnstillinger</span>
+            </button>
+          </div>
+        </form>
+      </div> <!-- Slutt tab-pane-operations -->
+
+      <!-- ========================================================= -->
+      <!-- FANE 4: BORDKORT & NFC-GENERATOR                          -->
+      <!-- ========================================================= -->
+      <div id="tab-pane-nfc" class="hidden space-y-6">
+        
+        <!-- HOVEDLENKE OG QR-KODE FOR MENY -->
+        <section class="bg-white rounded-2xl p-5 sm:p-6 border border-zinc-200 shadow-xs space-y-4">
+          <div class="border-b border-zinc-100 pb-3 flex items-start justify-between">
+            <div>
+              <h3 class="text-base font-bold text-zinc-950 flex items-center gap-2">
+                <span>📱</span>
+                <span>Hovedlenke til Mobilmeny (NFC & QR)</span>
+              </h3>
+              <p class="text-xs text-zinc-500 mt-0.5">
+                Denne adressen legges inn på restaurantens NFC-brikker eller printes som standard QR-kode ved inngangen / baren.
+              </p>
+            </div>
+            <button
+              type="button"
+              onclick="toggleQrModal()"
+              class="py-1.5 px-3 rounded-lg bg-zinc-100 hover:bg-zinc-200 text-zinc-900 text-xs font-semibold flex items-center gap-1.5 transition-colors"
+            >
+              <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"/>
+              </svg>
+              <span>Vis stor QR-kode</span>
+            </button>
+          </div>
+
+          <div class="flex flex-col sm:flex-row items-center gap-2.5">
+            <div class="w-full flex-1 rounded-xl bg-zinc-50 border border-zinc-200 px-3.5 py-2.5 font-mono text-xs text-zinc-800 break-all select-all flex items-center justify-between">
+              <span id="nfc-main-url-display">https://.../meny.html?id=...</span>
+            </div>
+            <button
+              type="button"
+              onclick="copyNfcMainUrl()"
+              class="w-full sm:w-auto py-2.5 px-4 rounded-xl bg-zinc-950 hover:bg-zinc-800 text-white text-xs font-semibold shrink-0 transition-colors flex items-center justify-center gap-1.5"
+            >
+              <span>Kopier lenke</span>
+            </button>
+            <a
+              id="nfc-open-new-tab"
+              href="#"
+              target="_blank"
+              class="w-full sm:w-auto py-2.5 px-4 rounded-xl border border-zinc-300 hover:bg-zinc-100 text-zinc-900 text-xs font-semibold shrink-0 transition-colors flex items-center justify-center gap-1.5"
+            >
+              <span>Åpne meny ↗</span>
+            </a>
+          </div>
+        </section>
+
+        <!-- BORDNUMMER-GENERATOR FOR FYSISKE BORDKORT -->
+        <section class="bg-white rounded-2xl p-5 sm:p-6 border border-zinc-200 shadow-xs space-y-4">
+          <div class="border-b border-zinc-100 pb-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <div>
+              <h3 class="text-base font-bold text-zinc-950 flex items-center gap-2">
+                <span>🍽️</span>
+                <span>Bordkort-Generator (Unike Bordlenker)</span>
+              </h3>
+              <p class="text-xs text-zinc-500 mt-0.5">
+                Generer unike lenker til hvert bord. Gjesten ser automatisk sitt bordnummer og kan tilkalle servitør.
+              </p>
+            </div>
+            <div class="flex items-center gap-2">
+              <label for="nfc-table-count" class="text-xs font-semibold text-zinc-700">Antall bord:</label>
+              <input
+                type="number"
+                id="nfc-table-count"
+                min="1"
+                max="100"
+                value="12"
+                class="w-20 rounded-lg border border-zinc-300 px-2.5 py-1.5 text-xs text-zinc-900 font-bold focus:border-zinc-950 focus:outline-none"
+              />
+              <button
+                type="button"
+                onclick="generateTableLinksGrid()"
+                class="py-1.5 px-3 rounded-lg bg-zinc-950 hover:bg-zinc-800 text-white text-xs font-semibold transition-colors"
+              >
+                Oppdater bord
+              </button>
+            </div>
+          </div>
+
+          <div id="table-links-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            <!-- Populerers dynamisk med bordlenker -->
+          </div>
+        </section>
+
+      </div> <!-- Slutt tab-pane-nfc -->
+
+      <!-- ========================================================= -->
+      <!-- FANE 5: LIVE MOBIL-SIMULATOR                              -->
+      <!-- ========================================================= -->
+      <div id="tab-pane-preview" class="hidden space-y-6">
+        
+        <div class="bg-white rounded-2xl p-4 sm:p-5 border border-zinc-200 shadow-xs flex flex-wrap items-center justify-between gap-3">
+          <div class="flex items-center gap-3">
+            <span class="p-2 rounded-xl bg-zinc-100 text-zinc-900 font-bold">📱</span>
+            <div>
+              <h3 class="text-sm font-bold text-zinc-950">Interaktiv Gjestesimulator</h3>
+              <p class="text-xs text-zinc-500">Se nøyaktig hvordan restaurantens gjester opplever mobilmenyen på telefonen</p>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <!-- Bordvelger for simulator -->
+            <label for="sim-table-select" class="text-xs font-semibold text-zinc-700">Test med bord:</label>
+            <select
+              id="sim-table-select"
+              onchange="changeSimulatorTable()"
+              class="rounded-lg border border-zinc-300 bg-white px-2.5 py-1.5 text-xs text-zinc-900 font-semibold focus:border-zinc-950 focus:outline-none"
+            >
+              <option value="">Uten bord (Inngang/Bar)</option>
+              <option value="1">Bord 1</option>
+              <option value="2">Bord 2</option>
+              <option value="4" selected>Bord 4 (Standard)</option>
+              <option value="7">Bord 7</option>
+              <option value="12">Bord 12</option>
+            </select>
+
+            <button
+              type="button"
+              onclick="reloadSimulatorIframe()"
+              class="py-1.5 px-3 rounded-lg bg-zinc-100 hover:bg-zinc-200 text-zinc-800 text-xs font-semibold transition-colors flex items-center gap-1"
+              title="Oppfrisk forhåndsvisningen"
+            >
+              <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+              </svg>
+              <span>Oppdater</span>
+            </button>
+
+            <a
+              id="sim-external-link"
+              href="#"
+              target="_blank"
+              class="py-1.5 px-3 rounded-lg bg-zinc-950 hover:bg-zinc-800 text-white text-xs font-semibold transition-colors flex items-center gap-1"
+            >
+              <span>Åpne i nytt vindu ↗</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Telefonramme-mockup -->
+        <div class="flex justify-center py-4 bg-zinc-900/10 rounded-2xl border border-zinc-200/80 p-4">
+          <div class="relative w-full max-w-[400px] h-[750px] bg-zinc-950 rounded-[44px] p-3 shadow-2xl border-4 border-zinc-800">
+            <!-- Dynamic Island / Høyttaler -->
+            <div class="absolute top-4 left-1/2 -translate-x-1/2 w-28 h-5 bg-black rounded-full z-20 flex items-center justify-center">
+              <div class="h-2.5 w-2.5 rounded-full bg-zinc-900 border border-zinc-800 mr-2"></div>
+              <div class="h-1.5 w-1.5 rounded-full bg-blue-900/50"></div>
+            </div>
+
+            <!-- Rammeinnhold / iFrame -->
+            <div class="w-full h-full rounded-[36px] overflow-hidden bg-black">
+              <iframe
+                id="simulator-iframe"
+                src=""
+                class="w-full h-full border-none"
+                title="Mobilmeny forhåndsvisning"
+              ></iframe>
+            </div>
+          </div>
+        </div>
+
+      </div> <!-- Slutt tab-pane-preview -->
+
+    </main>
 
       <!-- Footer -->
       <footer class="bg-white border-t border-zinc-200 py-6 mt-12 text-center text-xs text-zinc-500">
@@ -854,6 +1491,49 @@ service cloud.firestore {
                 <!-- Populerers dynamisk -->
               </select>
             </div>
+          </div>
+
+          <!-- Merke (Badge) og Porsjonsinfo -->
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label for="edit-dish-badge" class="block text-xs font-semibold text-zinc-700 mb-1">
+                Merke (Badge)
+              </label>
+              <select
+                id="edit-dish-badge"
+                class="w-full rounded-lg border border-zinc-300 bg-zinc-50/50 px-2.5 py-2 text-xs text-zinc-900 focus:bg-white focus:border-zinc-950 focus:outline-none transition-colors"
+              >
+                <option value="none">Ingen merke</option>
+                <option value="special">⭐ Husets anbefaling</option>
+                <option value="bestseller">🔥 Populær / Bestseller</option>
+                <option value="vegan">🌱 Vegetar / Vegansk</option>
+                <option value="new">✨ Nyhet</option>
+              </select>
+            </div>
+            <div>
+              <label for="edit-dish-portion" class="block text-xs font-semibold text-zinc-700 mb-1">
+                Mengde / Størrelse
+              </label>
+              <input
+                type="text"
+                id="edit-dish-portion"
+                placeholder="F.eks. 200g, 3 stk, For 2"
+                class="w-full rounded-lg border border-zinc-300 bg-zinc-50/50 px-2.5 py-2 text-xs text-zinc-900 placeholder-zinc-400 focus:bg-white focus:border-zinc-950 focus:outline-none transition-colors"
+              />
+            </div>
+          </div>
+
+          <!-- Bilde-URL for retten -->
+          <div>
+            <label for="edit-dish-image-url" class="block text-xs font-semibold text-zinc-700 mb-1">
+              Bilde-URL <span class="text-zinc-400 font-normal">(Valgfritt matbilde)</span>
+            </label>
+            <input
+              type="url"
+              id="edit-dish-image-url"
+              placeholder="https://images.unsplash.com/..."
+              class="w-full rounded-lg border border-zinc-300 bg-zinc-50/50 px-3 py-2 text-xs text-zinc-900 placeholder-zinc-400 focus:bg-white focus:border-zinc-950 focus:outline-none transition-colors"
+            />
           </div>
 
           <!-- Beskrivelse -->
@@ -1053,6 +1733,9 @@ service cloud.firestore {
           description_en: '200g minced Norwegian beef, truffle mayonnaise, aged cheddar cheese and butter-toasted brioche bun.',
           price: 225,
           category: 'Hovedrett',
+          badge: 'bestseller',
+          portion_info: '200g',
+          image_url: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400&q=80',
           allergens: 'Gluten (hvete), Melk, Egg',
           sold_out: false
         },
@@ -1064,6 +1747,9 @@ service cloud.firestore {
           description_en: 'Braised leeks, wild ramson garlic oil and champagne beurre blanc.',
           price: 365,
           category: 'Hovedrett',
+          badge: 'special',
+          portion_info: '220g kveitefilet',
+          image_url: 'https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=400&q=80',
           allergens: 'Fisk, Melk, Sulfitt',
           sold_out: false
         },
@@ -1075,6 +1761,9 @@ service cloud.firestore {
           description_en: 'Salt-baked celeriac root, rich Sandefjord butter sauce and crispy fried capers.',
           price: 315,
           category: 'Hovedrett',
+          badge: 'none',
+          portion_info: '250g',
+          image_url: '',
           allergens: 'Fisk, Melk, Selleri',
           sold_out: true
         },
@@ -1086,6 +1775,9 @@ service cloud.firestore {
           description_en: 'Arctic sea buckthorn, pickled shallots, fresh coriander and crispy sunchoke chips.',
           price: 175,
           category: 'Forrett',
+          badge: 'none',
+          portion_info: 'Forrett',
+          image_url: 'https://images.unsplash.com/photo-1539136788836-5699e78bfc75?w=400&q=80',
           allergens: 'Fisk',
           sold_out: false
         },
@@ -1097,6 +1789,9 @@ service cloud.firestore {
           description_en: 'Freshly baked sourdough focaccia with rosemary and sea salt from Røros.',
           price: 65,
           category: 'Forrett',
+          badge: 'vegan',
+          portion_info: '4 biter',
+          image_url: '',
           allergens: 'Gluten (hvete), Melk',
           sold_out: false
         },
@@ -1108,6 +1803,9 @@ service cloud.firestore {
           description_en: 'Wild handpicked cloudberries, caramelized white chocolate crumble and sea buckthorn syrup.',
           price: 165,
           category: 'Desserter',
+          badge: 'new',
+          portion_info: 'Dessert',
+          image_url: 'https://images.unsplash.com/photo-1551024709-8f23befc6f87?w=400&q=80',
           allergens: 'Melk, Soya',
           sold_out: false
         },
@@ -1119,6 +1817,9 @@ service cloud.firestore {
           description_en: 'Classic Norwegian craft IPA with generous hop profile and vibrant citrus notes.',
           price: 115,
           category: 'Drikke',
+          badge: 'none',
+          portion_info: '0.33l',
+          image_url: '',
           allergens: 'Gluten (bygg)',
           sold_out: false
         },
@@ -1130,6 +1831,9 @@ service cloud.firestore {
           description_en: 'Oak cask-aged Norwegian aquavit, rye whiskey, heather honey syrup and aromatic orange oil.',
           price: 175,
           category: 'Drikke',
+          badge: 'special',
+          portion_info: 'Cocktail',
+          image_url: '',
           allergens: 'Ingen kjente allergener',
           sold_out: false
         }
@@ -1235,12 +1939,55 @@ service cloud.firestore {
         lockDashboard();
       };
 
-      // Hent restaurantnavn, adgangskode, tekster og kategorier
+      // FANE-NAVIGASJON MELLOM KONTROLLPANEL-MODULER
+      let activeAdminTab = 'menu';
+      window.switchAdminTab = function(tabName) {
+        activeAdminTab = tabName;
+        const tabs = ['menu', 'design', 'operations', 'nfc', 'preview'];
+        tabs.forEach(t => {
+          const btn = document.getElementById(`tab-btn-${t}`);
+          const pane = document.getElementById(`tab-pane-${t}`);
+          if (btn) {
+            if (t === tabName) {
+              btn.className = 'admin-tab-btn flex-1 py-2.5 px-3.5 rounded-xl text-xs sm:text-sm font-semibold transition-all flex items-center justify-center gap-2 bg-zinc-950 text-white shadow-xs shrink-0';
+            } else {
+              btn.className = 'admin-tab-btn flex-1 py-2.5 px-3.5 rounded-xl text-xs sm:text-sm font-semibold transition-all flex items-center justify-center gap-2 text-zinc-600 hover:text-zinc-950 hover:bg-zinc-100 shrink-0';
+            }
+          }
+          if (pane) {
+            if (t === tabName) {
+              pane.classList.remove('hidden');
+            } else {
+              pane.classList.add('hidden');
+            }
+          }
+        });
+
+        if (tabName === 'preview') {
+          reloadSimulatorIframe();
+        } else if (tabName === 'nfc') {
+          generateTableLinksGrid();
+        }
+      };
+
+      // Hent restaurantnavn, adgangskode, tekster, design, drift og kategorier
       async function loadRestaurantMetadata() {
         let name = restaurantId.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
         let taglineAbove = 'Fine Dining & Vinbar';
         let taglineBelow = 'Sesongens råvarer og klassiske favoritter. Velkommen til bords.';
         let categories = ['Hovedrett', 'Forrett', 'Desserter', 'Drikke'];
+        let accentColor = 'emerald';
+        let themeMode = 'dark';
+        let fontFamily = 'jakarta';
+        let logoUrl = '';
+        let coverUrl = '';
+        let currency = 'kr';
+        let openingHours = '';
+        let announcement = { enabled: false, type: 'info', text: '' };
+        let wifi = { enabled: false, ssid: '', password: '' };
+        let serviceBell = { enabled: true };
+        let googleReview = { enabled: true, url: '', text: 'Fornøyd med opplevelsen? Gi oss 5 stjerner på Google ⭐' };
+
         await setRestaurantPin('1234');
 
         if (isRealFirebase && db) {
@@ -1258,6 +2005,17 @@ service cloud.firestore {
               if (Array.isArray(data.categories) && data.categories.length > 0) {
                 categories = data.categories;
               }
+              if (data.accent_color) accentColor = data.accent_color;
+              if (data.theme_mode) themeMode = data.theme_mode;
+              if (data.font_family) fontFamily = data.font_family;
+              if (data.logo_url) logoUrl = data.logo_url;
+              if (data.cover_url) coverUrl = data.cover_url;
+              if (data.currency) currency = data.currency;
+              if (data.opening_hours) openingHours = data.opening_hours;
+              if (data.announcement) announcement = { ...announcement, ...data.announcement };
+              if (data.wifi) wifi = { ...wifi, ...data.wifi };
+              if (data.service_bell) serviceBell = { ...serviceBell, ...data.service_bell };
+              if (data.google_review) googleReview = { ...googleReview, ...data.google_review };
             }
           } catch (e) {
             console.warn('Kunne ikke hente restaurantdata fra Firestore:', e);
@@ -1271,6 +2029,17 @@ service cloud.firestore {
               if (m.tagline_above) taglineAbove = m.tagline_above;
               if (m.tagline_below) taglineBelow = m.tagline_below;
               if (Array.isArray(m.categories)) categories = m.categories;
+              if (m.accent_color) accentColor = m.accent_color;
+              if (m.theme_mode) themeMode = m.theme_mode;
+              if (m.font_family) fontFamily = m.font_family;
+              if (m.logo_url) logoUrl = m.logo_url;
+              if (m.cover_url) coverUrl = m.cover_url;
+              if (m.currency) currency = m.currency;
+              if (m.opening_hours) openingHours = m.opening_hours;
+              if (m.announcement) announcement = { ...announcement, ...m.announcement };
+              if (m.wifi) wifi = { ...wifi, ...m.wifi };
+              if (m.service_bell) serviceBell = { ...serviceBell, ...m.service_bell };
+              if (m.google_review) googleReview = { ...googleReview, ...m.google_review };
             }
             const all = JSON.parse(localStorage.getItem('smaksync_firestore_restaurants') || '[]');
             const found = all.find(r => r.id === restaurantId);
@@ -1282,7 +2051,23 @@ service cloud.firestore {
           } catch {}
         }
 
-        currentRestaurantMeta = { name, tagline_above: taglineAbove, tagline_below: taglineBelow, categories };
+        currentRestaurantMeta = {
+          name,
+          tagline_above: taglineAbove,
+          tagline_below: taglineBelow,
+          categories,
+          accent_color: accentColor,
+          theme_mode: themeMode,
+          font_family: fontFamily,
+          logo_url: logoUrl,
+          cover_url: coverUrl,
+          currency,
+          opening_hours: openingHours,
+          announcement,
+          wifi,
+          service_bell: serviceBell,
+          google_review: googleReview
+        };
         currentCategories = categories;
 
         applyMetaToUi();
@@ -1290,10 +2075,12 @@ service cloud.firestore {
       }
 
       function applyMetaToUi() {
-        const name = currentRestaurantMeta.name || restaurantId;
-        const taglineAbove = currentRestaurantMeta.tagline_above || 'Fine Dining & Vinbar';
-        const taglineBelow = currentRestaurantMeta.tagline_below || 'Sesongens råvarer og klassiske favoritter. Velkommen til bords.';
+        const meta = currentRestaurantMeta;
+        const name = meta.name || restaurantId;
+        const taglineAbove = meta.tagline_above || 'Fine Dining & Vinbar';
+        const taglineBelow = meta.tagline_below || 'Sesongens råvarer og klassiske favoritter. Velkommen til bords.';
 
+        // Header og låseskjerm
         const headName = document.getElementById('header-restaurant-name');
         if (headName) headName.innerText = name;
         const bannerTxt = document.getElementById('banner-welcome-text');
@@ -1304,6 +2091,7 @@ service cloud.firestore {
         if (lockId) lockId.innerText = restaurantId;
         document.title = `SmakSync - ${name} (Admin)`;
 
+        // Fane 1: Tekster
         const inName = document.getElementById('input-restaurant-name');
         if (inName) inName.value = name;
         const inAbove = document.getElementById('input-tagline-above');
@@ -1311,9 +2099,347 @@ service cloud.firestore {
         const inBelow = document.getElementById('input-tagline-below');
         if (inBelow) inBelow.value = taglineBelow;
 
+        // Fane 2: Design
+        selectAccentColor(meta.accent_color || 'emerald', false);
+        selectThemeMode(meta.theme_mode || 'dark', false);
+        const fontIn = document.getElementById('input-font-family');
+        if (fontIn) fontIn.value = meta.font_family || 'jakarta';
+        const logoIn = document.getElementById('input-logo-url');
+        if (logoIn) logoIn.value = meta.logo_url || '';
+        const coverIn = document.getElementById('input-cover-url');
+        if (coverIn) coverIn.value = meta.cover_url || '';
+
+        // Fane 3: Drift
+        const annEnabled = document.getElementById('op-announcement-enabled');
+        if (annEnabled) annEnabled.checked = meta.announcement?.enabled === true;
+        const annType = document.getElementById('op-announcement-type');
+        if (annType && meta.announcement?.type) annType.value = meta.announcement.type;
+        const annText = document.getElementById('op-announcement-text');
+        if (annText && meta.announcement?.text) annText.value = meta.announcement.text;
+
+        const openIn = document.getElementById('op-opening-hours');
+        if (openIn) openIn.value = meta.opening_hours || '';
+        const currIn = document.getElementById('op-currency');
+        if (currIn) currIn.value = meta.currency || 'kr';
+
+        const wifiEnabled = document.getElementById('op-wifi-enabled');
+        if (wifiEnabled) wifiEnabled.checked = meta.wifi?.enabled === true;
+        const wifiSsid = document.getElementById('op-wifi-ssid');
+        if (wifiSsid) wifiSsid.value = meta.wifi?.ssid || '';
+        const wifiPass = document.getElementById('op-wifi-password');
+        if (wifiPass) wifiPass.value = meta.wifi?.password || '';
+
+        const servEnabled = document.getElementById('op-service-bell-enabled');
+        if (servEnabled) servEnabled.checked = meta.service_bell?.enabled !== false;
+
+        const revEnabled = document.getElementById('op-google-review-enabled');
+        if (revEnabled) revEnabled.checked = meta.google_review?.enabled !== false;
+        const revUrl = document.getElementById('op-google-review-url');
+        if (revUrl) revUrl.value = meta.google_review?.url || '';
+        const revText = document.getElementById('op-google-review-text');
+        if (revText) revText.value = meta.google_review?.text || 'Fornøyd med opplevelsen? Gi oss 5 stjerner på Google ⭐';
+
+        // Fane 4: NFC
+        const mainNfc = window.location.origin + window.location.pathname.replace('admin.html', guestMenuUrl);
+        const mainDisplay = document.getElementById('nfc-main-url-display');
+        if (mainDisplay) mainDisplay.innerText = mainNfc;
+        const nfcLink = document.getElementById('nfc-open-new-tab');
+        if (nfcLink) nfcLink.href = mainNfc;
+
         updateTextLivePreview();
         renderCategoryControls();
+        updateDesignPreview();
+        generateTableLinksGrid();
       }
+
+      // ==========================================
+      // DESIGN-HÅNDTERING
+      // ==========================================
+      window.selectAccentColor = function(color, triggerPreview = true) {
+        const hiddenIn = document.getElementById('input-accent-color');
+        if (hiddenIn) hiddenIn.value = color;
+
+        document.querySelectorAll('.color-pick-btn').forEach(btn => {
+          const c = btn.getAttribute('data-color');
+          if (c === color) {
+            btn.classList.add('border-2', 'border-emerald-500', 'bg-emerald-50/50', 'shadow-xs');
+            btn.classList.remove('border-zinc-200');
+          } else {
+            btn.classList.remove('border-2', 'border-emerald-500', 'bg-emerald-50/50', 'shadow-xs');
+            btn.classList.add('border', 'border-zinc-200');
+          }
+        });
+
+        if (triggerPreview) updateDesignPreview();
+      };
+
+      window.selectThemeMode = function(mode, triggerPreview = true) {
+        const hiddenIn = document.getElementById('input-theme-mode');
+        if (hiddenIn) hiddenIn.value = mode;
+
+        document.querySelectorAll('.theme-mode-btn').forEach(btn => {
+          const m = btn.getAttribute('data-mode');
+          if (m === mode) {
+            btn.classList.add('border-2', 'border-zinc-950', 'bg-zinc-900', 'text-white', 'shadow-xs');
+            btn.classList.remove('border-zinc-200', 'bg-white', 'text-zinc-900');
+          } else {
+            btn.classList.remove('border-2', 'border-zinc-950', 'bg-zinc-900', 'text-white', 'shadow-xs');
+            btn.classList.add('border', 'border-zinc-200', 'bg-white', 'text-zinc-900');
+          }
+        });
+
+        if (triggerPreview) updateDesignPreview();
+      };
+
+      window.updateDesignPreview = function() {
+        const color = document.getElementById('input-accent-color')?.value || 'emerald';
+        const mode = document.getElementById('input-theme-mode')?.value || 'dark';
+        const font = document.getElementById('input-font-family')?.value || 'jakarta';
+        const logoUrl = document.getElementById('input-logo-url')?.value?.trim() || '';
+
+        const badgeStatus = document.getElementById('preview-badge-status');
+        if (badgeStatus) {
+          const colLabel = { emerald: 'Smaragd', gold: 'Gull', rose: 'Rose', orange: 'Oransje', blue: 'Kystblå', slate: 'Skifer' }[color] || color;
+          const modLabel = { dark: 'Mørk', light: 'Lys', auto: 'Auto' }[mode] || mode;
+          badgeStatus.innerText = `${colLabel} · ${modLabel}`;
+        }
+
+        const fontLabel = document.getElementById('preview-font-label');
+        if (fontLabel) {
+          const fontNames = { jakarta: 'Plus Jakarta Sans', playfair: 'Playfair Display', inter: 'Inter' };
+          fontLabel.innerText = fontNames[font] || font;
+        }
+
+        const titleEl = document.getElementById('preview-mockup-title');
+        const inName = document.getElementById('input-restaurant-name');
+        if (titleEl && inName) titleEl.innerText = inName.value.trim() || currentRestaurantMeta.name;
+
+        const subEl = document.getElementById('preview-mockup-subtitle');
+        const inAbove = document.getElementById('input-tagline-above');
+        if (subEl && inAbove) subEl.innerText = inAbove.value.trim() || currentRestaurantMeta.tagline_above;
+
+        // Oppdater farger i kortet
+        const priceEl = document.getElementById('preview-mockup-price');
+        const mockupBadge = document.getElementById('preview-mockup-badge');
+        const colorClasses = {
+          emerald: { text: 'text-emerald-400', badge: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30' },
+          gold: { text: 'text-amber-400', badge: 'bg-amber-500/20 text-amber-300 border-amber-500/30' },
+          rose: { text: 'text-rose-400', badge: 'bg-rose-500/20 text-rose-300 border-rose-500/30' },
+          orange: { text: 'text-orange-400', badge: 'bg-orange-500/20 text-orange-300 border-orange-500/30' },
+          blue: { text: 'text-sky-400', badge: 'bg-sky-500/20 text-sky-300 border-sky-500/30' },
+          slate: { text: 'text-zinc-300', badge: 'bg-zinc-500/20 text-zinc-300 border-zinc-500/30' }
+        };
+        const cConfig = colorClasses[color] || colorClasses.emerald;
+        if (priceEl) priceEl.className = `text-sm font-bold ${cConfig.text} font-mono`;
+        if (subEl) subEl.className = `text-[10px] uppercase tracking-wider ${cConfig.text} font-medium`;
+        if (mockupBadge) mockupBadge.className = `inline-block text-[10px] font-bold px-2 py-0.5 rounded-md border mb-1 ${cConfig.badge}`;
+
+        // Logo
+        const img = document.getElementById('preview-mockup-logo-img');
+        const fallback = document.getElementById('preview-mockup-logo-fallback');
+        if (img && fallback) {
+          if (logoUrl) {
+            img.src = logoUrl;
+            img.classList.remove('hidden');
+            fallback.classList.add('hidden');
+          } else {
+            img.classList.add('hidden');
+            fallback.classList.remove('hidden');
+          }
+        }
+      };
+
+      window.handleSaveDesignSettings = async function(e) {
+        e.preventDefault();
+        const accent_color = document.getElementById('input-accent-color')?.value || 'emerald';
+        const theme_mode = document.getElementById('input-theme-mode')?.value || 'dark';
+        const font_family = document.getElementById('input-font-family')?.value || 'jakarta';
+        const logo_url = document.getElementById('input-logo-url')?.value?.trim() || '';
+        const cover_url = document.getElementById('input-cover-url')?.value?.trim() || '';
+
+        const btn = document.getElementById('save-design-btn');
+        if (btn) btn.disabled = true;
+
+        currentRestaurantMeta = {
+          ...currentRestaurantMeta,
+          accent_color,
+          theme_mode,
+          font_family,
+          logo_url,
+          cover_url
+        };
+
+        try {
+          if (isRealFirebase && db) {
+            await setDoc(doc(db, 'restaurants', restaurantId), {
+              accent_color,
+              theme_mode,
+              font_family,
+              logo_url,
+              cover_url,
+              updated_at: new Date().toISOString()
+            }, { merge: true });
+          }
+          localStorage.setItem(LOCAL_META_KEY, JSON.stringify(currentRestaurantMeta));
+          showToast('✓ Design og fargetema lagret! Oppdatert umiddelbart på gjestemenyen.');
+          reloadSimulatorIframe();
+        } catch (err) {
+          console.error('Feil ved lagring av design:', err);
+          alert('Kunne ikke lagre design: ' + err.message);
+        } finally {
+          if (btn) btn.disabled = false;
+        }
+      };
+
+      // ==========================================
+      // DRIFTS-HÅNDTERING
+      // ==========================================
+      window.handleSaveOperationsSettings = async function(e) {
+        e.preventDefault();
+        const announcement = {
+          enabled: document.getElementById('op-announcement-enabled')?.checked === true,
+          type: document.getElementById('op-announcement-type')?.value || 'info',
+          text: document.getElementById('op-announcement-text')?.value?.trim() || ''
+        };
+        const opening_hours = document.getElementById('op-opening-hours')?.value?.trim() || '';
+        const currency = document.getElementById('op-currency')?.value || 'kr';
+
+        const wifi = {
+          enabled: document.getElementById('op-wifi-enabled')?.checked === true,
+          ssid: document.getElementById('op-wifi-ssid')?.value?.trim() || '',
+          password: document.getElementById('op-wifi-password')?.value?.trim() || ''
+        };
+
+        const service_bell = {
+          enabled: document.getElementById('op-service-bell-enabled')?.checked !== false
+        };
+
+        const google_review = {
+          enabled: document.getElementById('op-google-review-enabled')?.checked !== false,
+          url: document.getElementById('op-google-review-url')?.value?.trim() || '',
+          text: document.getElementById('op-google-review-text')?.value?.trim() || 'Fornøyd med opplevelsen? Gi oss 5 stjerner på Google ⭐'
+        };
+
+        const btn = document.getElementById('save-operations-btn');
+        if (btn) btn.disabled = true;
+
+        currentRestaurantMeta = {
+          ...currentRestaurantMeta,
+          announcement,
+          opening_hours,
+          currency,
+          wifi,
+          service_bell,
+          google_review
+        };
+
+        try {
+          if (isRealFirebase && db) {
+            await setDoc(doc(db, 'restaurants', restaurantId), {
+              announcement,
+              opening_hours,
+              currency,
+              wifi,
+              service_bell,
+              google_review,
+              updated_at: new Date().toISOString()
+            }, { merge: true });
+          }
+          localStorage.setItem(LOCAL_META_KEY, JSON.stringify(currentRestaurantMeta));
+          showToast('✓ Driftsinnstillinger lagret! Gjestemeny synkronisert.');
+          reloadSimulatorIframe();
+        } catch (err) {
+          console.error('Feil ved lagring av drift:', err);
+          alert('Kunne ikke lagre driftsinnstillinger: ' + err.message);
+        } finally {
+          if (btn) btn.disabled = false;
+        }
+      };
+
+      // ==========================================
+      // NFC & BORDKORT-GENERATOR
+      // ==========================================
+      window.copyNfcMainUrl = function() {
+        const fullUrl = window.location.origin + window.location.pathname.replace('admin.html', guestMenuUrl);
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(fullUrl).then(() => {
+            showToast('✓ Hoved-menylenke kopiert til utklippstavlen!');
+          }).catch(() => prompt('Kopier lenken her:', fullUrl));
+        } else {
+          prompt('Kopier lenken her:', fullUrl);
+        }
+      };
+
+      window.generateTableLinksGrid = function() {
+        const countIn = document.getElementById('nfc-table-count');
+        const count = countIn ? parseInt(countIn.value, 10) || 12 : 12;
+        const container = document.getElementById('table-links-container');
+        if (!container) return;
+
+        const baseUrl = window.location.origin + window.location.pathname.replace('admin.html', guestMenuUrl);
+
+        let html = '';
+        for (let i = 1; i <= count; i++) {
+          const tableUrl = `${baseUrl}&bord=${i}`;
+          html += `
+            <div class="rounded-xl border border-zinc-200 bg-zinc-50/60 p-3 hover:bg-white hover:border-zinc-300 transition-all flex flex-col justify-between gap-2 shadow-2xs">
+              <div class="flex items-center justify-between">
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md bg-zinc-950 text-white font-bold text-xs font-mono">
+                  🍽️ Bord ${i}
+                </span>
+                <a
+                  href="${tableUrl}"
+                  target="_blank"
+                  class="text-[11px] font-semibold text-emerald-700 hover:text-emerald-900 flex items-center gap-0.5"
+                >
+                  <span>Test visning ↗</span>
+                </a>
+              </div>
+              <div class="text-[10px] font-mono text-zinc-500 break-all truncate select-all bg-white px-2 py-1 rounded border border-zinc-200">
+                ${tableUrl}
+              </div>
+              <button
+                type="button"
+                onclick="copyTableUrl('${tableUrl}', ${i})"
+                class="w-full py-1.5 rounded-lg border border-zinc-300 bg-white hover:bg-zinc-100 text-[11px] font-semibold text-zinc-800 transition-colors flex items-center justify-center gap-1 shadow-2xs"
+              >
+                <span>Kopier lenke for Bord ${i}</span>
+              </button>
+            </div>
+          `;
+        }
+        container.innerHTML = html;
+      };
+
+      window.copyTableUrl = function(url, tableNum) {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(url).then(() => {
+            showToast(`✓ Lenke for Bord ${tableNum} kopiert til utklippstavlen!`);
+          }).catch(() => prompt(`Kopier lenke for Bord ${tableNum}:`, url));
+        } else {
+          prompt(`Kopier lenke for Bord ${tableNum}:`, url);
+        }
+      };
+
+      // ==========================================
+      // SIMULATOR
+      // ==========================================
+      window.reloadSimulatorIframe = function() {
+        const iframe = document.getElementById('simulator-iframe');
+        const sel = document.getElementById('sim-table-select');
+        const tableNum = sel ? sel.value : '';
+        const extLink = document.getElementById('sim-external-link');
+
+        let targetUrl = window.location.origin + window.location.pathname.replace('admin.html', guestMenuUrl);
+        if (tableNum) targetUrl += `&bord=${tableNum}`;
+
+        if (iframe) iframe.src = targetUrl;
+        if (extLink) extLink.href = targetUrl;
+      };
+
+      window.changeSimulatorTable = function() {
+        reloadSimulatorIframe();
+      };
 
       window.updateTextLivePreview = function() {
         const inName = document.getElementById('input-restaurant-name');
@@ -1361,6 +2487,7 @@ service cloud.firestore {
 
           applyMetaToUi();
           showToast('✓ Tittel og menytekster lagret! Oppdatert i gjestemenyen.');
+          reloadSimulatorIframe();
         } catch (err) {
           console.error('Feil ved lagring av menytekster:', err);
           alert('Kunne ikke lagre menytekster: ' + err.message);
@@ -1449,6 +2576,9 @@ service cloud.firestore {
                 allergens: dish.allergens || '',
                 price: dish.price,
                 category: dish.category,
+                badge: dish.badge || 'none',
+                portion_info: dish.portion_info || '',
+                image_url: dish.image_url || '',
                 sold_out: dish.sold_out === true,
                 created_at: new Date().toISOString()
               });
@@ -1494,6 +2624,9 @@ service cloud.firestore {
                     allergens: d.allergens || '',
                     price: typeof d.price === 'number' ? d.price : parseFloat(d.price) || 0,
                     category: d.category || 'Hovedrett',
+                    badge: d.badge || 'none',
+                    portion_info: d.portion_info || d.portion || '',
+                    image_url: d.image_url || d.imageUrl || '',
                     sold_out: d.sold_out === true || d.soldOut === true
                   });
                 });
@@ -1583,27 +2716,54 @@ service cloud.firestore {
             <tr class="hover:bg-zinc-50/80 transition-colors">
               <!-- Rett & Beskrivelse -->
               <td class="py-3 px-3.5">
-                <div class="flex items-center gap-2 flex-wrap">
-                  <span class="font-semibold text-zinc-950 ${isSoldOut ? 'line-through text-zinc-400' : ''}">
-                    ${escapeHtml(dish.name)}
-                  </span>
-                  ${dish.name_en ? `
-                    <span class="inline-flex items-center gap-1 text-[10px] font-medium text-emerald-700 bg-emerald-50 px-1.5 py-0.2 rounded border border-emerald-200" title="Engelsk oversettelse aktiv">
-                      🇬🇧 ${escapeHtml(dish.name_en)}
-                    </span>
-                  ` : `
-                    <span class="inline-flex items-center gap-1 text-[10px] font-medium text-zinc-500 bg-zinc-100 px-1.5 py-0.2 rounded border border-zinc-200" title="Bruker automatisk oversettelsesmotor">
-                      🌐 Auto-EN
-                    </span>
-                  `}
-                </div>
-                ${dish.description ? `<div class="text-[11px] text-zinc-500 mt-0.5 line-clamp-1">${escapeHtml(dish.description)}</div>` : ''}
-                ${dish.allergens ? `
-                  <div class="text-[10px] text-amber-700 font-medium mt-1 flex items-center gap-1">
-                    <span>⚠️ Allergener:</span>
-                    <span>${escapeHtml(dish.allergens)}</span>
+                <div class="flex items-start gap-3">
+                  ${dish.image_url ? `
+                    <img src="${escapeHtml(dish.image_url)}" alt="${escapeHtml(dish.name)}" class="h-11 w-11 rounded-lg object-cover border border-zinc-200 shrink-0 mt-0.5" onerror="this.style.display='none'" />
+                  ` : ''}
+                  <div class="space-y-1">
+                    <div class="flex items-center gap-2 flex-wrap">
+                      <span class="font-semibold text-zinc-950 ${isSoldOut ? 'line-through text-zinc-400' : ''}">
+                        ${escapeHtml(dish.name)}
+                      </span>
+                      ${dish.portion_info ? `
+                        <span class="text-[11px] text-zinc-400 font-mono">(${escapeHtml(dish.portion_info)})</span>
+                      ` : ''}
+                      ${dish.badge === 'special' ? `
+                        <span class="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-1.5 py-0.2 rounded">
+                          ⭐ Anbefaling
+                        </span>
+                      ` : dish.badge === 'bestseller' ? `
+                        <span class="inline-flex items-center gap-1 text-[10px] font-bold text-amber-700 bg-amber-50 border border-amber-200 px-1.5 py-0.2 rounded">
+                          🔥 Bestseller
+                        </span>
+                      ` : dish.badge === 'vegan' ? `
+                        <span class="inline-flex items-center gap-1 text-[10px] font-bold text-green-700 bg-green-50 border border-green-200 px-1.5 py-0.2 rounded">
+                          🌱 Vegetar
+                        </span>
+                      ` : dish.badge === 'new' ? `
+                        <span class="inline-flex items-center gap-1 text-[10px] font-bold text-purple-700 bg-purple-50 border border-purple-200 px-1.5 py-0.2 rounded">
+                          ✨ Nyhet
+                        </span>
+                      ` : ''}
+                      ${dish.name_en ? `
+                        <span class="inline-flex items-center gap-1 text-[10px] font-medium text-emerald-700 bg-emerald-50 px-1.5 py-0.2 rounded border border-emerald-200" title="Engelsk oversettelse aktiv">
+                          🇬🇧 ${escapeHtml(dish.name_en)}
+                        </span>
+                      ` : `
+                        <span class="inline-flex items-center gap-1 text-[10px] font-medium text-zinc-500 bg-zinc-100 px-1.5 py-0.2 rounded border border-zinc-200" title="Bruker automatisk oversettelsesmotor">
+                          🌐 Auto-EN
+                        </span>
+                      `}
+                    </div>
+                    ${dish.description ? `<div class="text-[11px] text-zinc-500 line-clamp-1">${escapeHtml(dish.description)}</div>` : ''}
+                    ${dish.allergens ? `
+                      <div class="text-[10px] text-amber-700 font-medium flex items-center gap-1">
+                        <span>⚠️ Allergener:</span>
+                        <span>${escapeHtml(dish.allergens)}</span>
+                      </div>
+                    ` : ''}
                   </div>
-                ` : ''}
+                </div>
               </td>
 
               <!-- Kategori -->
@@ -1873,6 +3033,9 @@ service cloud.firestore {
         const allergensIn = document.getElementById('edit-dish-allergens');
         const nameEnIn = document.getElementById('edit-dish-name-en');
         const descEnIn = document.getElementById('edit-dish-desc-en');
+        const badgeIn = document.getElementById('edit-dish-badge');
+        const portionIn = document.getElementById('edit-dish-portion');
+        const imgIn = document.getElementById('edit-dish-image-url');
 
         renderCategoryControls();
 
@@ -1884,6 +3047,9 @@ service cloud.firestore {
         if (allergensIn) allergensIn.value = dish.allergens || '';
         if (nameEnIn) nameEnIn.value = dish.name_en || '';
         if (descEnIn) descEnIn.value = dish.description_en || '';
+        if (badgeIn) badgeIn.value = dish.badge || 'none';
+        if (portionIn) portionIn.value = dish.portion_info || '';
+        if (imgIn) imgIn.value = dish.image_url || '';
         if (soldIn) soldIn.checked = (dish.sold_out === true);
 
         if (modal) modal.classList.remove('hidden');
@@ -2025,6 +3191,9 @@ service cloud.firestore {
         const allergensIn = document.getElementById('edit-dish-allergens');
         const nameEnIn = document.getElementById('edit-dish-name-en');
         const descEnIn = document.getElementById('edit-dish-desc-en');
+        const badgeIn = document.getElementById('edit-dish-badge');
+        const portionIn = document.getElementById('edit-dish-portion');
+        const imgIn = document.getElementById('edit-dish-image-url');
         const btn = document.getElementById('edit-dish-save-btn');
 
         const dishId = idIn ? idIn.value : '';
@@ -2036,6 +3205,9 @@ service cloud.firestore {
         const allergens = allergensIn ? allergensIn.value.trim() : '';
         const name_en = nameEnIn ? nameEnIn.value.trim() : '';
         const description_en = descEnIn ? descEnIn.value.trim() : '';
+        const badge = badgeIn ? badgeIn.value : 'none';
+        const portion_info = portionIn ? portionIn.value.trim() : '';
+        const image_url = imgIn ? imgIn.value.trim() : '';
 
         if (!dishId || !name) return;
 
@@ -2052,6 +3224,9 @@ service cloud.firestore {
               description,
               description_en,
               allergens,
+              badge,
+              portion_info,
+              image_url,
               sold_out,
               updated_at: new Date().toISOString()
             });
@@ -2065,6 +3240,9 @@ service cloud.firestore {
               item.description = description;
               item.description_en = description_en;
               item.allergens = allergens;
+              item.badge = badge;
+              item.portion_info = portion_info;
+              item.image_url = image_url;
               item.sold_out = sold_out;
               saveFallbackDishes(dishesList);
               renderTable();
@@ -2073,6 +3251,7 @@ service cloud.firestore {
 
           closeEditDishModal();
           showToast(`✓ Endringene i "${name}" ble lagret!`);
+          reloadSimulatorIframe();
         } catch (err) {
           console.error('Feil ved oppdatering av rett:', err);
           alert('Kunne ikke lagre endringene: ' + err.message);
@@ -2092,6 +3271,9 @@ service cloud.firestore {
         const allergensInput = document.getElementById('dish-allergens');
         const nameEnInput = document.getElementById('dish-name-en');
         const descEnInput = document.getElementById('dish-desc-en');
+        const badgeInput = document.getElementById('dish-badge');
+        const portionInput = document.getElementById('dish-portion');
+        const imgInput = document.getElementById('dish-image-url');
 
         const newDish = {
           name: nameInput.value.trim(),
@@ -2101,6 +3283,9 @@ service cloud.firestore {
           description: descInput.value.trim(),
           description_en: descEnInput ? descEnInput.value.trim() : '',
           allergens: allergensInput ? allergensInput.value.trim() : '',
+          badge: badgeInput ? badgeInput.value : 'none',
+          portion_info: portionInput ? portionInput.value.trim() : '',
+          image_url: imgInput ? imgInput.value.trim() : '',
           sold_out: soldOutInput.checked,
           created_at: new Date().toISOString()
         };
@@ -2124,6 +3309,7 @@ service cloud.firestore {
           document.getElementById('add-dish-form').reset();
           renderCategoryControls();
           showToast(`✓ "${newDish.name}" lagret i Firestore og live på gjestemenyen!`);
+          reloadSimulatorIframe();
         } catch (err) {
           console.error('Feil ved opprettelse av rett:', err);
           alert('Kunne ikke lagre retten: ' + err.message);
