@@ -1696,8 +1696,10 @@ service cloud.firestore {
       if (enMenuBtn) enMenuBtn.href = guestMenuEnUrl;
       const footerLink = document.getElementById('footer-menu-link');
       if (footerLink) footerLink.href = guestMenuUrl;
-      document.getElementById('header-restaurant-id').innerText = restaurantId;
-      document.getElementById('firestore-path-label').innerText = `restaurants/${restaurantId}/menu_items`;
+      const headerRestIdEl = document.getElementById('header-restaurant-id');
+      if (headerRestIdEl) headerRestIdEl.innerText = restaurantId;
+      const pathLabelEl = document.getElementById('firestore-path-label');
+      if (pathLabelEl) pathLabelEl.innerText = `restaurants/${restaurantId}/menu_items`;
 
       // Hent konfigurering (enten fra koden eller fra nettleser-lagret konfig)
       let activeConfig = DEFAULT_FIREBASE_CONFIG;
