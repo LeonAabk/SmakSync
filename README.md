@@ -29,7 +29,7 @@
 - **Tailwind CSS** (via CDN med tilpasset tema).
 - **Google Fonts (Inter)** for ren og presis typografi.
 - **Vite** som moderne bundler og utviklingsserver.
-- **GitHub Actions** for automatisert distribusjon til GitHub Pages.
+- **GitHub Actions / Pages** for automatisert distribusjon til GitHub Pages.
 
 ---
 
@@ -44,7 +44,7 @@
 1. **Klon repositoriet:**
    ```bash
    git clone https://github.com/<ditt-brukernavn>/SmakSync.git
-   cd smartmeny
+   cd SmakSync
    ```
 
 2. **Installer avhengigheter:**
