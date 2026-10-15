@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>SmakSync - Superadmin Byråportal</title>
     <meta name="description" content="Multi-tenant byråportal for administrasjon av restauranter, NFC-bordkort og digitale menyer." />
+    <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
 
     <!-- Google Fonts: Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -38,7 +40,7 @@
       };
     </script>
     <style>body{-webkit-font-smoothing:antialiased;font-family:Inter,sans-serif}</style>
-    <script type="module" crossorigin src="./assets/superadmin-DVegPXQI.js"></script>
+    <script type="module" crossorigin src="./assets/superadmin-D0tsTREl.js"></script>
     <link rel="modulepreload" crossorigin href="./assets/modulepreload-polyfill-P2Xu9kJm.js">
   </head>
   <body class="bg-zinc-100 text-zinc-900 min-h-screen flex flex-col">
@@ -100,8 +102,13 @@
       </div>
     </div>
 
-    <!-- Topplinje / Navigasjon -->
-    <header class="sticky top-0 z-40 bg-white border-b border-zinc-200 shadow-xs">
+    <!-- ========================================== -->
+    <!-- HOVEDGRENSESNITT FOR AUTORISERT SUPERADMIN -->
+    <!-- ========================================== -->
+    <div id="superadmin-app-container" class="hidden flex-1 flex flex-col">
+
+      <!-- Topplinje / Navigasjon -->
+      <header class="sticky top-0 z-40 bg-white border-b border-zinc-200 shadow-xs">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
         
         <!-- Logo & Byråtittel -->
@@ -502,6 +509,7 @@
       </section>
 
     </main>
+    </div>
 
     <!-- ========================================== -->
     <!-- MODAL: DETALJER & SEND SVAR PÅ HENVENDELSE -->

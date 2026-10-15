@@ -131,4 +131,4 @@ import"./modulepreload-polyfill-P2Xu9kJm.js";import{initializeApp as e}from"http
                 </div>
               `:``}
             </article>
-          `}).join(``);let r=document.getElementById(`live-sync-indicator`);if(r){let e=new Date,n=`${String(e.getHours()).padStart(2,`0`)}:${String(e.getMinutes()).padStart(2,`0`)}:${String(e.getSeconds()).padStart(2,`0`)}`;r.innerText=`${t.live_sync_text} · ${n}`}}window.setGuestFilter=function(e){E=e,I(),H()},window.handleSearch=function(e){D=e.target.value.trim(),H()};function U(e){if(!e)return``;let t=document.createElement(`div`);return t.innerText=e,t.innerHTML}P();
+          `}).join(``);let r=document.getElementById(`live-sync-indicator`);if(r){let e=new Date,n=`${String(e.getHours()).padStart(2,`0`)}:${String(e.getMinutes()).padStart(2,`0`)}:${String(e.getSeconds()).padStart(2,`0`)}`;r.innerText=`${t.live_sync_text} · ${n}`}}window.setGuestFilter=function(e){E=e,I(),H()},window.handleSearch=function(e){D=e.target.value.trim(),H()};function U(e){return e?String(e).replace(/&/g,`&amp;`).replace(/</g,`&lt;`).replace(/>/g,`&gt;`).replace(/"/g,`&quot;`).replace(/'/g,`&#39;`):``}P();

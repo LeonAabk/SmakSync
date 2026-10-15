@@ -1,0 +1,67 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // =========================================================================
+    // 1. HENVENDELSER FRA KONTAKTSKJEMA (/inquiries)
+    // =========================================================================
+    // Beskytter personopplysninger (leads, e-post, telefon) mot uautorisert innsyn
+    match /inquiries/{inquiryId} {
+      
+      // Hvem som helst kan sende inn en henvendelse fra nettsiden,
+      // men inndata må overholde strenge type- og størrelseskrav (anti-spam / anti-injeksjon)
+      allow create: if request.resource.data.restaurant_name is string
+                    && request.resource.data.restaurant_name.size() > 0
+                    && request.resource.data.restaurant_name.size() <= 120
+                    && request.resource.data.email is string
+                    && request.resource.data.email.size() > 3
+                    && request.resource.data.email.size() <= 150
+                    && (!('phone' in request.resource.data) || request.resource.data.phone is string && request.resource.data.phone.size() <= 40)
+                    && (!('message' in request.resource.data) || request.resource.data.message is string && request.resource.data.message.size() <= 2500)
+                    && (!('contact_person' in request.resource.data) || request.resource.data.contact_person is string && request.resource.data.contact_person.size() <= 120);
+
+      // Kun autentiserte administratorer kan lese, oppdatere eller slette henvendelser
+      // Forhindrer at konkurrenter eller roboter kan hente ut alle kundedata
+      allow read, update, delete: if request.auth != null;
+    }
+
+    // =========================================================================
+    // 2. RESTAURANTER OG MENYER (/restaurants)
+    // =========================================================================
+    match /restaurants/{restaurantId} {
+      // Offentlig lesetilgang slik at gjester kan se restaurantnavn, menyer og kategorier
+      allow read: if true;
+
+      // Opprettelse og sletting av restauranter er forbeholdt admin
+      allow create, delete: if request.auth != null;
+
+      // Oppdatering av restaurantdata:
+      // Tillater oppdateringer av meny- og styling-felter
+      allow update: if request.auth != null 
+                    || (
+                      // Validering ved uautentisert endring dersom Auth ennå ikke er satt opp
+                      request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+                        'tagline_above', 'tagline_below', 'description', 'categories', 'logo_url', 'updated_at'
+                      ])
+                    );
+
+      // Subcollection: Menyelementer for den enkelte restaurant
+      match /menu_items/{itemId} {
+        // Gjestene på bordene må kunne lese menyrettene
+        allow read: if true;
+
+        // Kun gyldige menyer kan opprettes/oppdateres
+        allow create, update: if request.auth != null
+                              || (
+                                request.resource.data.name is string
+                                && request.resource.data.name.size() > 0
+                                && request.resource.data.name.size() <= 150
+                                && request.resource.data.price is number
+                                && request.resource.data.price >= 0
+                                && request.resource.data.category is string
+                              );
+        allow delete: if request.auth != null;
+      }
+    }
+  }
+}

@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>SmakSync - Kontrollpanel (Admin)</title>
     <meta name="description" content="Sanntids kontrollpanel for restauranten. Administrer meny, priser og utsolgt-status via Firebase Firestore." />
+    <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
 
     <!-- Google Fonts: Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -134,7 +136,7 @@
     </div>
 
     <!-- HOVEDVISNING FOR GODKJENT RESTAURANT-ID -->
-    <div id="admin-main-view" class="flex-1 flex flex-col">
+    <div id="admin-main-view" class="flex-1 flex flex-col hidden">
 
       <!-- Topplinje / Navigasjon -->
       <header class="sticky top-0 z-40 bg-white border-b border-zinc-200 shadow-xs">
@@ -1138,10 +1140,27 @@ service cloud.firestore {
       const LOCAL_ITEMS_KEY = `smaksync_items_${restaurantId}`;
       const LOCAL_META_KEY = `smaksync_restaurant_meta_${restaurantId}`;
 
-      let currentRestaurantPin = '1234';
+      async function sha256(message) {
+        const msgBuffer = new TextEncoder().encode(message);
+        const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+      }
+
+      let currentRestaurantPinHash = null;
       let isUnlocked = false;
       let unsubscribeMenu = null;
-      const AUTH_KEY = `smaksync_auth_pin_${restaurantId}`;
+      const AUTH_KEY = `smaksync_auth_hash_${restaurantId}`;
+
+      async function setRestaurantPin(rawPinOrHash) {
+        if (!rawPinOrHash) return;
+        const val = String(rawPinOrHash).trim();
+        if (/^[a-f0-9]{64}$/i.test(val)) {
+          currentRestaurantPinHash = val.toLowerCase();
+        } else {
+          currentRestaurantPinHash = await sha256(val);
+        }
+      }
 
       let currentCategories = ['Hovedrett', 'Forrett', 'Desserter', 'Drikke'];
       let currentRestaurantMeta = {
@@ -1151,9 +1170,9 @@ service cloud.firestore {
         categories: ['Hovedrett', 'Forrett', 'Desserter', 'Drikke']
       };
 
-      function checkSessionAuth() {
-        const savedPin = sessionStorage.getItem(AUTH_KEY);
-        if (savedPin && savedPin === currentRestaurantPin) {
+      async function checkSessionAuth() {
+        const savedAuthHash = sessionStorage.getItem(AUTH_KEY);
+        if (savedAuthHash && currentRestaurantPinHash && savedAuthHash === currentRestaurantPinHash) {
           unlockDashboard();
         } else {
           lockDashboard();
@@ -1164,6 +1183,12 @@ service cloud.firestore {
         isUnlocked = false;
         if (mainView) mainView.classList.add('hidden');
         if (lockView) lockView.classList.remove('hidden');
+        if (unsubscribeMenu) {
+          try { unsubscribeMenu(); } catch {}
+          unsubscribeMenu = null;
+        }
+        const tbody = document.getElementById('dishes-table-body');
+        if (tbody) tbody.innerHTML = '';
         const pinInput = document.getElementById('restaurant-pin-input');
         if (pinInput) {
           pinInput.value = '';
@@ -1180,14 +1205,19 @@ service cloud.firestore {
         startMenuSync();
       }
 
-      window.handleRestaurantPinSubmit = function(e) {
+      window.handleRestaurantPinSubmit = async function(e) {
         e.preventDefault();
         const pinInput = document.getElementById('restaurant-pin-input');
         const entered = (pinInput ? pinInput.value : '').trim();
         const err = document.getElementById('pin-error-msg');
 
-        if (entered === currentRestaurantPin) {
-          sessionStorage.setItem(AUTH_KEY, entered);
+        if (!currentRestaurantPinHash) {
+          await loadRestaurantMetadata();
+        }
+
+        const enteredHash = await sha256(entered);
+        if (enteredHash === currentRestaurantPinHash) {
+          sessionStorage.setItem(AUTH_KEY, enteredHash);
           if (err) err.classList.add('hidden');
           unlockDashboard();
         } else {
@@ -1202,10 +1232,6 @@ service cloud.firestore {
 
       window.handleLogoutRestaurant = function() {
         sessionStorage.removeItem(AUTH_KEY);
-        if (unsubscribeMenu) {
-          unsubscribeMenu();
-          unsubscribeMenu = null;
-        }
         lockDashboard();
       };
 
@@ -1215,6 +1241,7 @@ service cloud.firestore {
         let taglineAbove = 'Fine Dining & Vinbar';
         let taglineBelow = 'Sesongens råvarer og klassiske favoritter. Velkommen til bords.';
         let categories = ['Hovedrett', 'Forrett', 'Desserter', 'Drikke'];
+        await setRestaurantPin('1234');
 
         if (isRealFirebase && db) {
           try {
@@ -1223,7 +1250,8 @@ service cloud.firestore {
             if (restSnap.exists()) {
               const data = restSnap.data();
               if (data.name) name = data.name;
-              if (data.pin) currentRestaurantPin = String(data.pin).trim();
+              if (data.pin_hash) await setRestaurantPin(data.pin_hash);
+              else if (data.pin) await setRestaurantPin(data.pin);
               if (data.tagline_above) taglineAbove = data.tagline_above;
               if (data.tagline_below) taglineBelow = data.tagline_below;
               else if (data.description) taglineBelow = data.description;
@@ -1248,7 +1276,8 @@ service cloud.firestore {
             const found = all.find(r => r.id === restaurantId);
             if (found) {
               if (found.name && !name) name = found.name;
-              if (found.pin) currentRestaurantPin = String(found.pin).trim();
+              if (found.pin_hash) await setRestaurantPin(found.pin_hash);
+              else if (found.pin) await setRestaurantPin(found.pin);
             }
           } catch {}
         }
@@ -1257,7 +1286,7 @@ service cloud.firestore {
         currentCategories = categories;
 
         applyMetaToUi();
-        checkSessionAuth();
+        await checkSessionAuth();
       }
 
       function applyMetaToUi() {
@@ -2220,9 +2249,12 @@ service cloud.firestore {
 
       function escapeHtml(string) {
         if (!string) return '';
-        const div = document.createElement('div');
-        div.innerText = string;
-        return div.innerHTML;
+        return String(string)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#39;');
       }
     </script>
   </body>

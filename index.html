@@ -9,6 +9,8 @@
     <meta property="og:description" content="Skandinavisk B2B SaaS for restauranter: NFC-menykort og lynraske digitale menyer." />
     <meta property="og:type" content="website" />
     <meta name="twitter:card" content="summary_large_image" />
+    <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
 
     <!-- Google Fonts: Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -1846,11 +1848,17 @@
             </label>
           </div>
 
+          <!-- Sikkerhet: Spamtrap honeypot for roboter -->
+          <div class="hidden" aria-hidden="true" style="display:none !important;">
+            <input type="text" id="contact-company-hp" name="company_hp" tabindex="-1" autocomplete="off" />
+          </div>
+
           <div>
             <label class="block text-xs font-semibold text-zinc-700 mb-1">Melding / kommentar (valgfritt)</label>
             <textarea
               id="contact-message"
               rows="2"
+              maxlength="2500"
               placeholder="Fortell kort om restauranten eller hva dere lurer på..."
               class="w-full rounded-lg border border-zinc-300 px-3 py-2 text-sm text-zinc-900 focus:border-zinc-900 focus:outline-none resize-none"
             ></textarea>
@@ -1987,6 +1995,16 @@
         dessert: 'Dessert'
       };
 
+      function escapeHtml(str) {
+        if (!str) return '';
+        return String(str)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#39;');
+      }
+
       // Rendring av tabell og KPI-er
       function renderDishesTable() {
         const tbody = document.getElementById('dishes-table-body');
@@ -2025,7 +2043,7 @@
           tbody.innerHTML = `
             <tr>
               <td colspan="5" class="py-8 text-center text-xs text-zinc-500">
-                Ingen retter matchet filteret "${dashSearch || dashFilter}".
+                Ingen retter matchet filteret "${escapeHtml(dashSearch || dashFilter)}".
               </td>
             </tr>
           `;
@@ -2041,10 +2059,10 @@
               <!-- Rett & ingredienser -->
               <td class="py-3 px-3.5">
                 <div class="font-medium text-zinc-950 ${isSoldOut ? 'line-through text-zinc-400' : ''}">
-                  ${dish.name}
+                  ${escapeHtml(dish.name)}
                 </div>
-                ${dish.desc ? `<div class="text-[11px] text-zinc-500 mt-0.5 line-clamp-1">${dish.desc}</div>` : ''}
-                ${dish.allergens ? `<div class="text-[10px] text-zinc-400 mt-0.5">Allergener: ${dish.allergens}</div>` : ''}
+                ${dish.desc ? `<div class="text-[11px] text-zinc-500 mt-0.5 line-clamp-1">${escapeHtml(dish.desc)}</div>` : ''}
+                ${dish.allergens ? `<div class="text-[10px] text-zinc-400 mt-0.5">Allergener: ${escapeHtml(dish.allergens)}</div>` : ''}
               </td>
 
               <!-- Kategori -->
@@ -2363,6 +2381,20 @@
 
       async function handleContactSubmit(e) {
         e.preventDefault();
+        
+        // 1. Spamtrap honeypot
+        const hp = document.getElementById('contact-company-hp')?.value;
+        if (hp) {
+          console.warn('Bot-innsending blokkert.');
+          const form = document.getElementById('contact-pricing-form');
+          const success = document.getElementById('contact-success-msg');
+          if (form && success) {
+            form.classList.add('hidden');
+            success.classList.remove('hidden');
+          }
+          return;
+        }
+
         const restName = (document.getElementById('contact-rest-name')?.value || '').trim();
         const contactPerson = (document.getElementById('contact-person-name')?.value || '').trim();
         const phone = (document.getElementById('contact-phone')?.value || '').trim();
@@ -2372,6 +2404,24 @@
         const topicLabel = topicSelect?.options[topicSelect.selectedIndex]?.text || topic;
         const includeReview = document.getElementById('contact-include-review')?.checked || false;
         const message = (document.getElementById('contact-message')?.value || '').trim();
+
+        // 2. Validering og sanitering
+        if (!restName || restName.length > 120) {
+          alert('Vennligst oppgi et gyldig restaurantnavn (maks 120 tegn).');
+          return;
+        }
+        if (!email || email.length > 150 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+          alert('Vennligst oppgi en gyldig e-postadresse.');
+          return;
+        }
+        if (phone && phone.length > 40) {
+          alert('Vennligst oppgi et gyldig telefonnummer.');
+          return;
+        }
+        if (message && message.length > 2500) {
+          alert('Meldingen kan ikke være lengre enn 2500 tegn.');
+          return;
+        }
 
         const newInquiry = {
           id: 'inq_' + Date.now() + '_' + Math.random().toString(36).substring(2, 7),

@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>SmakSync - Superadmin Byråportal</title>
     <meta name="description" content="Multi-tenant byråportal for administrasjon av restauranter, NFC-bordkort og digitale menyer." />
+    <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
 
     <!-- Google Fonts: Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -103,8 +105,13 @@
       </div>
     </div>
 
-    <!-- Topplinje / Navigasjon -->
-    <header class="sticky top-0 z-40 bg-white border-b border-zinc-200 shadow-xs">
+    <!-- ========================================== -->
+    <!-- HOVEDGRENSESNITT FOR AUTORISERT SUPERADMIN -->
+    <!-- ========================================== -->
+    <div id="superadmin-app-container" class="hidden flex-1 flex flex-col">
+
+      <!-- Topplinje / Navigasjon -->
+      <header class="sticky top-0 z-40 bg-white border-b border-zinc-200 shadow-xs">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
         
         <!-- Logo & Byråtittel -->
@@ -505,6 +512,7 @@
       </section>
 
     </main>
+    </div>
 
     <!-- ========================================== -->
     <!-- MODAL: DETALJER & SEND SVAR PÅ HENVENDELSE -->
@@ -994,12 +1002,47 @@
         return localStorage.getItem(SUPERADMIN_MASTER_HASH_KEY) || DEFAULT_MASTER_HASH;
       }
 
+      let unsubscribeRestaurants = null;
+      let unsubscribeInquiries = null;
+      let isDataInitialized = false;
+
+      function teardownSuperadminData() {
+        if (unsubscribeRestaurants) {
+          try { unsubscribeRestaurants(); } catch {}
+          unsubscribeRestaurants = null;
+        }
+        if (unsubscribeInquiries) {
+          try { unsubscribeInquiries(); } catch {}
+          unsubscribeInquiries = null;
+        }
+        allRestaurants = [];
+        allInquiries = [];
+        isDataInitialized = false;
+        const rTbody = document.getElementById('restaurants-table-body');
+        if (rTbody) rTbody.innerHTML = '';
+        const iTbody = document.getElementById('inquiries-table-body');
+        if (iTbody) iTbody.innerHTML = '';
+      }
+
+      function initSuperadminData() {
+        if (isDataInitialized) return;
+        isDataInitialized = true;
+        initRestaurantsListener();
+        initInquiriesListener();
+        generateRandomPin();
+      }
+
       function checkSuperadminAuth() {
         const isAuth = sessionStorage.getItem(SUPERADMIN_AUTH_KEY);
         const lockView = document.getElementById('superadmin-lock-view');
+        const appContainer = document.getElementById('superadmin-app-container');
         if (isAuth === 'true') {
           if (lockView) lockView.classList.add('hidden');
+          if (appContainer) appContainer.classList.remove('hidden');
+          initSuperadminData();
         } else {
+          teardownSuperadminData();
+          if (appContainer) appContainer.classList.add('hidden');
           if (lockView) lockView.classList.remove('hidden');
           const input = document.getElementById('superadmin-pin-input');
           if (input) {
@@ -1019,8 +1062,7 @@
         if (enteredHash === getMasterPinHash()) {
           sessionStorage.setItem(SUPERADMIN_AUTH_KEY, 'true');
           if (err) err.classList.add('hidden');
-          const lockView = document.getElementById('superadmin-lock-view');
-          if (lockView) lockView.classList.add('hidden');
+          checkSuperadminAuth();
           showToast('✓ Velkommen til SmakSync Superadmin!');
         } else {
           if (err) err.classList.remove('hidden');
@@ -1077,58 +1119,58 @@
 
         const newHash = await sha256(newCode);
         localStorage.setItem(SUPERADMIN_MASTER_HASH_KEY, newHash);
-        // Fjern eventuell eldre klartekst-nøkkel
         localStorage.removeItem('smaksync_superadmin_master_pin');
         closeMasterPinModal();
         showToast('✓ Superadmin Masterkode er oppdatert!');
       };
 
-      // Live lytting på restauranter
-      if (isRealFirebase && db) {
-        try {
-          const restCol = collection(db, 'restaurants');
-          onSnapshot(restCol, async (snapshot) => {
-            const list = [];
-            for (const docSnap of snapshot.docs) {
-              const data = docSnap.data();
-              // Hent antall retter i subcollection
-              let count = 0;
-              try {
-                const itemsSnap = await getDocs(collection(db, 'restaurants', docSnap.id, 'menu_items'));
-                count = itemsSnap.size;
-              } catch (e) {
-                count = 0;
+      // Live lytting på restauranter (kun når autorisert)
+      function initRestaurantsListener() {
+        if (isRealFirebase && db) {
+          try {
+            const restCol = collection(db, 'restaurants');
+            unsubscribeRestaurants = onSnapshot(restCol, async (snapshot) => {
+              const list = [];
+              for (const docSnap of snapshot.docs) {
+                const data = docSnap.data();
+                let count = 0;
+                try {
+                  const itemsSnap = await getDocs(collection(db, 'restaurants', docSnap.id, 'menu_items'));
+                  count = itemsSnap.size;
+                } catch (e) {
+                  count = 0;
+                }
+                list.push({
+                  id: docSnap.id,
+                  name: data.name || docSnap.id,
+                  logo_url: data.logo_url || '',
+                  pin: data.pin ? String(data.pin) : '1234',
+                  pin_hash: data.pin_hash || '',
+                  itemCount: count,
+                  created_at: data.created_at || new Date().toISOString()
+                });
               }
-              list.push({
-                id: docSnap.id,
-                name: data.name || docSnap.id,
-                logo_url: data.logo_url || '',
-                pin: data.pin ? String(data.pin) : '1234',
-                itemCount: count,
-                created_at: data.created_at || new Date().toISOString()
-              });
-            }
-            allRestaurants = list;
-            renderRestaurantsTable();
-          }, (err) => {
-            console.error('onSnapshot feil i Firestore:', err);
-            updateBackendBadge(false, 'Avvist: ' + (err.code || 'permission-denied'));
-            const statusDesc = document.getElementById('stat-db-mode');
-            if (statusDesc) statusDesc.innerText = `Feil: ${err.code || 'permission-denied'}`;
+              allRestaurants = list;
+              renderRestaurantsTable();
+            }, (err) => {
+              console.error('onSnapshot feil i Firestore:', err);
+              updateBackendBadge(false, 'Avvist: ' + (err.code || 'permission-denied'));
+              const statusDesc = document.getElementById('stat-db-mode');
+              if (statusDesc) statusDesc.innerText = `Feil: ${err.code || 'permission-denied'}`;
+              fallbackRender();
+            });
+          } catch (e) {
+            console.warn('Kunne ikke starte onSnapshot mot Firestore:', e);
             fallbackRender();
-          });
-        } catch (e) {
-          console.warn('Kunne ikke starte onSnapshot mot Firestore:', e);
+          }
+        } else {
           fallbackRender();
         }
-      } else {
-        fallbackRender();
       }
 
       function fallbackRender() {
         allRestaurants = getFallbackRestaurants();
         renderRestaurantsTable();
-        // Lytt etter endringer fra andre vinduer i demo-modus
         window.addEventListener('storage', (e) => {
           if (e.key === LOCAL_FALLBACK_KEY) {
             allRestaurants = getFallbackRestaurants();
@@ -1541,13 +1583,15 @@
         saveBtn.innerText = 'Lagrer...';
 
         try {
+          const pinHash = await sha256(newPin);
           if (isRealFirebase && db) {
-            await updateDoc(doc(db, 'restaurants', id), { pin: newPin });
+            await updateDoc(doc(db, 'restaurants', id), { pin: newPin, pin_hash: pinHash });
           } else {
             const list = getFallbackRestaurants();
             const rest = list.find(r => r.id === id);
             if (rest) {
               rest.pin = newPin;
+              rest.pin_hash = pinHash;
               saveFallbackRestaurants(list);
               allRestaurants = list;
               renderRestaurantsTable();
@@ -1587,9 +1631,12 @@ Vennligst ta vare på koden for å administrere menyen.`;
 
       function escapeHtml(str) {
         if (!str) return '';
-        const d = document.createElement('div');
-        d.innerText = str;
-        return d.innerHTML;
+        return String(str)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#39;');
       }
 
       // ============================================================================
@@ -1647,52 +1694,52 @@ Vennligst ta vare på koden for å administrere menyen.`;
         localStorage.setItem(INQUIRIES_STORAGE_KEY, JSON.stringify(list));
       }
 
-      // Lytt på henvendelser i Firestore
-      if (isRealFirebase && db) {
-        try {
-          const inqCol = collection(db, 'inquiries');
-          onSnapshot(inqCol, (snapshot) => {
-            const list = [];
-            snapshot.forEach(docSnap => {
-              const d = docSnap.data();
-              list.push({
-                id: docSnap.id,
-                restaurant_name: d.restaurant_name || '',
-                contact_person: d.contact_person || '',
-                phone: d.phone || '',
-                email: d.email || '',
-                topic: d.topic || 'priser',
-                topic_label: d.topic_label || d.topic || 'Priser',
-                include_review_cards: !!d.include_review_cards,
-                message: d.message || '',
-                created_at: d.created_at || new Date().toISOString(),
-                status: d.status || 'ny',
-                source: d.source || 'web'
+      // Lytt på henvendelser i Firestore (kun når autorisert)
+      function initInquiriesListener() {
+        if (isRealFirebase && db) {
+          try {
+            const inqCol = collection(db, 'inquiries');
+            unsubscribeInquiries = onSnapshot(inqCol, (snapshot) => {
+              const list = [];
+              snapshot.forEach(docSnap => {
+                const d = docSnap.data();
+                list.push({
+                  id: docSnap.id,
+                  restaurant_name: d.restaurant_name || '',
+                  contact_person: d.contact_person || '',
+                  phone: d.phone || '',
+                  email: d.email || '',
+                  topic: d.topic || 'priser',
+                  topic_label: d.topic_label || d.topic || 'Priser',
+                  include_review_cards: !!d.include_review_cards,
+                  message: d.message || '',
+                  created_at: d.created_at || new Date().toISOString(),
+                  status: d.status || 'ny',
+                  source: d.source || 'web'
+                });
               });
+              list.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+              
+              const local = getFallbackInquiries();
+              local.forEach(loc => {
+                if (!list.find(item => item.id === loc.id || (item.email === loc.email && Math.abs(new Date(item.created_at) - new Date(loc.created_at)) < 5000))) {
+                  list.push(loc);
+                }
+              });
+              list.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+              allInquiries = list;
+              renderInquiriesTable();
+            }, (err) => {
+              console.warn('Firestore inquiries onSnapshot feil, bruker lokal lagring:', err);
+              fallbackInquiriesRender();
             });
-            // Sorter nyeste først
-            list.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-            
-            // Flett inn eventuelle lokale som ikke ennå er i Firestore
-            const local = getFallbackInquiries();
-            local.forEach(loc => {
-              if (!list.find(item => item.id === loc.id || (item.email === loc.email && Math.abs(new Date(item.created_at) - new Date(loc.created_at)) < 5000))) {
-                list.push(loc);
-              }
-            });
-            list.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-            allInquiries = list;
-            renderInquiriesTable();
-          }, (err) => {
-            console.warn('Firestore inquiries onSnapshot feil, bruker lokal lagring:', err);
+          } catch (e) {
+            console.warn('Kunne ikke koble til Firestore inquiries:', e);
             fallbackInquiriesRender();
-          });
-        } catch (e) {
-          console.warn('Kunne ikke koble til Firestore inquiries:', e);
+          }
+        } else {
           fallbackInquiriesRender();
         }
-      } else {
-        fallbackInquiriesRender();
       }
 
       function fallbackInquiriesRender() {
@@ -2075,14 +2122,8 @@ hei@smaksync.no · +47 22 10 90 00`);
       // Initialiser ved lasting
       document.addEventListener('DOMContentLoaded', () => {
         checkSuperadminAuth();
-        generateRandomPin();
-        renderRestaurantsTable();
-        renderInquiriesTable();
       });
       checkSuperadminAuth();
-      generateRandomPin();
-      renderRestaurantsTable();
-      renderInquiriesTable();
     </script>
   </body>
 </html>
