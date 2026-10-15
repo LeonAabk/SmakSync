@@ -1,0 +1,24 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // 1. Restauranter:
+    // Lar gjester lese profil, og superadmin/restaurantansvarlig opprette og oppdatere
+    match /restaurants/{restaurantId} {
+      allow read: if true;
+      allow write: if true;
+
+      // 2. Menyer for hver restaurant (under-samling menu_items):
+      // Lar mobilgjester se menyen, og eieren legge til / redigere / sette utsolgt
+      match /menu_items/{itemId} {
+        allow read: if true;
+        allow write: if true;
+      }
+    }
+
+    // 3. Kontakthenvendelser fra landingssiden:
+    match /contact_requests/{requestId} {
+      allow read, write: if true;
+    }
+  }
+}

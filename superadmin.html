@@ -910,37 +910,67 @@
       const DEFAULT_SEED_ITEMS = [
         {
           name: 'Truffle & Dry-Aged Burger',
+          name_en: 'Truffle & Dry-Aged Burger',
           description: '200g kvernet norsk storfe, trøffelmajones, lagret cheddar og smørstekt brioche.',
+          description_en: '200g minced Norwegian beef, truffle mayonnaise, aged cheddar cheese and butter-toasted brioche bun.',
           price: 225,
           category: 'Hovedrett',
+          badge: 'bestseller',
+          portion_info: '200g',
+          image_url: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400&q=80',
+          allergens: 'Gluten (hvete), Melk, Egg',
           sold_out: false
         },
         {
           name: 'Pannestekt Kveite',
+          name_en: 'Pan-Seared Halibut',
           description: 'Bresert purreløk, ramsløkolje og champagne beurre blanc.',
+          description_en: 'Braised leeks, wild ramson garlic oil and champagne beurre blanc.',
           price: 365,
           category: 'Hovedrett',
+          badge: 'special',
+          portion_info: '220g kveitefilet',
+          image_url: 'https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=400&q=80',
+          allergens: 'Fisk, Melk, Sulfitt',
           sold_out: false
         },
         {
           name: 'Villkveite Ceviche',
+          name_en: 'Wild Halibut Ceviche',
           description: 'Tindved, sjalottløk, koriander og sprø jordskokkchips.',
+          description_en: 'Arctic sea buckthorn, pickled shallots, fresh coriander and crispy sunchoke chips.',
           price: 175,
           category: 'Forrett',
+          badge: 'none',
+          portion_info: 'Forrett',
+          image_url: 'https://images.unsplash.com/photo-1539136788836-5699e78bfc75?w=400&q=80',
+          allergens: 'Fisk',
           sold_out: false
         },
         {
           name: 'Multer & Røros-is',
+          name_en: 'Arctic Cloudberries & Røros Ice Cream',
           description: 'Villmulter, karamellisert hvit sjokolade og tindvedsirup.',
+          description_en: 'Wild handpicked cloudberries, caramelized white chocolate crumble and sea buckthorn syrup.',
           price: 165,
           category: 'Desserter',
+          badge: 'new',
+          portion_info: 'Dessert',
+          image_url: 'https://images.unsplash.com/photo-1551024709-8f23befc6f87?w=400&q=80',
+          allergens: 'Melk, Soya',
           sold_out: false
         },
         {
           name: 'Nøgne Ø IPA (0.33l)',
+          name_en: 'Nøgne Ø IPA (0.33l)',
           description: 'Klassisk håndverks-IPA med rik humleprofil og frisk sitrus.',
+          description_en: 'Classic Norwegian craft IPA with generous hop profile and vibrant citrus notes.',
           price: 115,
           category: 'Drikke',
+          badge: 'none',
+          portion_info: '0.33l',
+          image_url: '',
+          allergens: 'Gluten (bygg)',
           sold_out: false
         }
       ];
@@ -1380,6 +1410,10 @@
               tagline_above: 'Fine Dining & Vinbar',
               tagline_below: 'Sesongens råvarer og klassiske favoritter. Velkommen til bords.',
               categories: ['Hovedrett', 'Forrett', 'Desserter', 'Drikke'],
+              accent_color: 'emerald',
+              theme_mode: 'dark',
+              font_family: 'jakarta',
+              currency: 'kr',
               created_at: new Date().toISOString()
             });
 
@@ -1387,7 +1421,10 @@
             if (seed) {
               const menuCol = collection(db, 'restaurants', slug, 'menu_items');
               for (const dish of DEFAULT_SEED_ITEMS) {
-                await addDoc(menuCol, dish);
+                await addDoc(menuCol, {
+                  ...dish,
+                  created_at: new Date().toISOString()
+                });
               }
             }
           } else {
