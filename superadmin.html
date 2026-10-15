@@ -62,8 +62,8 @@
             <span class="h-1.5 w-1.5 rounded-full bg-rose-500 animate-pulse"></span>
             Superadmin Sikkerhetslås
           </span>
-          <h1 class="text-2xl font-bold text-white tracking-tight">Byrå- og Eierportal</h1>
-          <p class="text-xs text-zinc-400 mt-2 leading-relaxed">
+          <h1 id="superadmin-lock-title" class="text-2xl font-bold text-white tracking-tight">Byrå- og Eierportal</h1>
+          <p id="superadmin-lock-desc" class="text-xs text-zinc-400 mt-2 leading-relaxed">
             Kun autorisert SmakSync-administrator har tilgang til denne portalen. Skriv inn din personlige Superadmin Master-kode for å åpne.
           </p>
         </div>
@@ -92,7 +92,7 @@
             id="superadmin-unlock-btn"
             class="w-full py-3 px-4 rounded-xl bg-white hover:bg-zinc-200 text-zinc-950 font-bold text-sm transition-all shadow-lg active:scale-98 flex items-center justify-center gap-2"
           >
-            <span>Lås opp Superadmin</span>
+            <span id="superadmin-unlock-btn-text">Lås opp Superadmin</span>
             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
             </svg>
@@ -979,28 +979,7 @@
       const LOCAL_FALLBACK_KEY = 'smaksync_firestore_restaurants';
       function getFallbackRestaurants() {
         const raw = localStorage.getItem(LOCAL_FALLBACK_KEY);
-        if (!raw) {
-          const initial = [
-            {
-              id: 'restaurant_eik_og_gran',
-              name: 'Restaurant Eik & Gran',
-              logo_url: '',
-              pin: '1234',
-              itemCount: 8,
-              created_at: new Date().toISOString()
-            },
-            {
-              id: 'vesper_cocktailbar',
-              name: 'Vesper Cocktail Bar',
-              logo_url: '',
-              pin: '5678',
-              itemCount: 6,
-              created_at: new Date().toISOString()
-            }
-          ];
-          localStorage.setItem(LOCAL_FALLBACK_KEY, JSON.stringify(initial));
-          return initial;
-        }
+        if (!raw) return [];
         try {
           return JSON.parse(raw);
         } catch {
@@ -1018,8 +997,6 @@
       // Superadmin Master PIN autentisering (Sikker kryptografisk hash-verifisering)
       const SUPERADMIN_AUTH_KEY = 'smaksync_superadmin_auth';
       const SUPERADMIN_MASTER_HASH_KEY = 'smaksync_superadmin_master_hash';
-      // SHA-256 hash av autorisert passord (passordet lagres aldri i klartekst)
-      const DEFAULT_MASTER_HASH = '5524fe000ffd5c1743a619d7e17581511ed083d674b9998c6c7b42024315e88a';
 
       async function sha256(message) {
         const msgBuffer = new TextEncoder().encode(message);
@@ -1029,7 +1006,7 @@
       }
 
       function getMasterPinHash() {
-        return localStorage.getItem(SUPERADMIN_MASTER_HASH_KEY) || DEFAULT_MASTER_HASH;
+        return localStorage.getItem(SUPERADMIN_MASTER_HASH_KEY);
       }
 
       let unsubscribeRestaurants = null;
@@ -1066,6 +1043,22 @@
         const isAuth = sessionStorage.getItem(SUPERADMIN_AUTH_KEY);
         const lockView = document.getElementById('superadmin-lock-view');
         const appContainer = document.getElementById('superadmin-app-container');
+        const savedHash = getMasterPinHash();
+
+        const lockTitle = document.getElementById('superadmin-lock-title');
+        const lockDesc = document.getElementById('superadmin-lock-desc');
+        const unlockBtnText = document.getElementById('superadmin-unlock-btn-text');
+
+        if (!savedHash) {
+          if (lockTitle) lockTitle.innerText = 'Førstegangsoppsett: Velg Masterkode';
+          if (lockDesc) lockDesc.innerText = 'Velg en sikker personlig kode for å låse byråportalen. Koden lagres lokalt i nettleseren din og finnes aldri på GitHub.';
+          if (unlockBtnText) unlockBtnText.innerText = 'Opprett Masterkode & Lås opp';
+        } else {
+          if (lockTitle) lockTitle.innerText = 'Byrå- og Eierportal';
+          if (lockDesc) lockDesc.innerText = 'Kun autorisert SmakSync-administrator har tilgang til denne portalen. Skriv inn din personlige Superadmin Master-kode for å åpne.';
+          if (unlockBtnText) unlockBtnText.innerText = 'Lås opp Superadmin';
+        }
+
         if (isAuth === 'true') {
           if (lockView) lockView.classList.add('hidden');
           if (appContainer) appContainer.classList.remove('hidden');
@@ -1088,14 +1081,37 @@
         const err = document.getElementById('superadmin-pin-error');
         const entered = (input ? input.value : '').trim();
 
+        if (!entered || entered.length < 3) {
+          if (err) {
+            err.innerText = 'Koden må bestå av minst 3 tegn.';
+            err.classList.remove('hidden');
+          }
+          return;
+        }
+
         const enteredHash = await sha256(entered);
-        if (enteredHash === getMasterPinHash()) {
+        const savedHash = getMasterPinHash();
+
+        if (!savedHash) {
+          // Førstegangsoppsett: Koden lagres i nettleserens localStorage
+          localStorage.setItem(SUPERADMIN_MASTER_HASH_KEY, enteredHash);
+          sessionStorage.setItem(SUPERADMIN_AUTH_KEY, 'true');
+          if (err) err.classList.add('hidden');
+          checkSuperadminAuth();
+          showToast('✓ Sikker personlig masterkode er lagret!');
+          return;
+        }
+
+        if (enteredHash === savedHash) {
           sessionStorage.setItem(SUPERADMIN_AUTH_KEY, 'true');
           if (err) err.classList.add('hidden');
           checkSuperadminAuth();
           showToast('✓ Velkommen til SmakSync Superadmin!');
         } else {
-          if (err) err.classList.remove('hidden');
+          if (err) {
+            err.innerText = 'Feil master-kode. Vennligst prøv igjen.';
+            err.classList.remove('hidden');
+          }
           if (input) {
             input.classList.add('border-rose-500');
             setTimeout(() => input.classList.remove('border-rose-500'), 1500);
@@ -1174,7 +1190,7 @@
                   id: docSnap.id,
                   name: data.name || docSnap.id,
                   logo_url: data.logo_url || '',
-                  pin: data.pin ? String(data.pin) : '1234',
+                  pin: data.pin ? String(data.pin) : '',
                   pin_hash: data.pin_hash || '',
                   itemCount: count,
                   created_at: data.created_at || new Date().toISOString()
@@ -1240,9 +1256,8 @@
 
         tbody.innerHTML = filtered.map(rest => {
           const adminUrl = `${baseUrl}admin.html?id=${encodeURIComponent(rest.id)}`;
-          const adminDirectUrl = `${baseUrl}admin.html?id=${encodeURIComponent(rest.id)}&pin=${encodeURIComponent(rest.pin || '1234')}&superadmin=1`;
           const menyUrl = `${baseUrl}meny.html?id=${encodeURIComponent(rest.id)}`;
-          const restPin = rest.pin || '1234';
+          const restPin = rest.pin || '';
 
           return `
             <tr class="hover:bg-zinc-50/80 transition-colors group">
@@ -1294,7 +1309,7 @@
                     <svg class="h-3.5 w-3.5 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/>
                     </svg>
-                    <span>Kopier Sjefs-pakke (Lenke + PIN)</span>
+                    <span>Kopier Sjefs-pakke</span>
                   </button>
 
                   <button
@@ -1331,17 +1346,17 @@
 
               <!-- Handlinger -->
               <td class="py-3 px-3.5 text-right space-x-1.5 whitespace-nowrap">
-                <a
-                  href="${adminDirectUrl}"
-                  target="_blank"
+                <button
+                  type="button"
+                  onclick="openRestaurantAdmin('${rest.id}', '${escapeHtml(restPin)}', '${rest.pin_hash || ''}')"
                   class="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-white text-xs font-semibold transition-colors"
-                  title="Åpne kontrollpanelet direkte som autorisert superadmin"
+                  title="Åpne kontrollpanelet autorisert som superadmin"
                 >
                   <span>Åpne Admin</span>
                   <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
                   </svg>
-                </a>
+                </button>
                 <a
                   href="${menyUrl}"
                   target="_blank"
@@ -1387,8 +1402,8 @@
         const name = nameInput.value.trim();
         const slug = slugInput.value.trim().toLowerCase().replace(/[^a-z0-9_\-]/g, '_');
         const logo = logoInput.value.trim();
-        const pin = (pinInput ? pinInput.value.trim() : '') || '1234';
-        const seed = seedCheckbox.checked;
+        const pin = (pinInput ? pinInput.value.trim() : '') || String(Math.floor(1000 + Math.random() * 9000));
+        const seed = seedCheckbox ? seedCheckbox.checked : false;
 
         if (!name || !slug) return;
 
@@ -1670,6 +1685,17 @@
           saveBtn.disabled = false;
           saveBtn.innerText = 'Lagre i Firestore';
         }
+      window.openRestaurantAdmin = async function(id, pin, pinHash) {
+        try {
+          const hash = pinHash || (pin ? await sha256(String(pin).trim()) : '');
+          if (hash) {
+            sessionStorage.setItem('smaksync_auth_hash_' + id, hash);
+          }
+        } catch (e) {
+          console.warn('Kunne ikke sette session auth:', e);
+        }
+        const baseUrl = window.location.origin + window.location.pathname.replace('superadmin.html', '');
+        window.open(`${baseUrl}admin.html?id=${encodeURIComponent(id)}`, '_blank');
       };
 
       window.copyManagerPack = function(name, id, pin) {
@@ -1714,46 +1740,12 @@ Vennligst ta vare på koden for å administrere menyen.`;
 
       function getFallbackInquiries() {
         const raw = localStorage.getItem(INQUIRIES_STORAGE_KEY);
-        if (!raw) {
-          // Noen realistiske starteksempler slik at superadmin har full oversikt fra første sekund
-          const demoInquiries = [
-            {
-              id: 'inq_demo_1',
-              restaurant_name: 'Brasserie Posthallen',
-              contact_person: 'Alexander Lindstrøm',
-              phone: '924 81 200',
-              email: 'post@posthallen.no',
-              topic: 'priser',
-              topic_label: 'Priser og abonnementsmodeller',
-              message: 'Vi har 45 bord og ønsker prisoversikt for NFC-menybrikker til uteserveringen og spisesalen.',
-              created_at: new Date(Date.now() - 42 * 60 * 1000).toISOString(),
-              status: 'ny',
-              source: 'Kontakt for priser og info'
-            },
-            {
-              id: 'inq_demo_2',
-              restaurant_name: 'Nordic Sjømat & Vinbar',
-              contact_person: 'Maren Solheim',
-              phone: '415 62 890',
-              email: 'maren@sjoematogvin.no',
-              topic: 'komplett',
-              topic_label: 'Komplett oppsett (NFC-bordkort + digital meny)',
-              message: 'Åpner ny filial i november. Kan vi få tilsendt uforpliktende pristilbud på 25 bordkort og bistand til menyoppsett?',
-              created_at: new Date(Date.now() - 3 * 3600 * 1000).toISOString(),
-              status: 'ny',
-              source: 'Kontakt for priser og informasjon'
-            }
-          ];
-          localStorage.setItem(INQUIRIES_STORAGE_KEY, JSON.stringify(demoInquiries));
-          return demoInquiries;
-        }
+        if (!raw) return [];
         try {
           return JSON.parse(raw);
         } catch {
           return [];
         }
-      }
-
       function saveFallbackInquiries(list) {
         localStorage.setItem(INQUIRIES_STORAGE_KEY, JSON.stringify(list));
       }

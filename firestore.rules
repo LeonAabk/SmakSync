@@ -2,27 +2,36 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // 1. Restauranter og alle under-samlinger (menu_items, drift, etc.):
+    // 1. Restauranter:
+    // Offentlig lesetilgang for gjester (meny, logo, bord og åpningstider).
+    // Skrivetilgang kun for restaurantdokumentet og dets under-samlinger.
     match /restaurants/{restaurantId} {
-      allow read, write: if true;
+      allow read: if true;
+      allow write: if true;
 
-      match /{allChildren=**} {
-        allow read, write: if true;
+      // Menyelementer og driftsinnstillinger
+      match /{subcollection=**} {
+        allow read: if true;
+        allow write: if true;
       }
     }
 
     // 2. Kontakthenvendelser og prisforespørsler:
+    // Offentlige besøkende kan KUN opprette nye henvendelser via skjemaet.
+    // Lese-, endre- og slettetilgang er sperret for å beskytte kundedata og GDPR.
     match /inquiries/{inquiryId} {
-      allow read, write: if true;
+      allow create: if true;
+      allow read, update, delete: if false;
     }
 
     match /contact_requests/{requestId} {
-      allow read, write: if true;
+      allow create: if true;
+      allow read, update, delete: if false;
     }
 
-    // 3. Generell tilgang for SmakSync (sikrer at ingen operasjoner avvises):
+    // 3. All annen tilgang i databasen er sperret som standard
     match /{document=**} {
-      allow read, write: if true;
+      allow read, write: if false;
     }
   }
 }

@@ -99,12 +99,9 @@
 
         <form id="restaurant-pin-form" onsubmit="handleRestaurantPinSubmit(event)" class="space-y-4">
           <div class="space-y-1.5 text-left">
-            <div class="flex items-center justify-between">
-              <label for="restaurant-pin-input" class="block text-xs font-semibold text-zinc-700">
-                Adgangskode (PIN)
-              </label>
-              <span class="text-[11px] text-zinc-400">Standard: 1234</span>
-            </div>
+            <label for="restaurant-pin-input" class="block text-xs font-semibold text-zinc-700">
+              Adgangskode (PIN)
+            </label>
             <input
               type="password"
               inputmode="numeric"
@@ -116,13 +113,8 @@
             />
           </div>
 
-          <div id="pin-error-msg" class="hidden text-xs text-rose-600 font-medium bg-rose-50 border border-rose-200 py-2.5 px-3 rounded-lg text-left space-y-1">
-            <div class="font-bold">Feil adgangskode.</div>
-            <div class="text-[11px] text-zinc-600">Tips: Du kan også bruke Superadmin Master-PIN (standard: <strong>4563</strong>) for å åpne ethvert kontrollpanel, eller sjekke koden i <a href="superadmin.html" class="underline text-zinc-900 font-semibold">Superadmin-portalen</a>.</div>
-          </div>
-
-          <div id="lock-firestore-status" class="hidden text-[11px] text-amber-800 bg-amber-50 border border-amber-200 p-2.5 rounded-lg text-left">
-            <span class="font-bold">⚠️ Firestore-advarsel:</span> <span id="lock-firestore-status-text">Kunne ikke lese restauranten live fra Firestore. Bruker standard PIN: 1234.</span>
+          <div id="pin-error-msg" class="hidden text-xs text-rose-600 font-medium bg-rose-50 border border-rose-200 py-2.5 px-3 rounded-lg text-left">
+            Ugyldig adgangskode. Vennligst sjekk med din administrator.
           </div>
 
           <button
@@ -135,22 +127,10 @@
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
             </svg>
           </button>
-
-          <!-- Superadmin Hurtigadgang (vises automatisk hvis Superadmin er innlogget i nettleseren) -->
-          <div id="superadmin-quick-unlock" class="hidden pt-3 border-t border-zinc-100">
-            <button
-              type="button"
-              onclick="handleSuperadminDirectUnlock()"
-              class="w-full py-2.5 px-3 rounded-xl bg-accent-50 hover:bg-accent-100 border border-accent-200 text-accent-800 font-semibold text-xs transition-colors flex items-center justify-center gap-2 shadow-2xs"
-            >
-              <span>👑 Lås opp direkte som Superadmin / Eier</span>
-            </button>
-          </div>
         </form>
 
-        <div class="pt-2 border-t border-zinc-100 flex items-center justify-between text-[11px] text-zinc-400">
-          <span>ID: <code class="font-mono text-zinc-700 font-semibold" id="lock-restaurant-id">--</code></span>
-          <a href="superadmin.html" class="hover:text-zinc-700 underline">Superadmin portal ↗</a>
+        <div class="pt-2 border-t border-zinc-100 text-center text-[11px] text-zinc-400">
+          Beskyttet kontrollpanel · Kun for autorisert personell
         </div>
       </div>
     </div>
@@ -1872,17 +1852,10 @@ service cloud.firestore {
       }
 
       let currentRestaurantPinHash = null;
-      let currentRestaurantRawPin = '1234';
       let isUnlocked = false;
       let unsubscribeMenu = null;
       let metadataLoadingPromise = null;
       const AUTH_KEY = `smaksync_auth_hash_${restaurantId}`;
-
-      // Superadmin Master PIN (standard er 4563)
-      const DEFAULT_SUPERADMIN_MASTER_HASH = '5524fe000ffd5c1743a619d7e17581511ed083d674b9998c6c7b42024315e88a';
-      function getSuperadminMasterHash() {
-        return localStorage.getItem('smaksync_superadmin_master_hash') || DEFAULT_SUPERADMIN_MASTER_HASH;
-      }
 
       async function setRestaurantPin(rawPinOrHash) {
         if (!rawPinOrHash) return;
@@ -1890,7 +1863,6 @@ service cloud.firestore {
         if (/^[a-f0-9]{64}$/i.test(val)) {
           currentRestaurantPinHash = val.toLowerCase();
         } else {
-          currentRestaurantRawPin = val;
           currentRestaurantPinHash = await sha256(val);
         }
       }
@@ -1905,40 +1877,8 @@ service cloud.firestore {
 
       async function checkSessionAuth() {
         const savedAuthHash = sessionStorage.getItem(AUTH_KEY);
-        const isSuperadminSession = sessionStorage.getItem('smaksync_superadmin_auth') === 'true';
 
-        // Vis superadmin hurtigadgang-knapp dersom superadmin er innlogget
-        const saQuickBtn = document.getElementById('superadmin-quick-unlock');
-        if (saQuickBtn) {
-          if (isSuperadminSession) {
-            saQuickBtn.classList.remove('hidden');
-          } else {
-            saQuickBtn.classList.add('hidden');
-          }
-        }
-
-        // Sjekk om URL inneholder &superadmin=1 og aktiv superadmin-økt
-        if (isSuperadminSession && (urlParams.get('superadmin') === '1' || urlParams.get('auth') === 'superadmin')) {
-          unlockDashboard();
-          return;
-        }
-
-        // Sjekk om URL inneholder direkte &pin=...
-        const urlPin = urlParams.get('pin');
-        if (urlPin) {
-          const urlPinHash = await sha256(urlPin.trim());
-          if (urlPin.trim() === currentRestaurantRawPin || urlPinHash === currentRestaurantPinHash || urlPin.trim() === '4563' || urlPin.trim() === '1234') {
-            sessionStorage.setItem(AUTH_KEY, urlPinHash);
-            unlockDashboard();
-            return;
-          }
-        }
-
-        if (savedAuthHash && (
-          (currentRestaurantPinHash && savedAuthHash === currentRestaurantPinHash) ||
-          savedAuthHash === getSuperadminMasterHash() ||
-          savedAuthHash === 'superadmin_authorized'
-        )) {
+        if (savedAuthHash && currentRestaurantPinHash && savedAuthHash === currentRestaurantPinHash) {
           unlockDashboard();
         } else {
           lockDashboard();
@@ -1962,12 +1902,6 @@ service cloud.firestore {
         }
         const err = document.getElementById('pin-error-msg');
         if (err) err.classList.add('hidden');
-
-        // Vis superadmin-hurtiglås dersom aktiv økt
-        if (sessionStorage.getItem('smaksync_superadmin_auth') === 'true') {
-          const saQuickBtn = document.getElementById('superadmin-quick-unlock');
-          if (saQuickBtn) saQuickBtn.classList.remove('hidden');
-        }
       }
 
       function unlockDashboard() {
@@ -1976,12 +1910,6 @@ service cloud.firestore {
         if (mainView) mainView.classList.remove('hidden');
         startMenuSync();
       }
-
-      window.handleSuperadminDirectUnlock = function() {
-        sessionStorage.setItem(AUTH_KEY, 'superadmin_authorized');
-        unlockDashboard();
-        showToast('✓ Låst opp med Superadmin-rettigheter!');
-      };
 
       window.handleRestaurantPinSubmit = async function(e) {
         e.preventDefault();
@@ -1996,23 +1924,8 @@ service cloud.firestore {
         }
 
         const enteredHash = await sha256(entered);
-        const superMasterHash = getSuperadminMasterHash();
 
-        // Godkjenn dersom koden matcher:
-        // 1. Restaurantens lagrede PIN-hash
-        // 2. Restaurantens rå-PIN (klartekst)
-        // 3. Superadmin Master-PIN hash
-        // 4. Standard Superadmin masterkode ('4563')
-        // 5. Standard fallback-PIN ('1234') dersom databasen er tom eller utilgjengelig
-        const isMatch = (
-          (currentRestaurantPinHash && enteredHash === currentRestaurantPinHash) ||
-          (currentRestaurantRawPin && entered === currentRestaurantRawPin) ||
-          enteredHash === superMasterHash ||
-          entered === '4563' ||
-          entered === '1234'
-        );
-
-        if (isMatch) {
+        if (currentRestaurantPinHash && enteredHash === currentRestaurantPinHash) {
           sessionStorage.setItem(AUTH_KEY, enteredHash);
           if (err) err.classList.add('hidden');
           unlockDashboard();
@@ -2080,8 +1993,6 @@ service cloud.firestore {
         let serviceBell = { enabled: true };
         let googleReview = { enabled: true, url: '', text: 'Fornøyd med opplevelsen? Gi oss 5 stjerner på Google ⭐' };
 
-        await setRestaurantPin('1234');
-
         if (isRealFirebase && db) {
           try {
             const restRef = doc(db, 'restaurants', restaurantId);
@@ -2108,29 +2019,9 @@ service cloud.firestore {
               if (data.wifi) wifi = { ...wifi, ...data.wifi };
               if (data.service_bell) serviceBell = { ...serviceBell, ...data.service_bell };
               if (data.google_review) googleReview = { ...googleReview, ...data.google_review };
-
-              const lockStatus = document.getElementById('lock-firestore-status');
-              if (lockStatus) lockStatus.classList.add('hidden');
-            } else {
-              // Dokumentet finnes ikke i Firestore ennå
-              const lockStatus = document.getElementById('lock-firestore-status');
-              const lockStatusText = document.getElementById('lock-firestore-status-text');
-              if (lockStatus && lockStatusText) {
-                lockStatusText.innerText = `Restauranten "${restaurantId}" er ikke opprettet i Firestore ennå. Standard PIN er 1234.`;
-                lockStatus.classList.remove('hidden');
-              }
             }
           } catch (e) {
             console.warn('Kunne ikke hente restaurantdata fra Firestore:', e);
-            const lockStatus = document.getElementById('lock-firestore-status');
-            const lockStatusText = document.getElementById('lock-firestore-status-text');
-            if (lockStatus && lockStatusText) {
-              const isPermission = e.code === 'permission-denied' || String(e).includes('permission');
-              lockStatusText.innerText = isPermission
-                ? 'Firestore Rules blokkerer lesing (permission-denied). Standard PIN 1234 eller Master-PIN 4563 kan benyttes.'
-                : `Firestore ikke tilkoblet (${e.code || e.message}). Bruker standard PIN: 1234.`;
-              lockStatus.classList.remove('hidden');
-            }
           }
         } else {
           try {
