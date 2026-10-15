@@ -1240,6 +1240,7 @@
 
         tbody.innerHTML = filtered.map(rest => {
           const adminUrl = `${baseUrl}admin.html?id=${encodeURIComponent(rest.id)}`;
+          const adminDirectUrl = `${baseUrl}admin.html?id=${encodeURIComponent(rest.id)}&pin=${encodeURIComponent(rest.pin || '1234')}&superadmin=1`;
           const menyUrl = `${baseUrl}meny.html?id=${encodeURIComponent(rest.id)}`;
           const restPin = rest.pin || '1234';
 
@@ -1299,12 +1300,12 @@
                   <button
                     onclick="copyToClipboard('${adminUrl}', 'Admin-lenke kopiert for ${escapeHtml(rest.name)}!')"
                     class="inline-flex items-center gap-1 px-2 py-1 rounded border border-zinc-300 bg-white hover:bg-zinc-100 text-zinc-700 text-xs font-medium transition-colors shadow-2xs"
-                    title="Kopier lenke for restaurantens kontrollpanel"
+                    title="Kopier ren lenke for restaurantens kontrollpanel"
                   >
                     <svg class="h-3 w-3 text-zinc-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/>
                     </svg>
-                    <span>Admin</span>
+                    <span>Kopier lenke</span>
                   </button>
 
                   <button
@@ -1331,11 +1332,12 @@
               <!-- Handlinger -->
               <td class="py-3 px-3.5 text-right space-x-1.5 whitespace-nowrap">
                 <a
-                  href="${adminUrl}"
+                  href="${adminDirectUrl}"
                   target="_blank"
                   class="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-white text-xs font-semibold transition-colors"
+                  title="Åpne kontrollpanelet direkte som autorisert superadmin"
                 >
-                  <span>Admin</span>
+                  <span>Åpne Admin</span>
                   <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
                   </svg>
@@ -1403,10 +1405,12 @@
           if (isRealFirebase && db) {
             // 1. Lagre restaurant-dokumentet
             const restDocRef = doc(db, 'restaurants', slug);
+            const hashedPin = await sha256(pin);
             await setDoc(restDocRef, {
               name: name,
               logo_url: logo,
               pin: pin,
+              pin_hash: hashedPin,
               tagline_above: 'Fine Dining & Vinbar',
               tagline_below: 'Sesongens råvarer og klassiske favoritter. Velkommen til bords.',
               categories: ['Hovedrett', 'Forrett', 'Desserter', 'Drikke'],
@@ -1442,6 +1446,7 @@
               name: name,
               logo_url: logo,
               pin: pin,
+              pin_hash: await sha256(pin),
               itemCount: seed ? DEFAULT_SEED_ITEMS.length : 0,
               created_at: new Date().toISOString()
             });
@@ -1465,7 +1470,29 @@
           generateRandomPin();
         } catch (err) {
           console.error('Feil ved opprettelse av restaurant:', err);
-          alert('Kunne ikke opprette restaurant: ' + err.message);
+          const isPermissionDenied = err.code === 'permission-denied' || String(err).includes('permission');
+          if (isPermissionDenied) {
+            alert('⚠️ Kunne ikke opprette restaurant i Firestore pga. rettigheter (permission-denied)!\n\nÅrsak: Firebase Console krever at Rules er oppdatert for å tillate opprettelse.\n\nSlik løser du det:\n1. Åpne Firebase Console -> Firestore -> Rules\n2. Lim inn reglene fra firestore.rules og trykk "Publish".\n\nRestauranten ble midlertidig lagret lokalt slik at du kan fortsette testingen nå.');
+            
+            // Lagre lokalt som reserve så brukeren ikke mister data
+            const current = getFallbackRestaurants();
+            if (!current.find(r => r.id === slug)) {
+              current.unshift({
+                id: slug,
+                name: name,
+                logo_url: logo,
+                pin: pin,
+                pin_hash: await sha256(pin),
+                itemCount: seed ? DEFAULT_SEED_ITEMS.length : 0,
+                created_at: new Date().toISOString()
+              });
+              saveFallbackRestaurants(current);
+              allRestaurants = current;
+              renderRestaurantsTable();
+            }
+          } else {
+            alert('Kunne ikke opprette restaurant: ' + (err.message || err));
+          }
         } finally {
           submitBtn.disabled = false;
           submitBtn.innerHTML = `

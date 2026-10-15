@@ -2,22 +2,26 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // 1. Restauranter:
-    // Lar gjester lese profil, og superadmin/restaurantansvarlig opprette og oppdatere
+    // 1. Restauranter og alle under-samlinger (menu_items, drift, etc.):
     match /restaurants/{restaurantId} {
-      allow read: if true;
-      allow write: if true;
+      allow read, write: if true;
 
-      // 2. Menyer for hver restaurant (under-samling menu_items):
-      // Lar mobilgjester se menyen, og eieren legge til / redigere / sette utsolgt
-      match /menu_items/{itemId} {
-        allow read: if true;
-        allow write: if true;
+      match /{allChildren=**} {
+        allow read, write: if true;
       }
     }
 
-    // 3. Kontakthenvendelser fra landingssiden:
+    // 2. Kontakthenvendelser og prisforespørsler:
+    match /inquiries/{inquiryId} {
+      allow read, write: if true;
+    }
+
     match /contact_requests/{requestId} {
+      allow read, write: if true;
+    }
+
+    // 3. Generell tilgang for SmakSync (sikrer at ingen operasjoner avvises):
+    match /{document=**} {
       allow read, write: if true;
     }
   }

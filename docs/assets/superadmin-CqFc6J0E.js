@@ -4,7 +4,7 @@ import"./modulepreload-polyfill-P2Xu9kJm.js";import{initializeApp as e}from"http
                 ${y?`Ingen restauranter matchet "${y}".`:`Ingen restauranter opprettet ennå. Bruk skjemaet til venstre for å opprette din første!`}
               </td>
             </tr>
-          `;return}let i=window.location.origin+window.location.pathname.replace(`superadmin.html`,``);e.innerHTML=r.map(e=>{let t=`${i}admin.html?id=${encodeURIComponent(e.id)}`,n=`${i}meny.html?id=${encodeURIComponent(e.id)}`,r=e.pin||`1234`;return`
+          `;return}let i=window.location.origin+window.location.pathname.replace(`superadmin.html`,``);e.innerHTML=r.map(e=>{let t=`${i}admin.html?id=${encodeURIComponent(e.id)}`,n=`${i}admin.html?id=${encodeURIComponent(e.id)}&pin=${encodeURIComponent(e.pin||`1234`)}&superadmin=1`,r=`${i}meny.html?id=${encodeURIComponent(e.id)}`,a=e.pin||`1234`;return`
             <tr class="hover:bg-zinc-50/80 transition-colors group">
               <!-- Restaurant & Slug -->
               <td class="py-3 px-3.5">
@@ -24,10 +24,10 @@ import"./modulepreload-polyfill-P2Xu9kJm.js";import{initializeApp as e}from"http
                     <svg class="h-3 w-3 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
                     </svg>
-                    <span>${I(r)}</span>
+                    <span>${I(a)}</span>
                   </span>
                   <button
-                    onclick="openChangeRestaurantPinModal('${e.id}', '${I(r)}', '${I(e.name)}')"
+                    onclick="openChangeRestaurantPinModal('${e.id}', '${I(a)}', '${I(e.name)}')"
                     class="text-[11px] font-medium text-zinc-500 hover:text-zinc-950 underline px-1 py-0.5 rounded hover:bg-zinc-100 transition-colors"
                     title="Endre PIN-kode for denne restauranten"
                   >
@@ -47,7 +47,7 @@ import"./modulepreload-polyfill-P2Xu9kJm.js";import{initializeApp as e}from"http
               <td class="py-3 px-3.5 space-y-1">
                 <div class="flex flex-wrap items-center gap-1.5">
                   <button
-                    onclick="copyManagerPack('${I(e.name)}', '${e.id}', '${I(r)}')"
+                    onclick="copyManagerPack('${I(e.name)}', '${e.id}', '${I(a)}')"
                     class="inline-flex items-center gap-1 px-2.5 py-1 rounded border border-emerald-300 bg-emerald-50 hover:bg-emerald-100 text-emerald-900 text-xs font-semibold transition-colors shadow-2xs"
                     title="Kopier komplett pakke med lenke og PIN klar til å sendes til restaurantsjefen"
                   >
@@ -60,16 +60,16 @@ import"./modulepreload-polyfill-P2Xu9kJm.js";import{initializeApp as e}from"http
                   <button
                     onclick="copyToClipboard('${t}', 'Admin-lenke kopiert for ${I(e.name)}!')"
                     class="inline-flex items-center gap-1 px-2 py-1 rounded border border-zinc-300 bg-white hover:bg-zinc-100 text-zinc-700 text-xs font-medium transition-colors shadow-2xs"
-                    title="Kopier lenke for restaurantens kontrollpanel"
+                    title="Kopier ren lenke for restaurantens kontrollpanel"
                   >
                     <svg class="h-3 w-3 text-zinc-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/>
                     </svg>
-                    <span>Admin</span>
+                    <span>Kopier lenke</span>
                   </button>
 
                   <button
-                    onclick="copyToClipboard('${n}', 'NFC-menylenke kopiert for ${I(e.name)}!')"
+                    onclick="copyToClipboard('${r}', 'NFC-menylenke kopiert for ${I(e.name)}!')"
                     class="inline-flex items-center gap-1 px-2 py-1 rounded border border-accent-300 bg-accent-50 hover:bg-accent-100 text-accent-800 text-xs font-medium transition-colors shadow-2xs"
                     title="Kopier lenke for NFC-brikker og QR-koder på bordene"
                   >
@@ -80,7 +80,7 @@ import"./modulepreload-polyfill-P2Xu9kJm.js";import{initializeApp as e}from"http
                   </button>
 
                   <button
-                    onclick="copyToClipboard('${n}&lang=en', 'Engelsk menylenke kopiert for ${I(e.name)}!')"
+                    onclick="copyToClipboard('${r}&lang=en', 'Engelsk menylenke kopiert for ${I(e.name)}!')"
                     class="inline-flex items-center gap-1 px-1.5 py-1 rounded border border-zinc-200 bg-white hover:bg-zinc-100 text-zinc-700 text-xs font-medium transition-colors shadow-2xs"
                     title="Kopier engelsk menylenke for internasjonale gjester / NFC"
                   >
@@ -92,17 +92,18 @@ import"./modulepreload-polyfill-P2Xu9kJm.js";import{initializeApp as e}from"http
               <!-- Handlinger -->
               <td class="py-3 px-3.5 text-right space-x-1.5 whitespace-nowrap">
                 <a
-                  href="${t}"
+                  href="${n}"
                   target="_blank"
                   class="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-white text-xs font-semibold transition-colors"
+                  title="Åpne kontrollpanelet direkte som autorisert superadmin"
                 >
-                  <span>Admin</span>
+                  <span>Åpne Admin</span>
                   <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
                   </svg>
                 </a>
                 <a
-                  href="${n}"
+                  href="${r}"
                   target="_blank"
                   class="inline-flex items-center gap-1 px-2.5 py-1 rounded border border-zinc-200 bg-white hover:bg-zinc-100 text-zinc-800 text-xs font-semibold transition-colors"
                   title="Åpne meny på norsk"
@@ -113,7 +114,7 @@ import"./modulepreload-polyfill-P2Xu9kJm.js";import{initializeApp as e}from"http
                   </svg>
                 </a>
                 <a
-                  href="${n}&lang=en"
+                  href="${r}&lang=en"
                   target="_blank"
                   class="inline-flex items-center gap-1 px-2 py-1 rounded border border-zinc-200 bg-white hover:bg-zinc-100 text-zinc-700 text-xs font-medium transition-colors"
                   title="Åpne meny på engelsk (for turister)"
@@ -135,7 +136,15 @@ import"./modulepreload-polyfill-P2Xu9kJm.js";import{initializeApp as e}from"http
             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
           </svg>
           <span>Oppretter...</span>
-        `;try{if(f&&d){let e=i(d,`restaurants`,h);if(await c(e,{name:p,logo_url:y,pin:b,tagline_above:`Fine Dining & Vinbar`,tagline_below:`Sesongens råvarer og klassiske favoritter. Velkommen til bords.`,categories:[`Hovedrett`,`Forrett`,`Desserter`,`Drikke`],accent_color:`emerald`,theme_mode:`dark`,font_family:`jakarta`,currency:`kr`,created_at:new Date().toISOString()}),x){let e=n(d,`restaurants`,h,`menu_items`);for(let n of m)await t(e,{...n,created_at:new Date().toISOString()})}}else{let e=g();if(e.find(e=>e.id===h)){alert(`Restaurant med ID "${h}" finnes allerede.`),u.disabled=!1,u.innerText=`Opprett i Firestore`;return}e.unshift({id:h,name:p,logo_url:y,pin:b,itemCount:x?m.length:0,created_at:new Date().toISOString()}),_(e),x&&localStorage.setItem(`smaksync_items_${h}`,JSON.stringify(m.map((e,t)=>({id:`seed-`+(t+1),...e})))),v=e,N()}F(`✓ Restaurant "${p}" opprettet med PIN ${b}! URL: ?id=${h}`),document.getElementById(`create-restaurant-form`).reset(),generateRandomPin()}catch(e){console.error(`Feil ved opprettelse av restaurant:`,e),alert(`Kunne ikke opprette restaurant: `+e.message)}finally{u.disabled=!1,u.innerHTML=`
+        `;try{if(f&&d){let e=i(d,`restaurants`,h),r=await C(b);if(await c(e,{name:p,logo_url:y,pin:b,pin_hash:r,tagline_above:`Fine Dining & Vinbar`,tagline_below:`Sesongens råvarer og klassiske favoritter. Velkommen til bords.`,categories:[`Hovedrett`,`Forrett`,`Desserter`,`Drikke`],accent_color:`emerald`,theme_mode:`dark`,font_family:`jakarta`,currency:`kr`,created_at:new Date().toISOString()}),x){let e=n(d,`restaurants`,h,`menu_items`);for(let n of m)await t(e,{...n,created_at:new Date().toISOString()})}}else{let e=g();if(e.find(e=>e.id===h)){alert(`Restaurant med ID "${h}" finnes allerede.`),u.disabled=!1,u.innerText=`Opprett i Firestore`;return}e.unshift({id:h,name:p,logo_url:y,pin:b,pin_hash:await C(b),itemCount:x?m.length:0,created_at:new Date().toISOString()}),_(e),x&&localStorage.setItem(`smaksync_items_${h}`,JSON.stringify(m.map((e,t)=>({id:`seed-`+(t+1),...e})))),v=e,N()}F(`✓ Restaurant "${p}" opprettet med PIN ${b}! URL: ?id=${h}`),document.getElementById(`create-restaurant-form`).reset(),generateRandomPin()}catch(e){if(console.error(`Feil ved opprettelse av restaurant:`,e),e.code===`permission-denied`||String(e).includes(`permission`)){alert(`⚠️ Kunne ikke opprette restaurant i Firestore pga. rettigheter (permission-denied)!
+
+Årsak: Firebase Console krever at Rules er oppdatert for å tillate opprettelse.
+
+Slik løser du det:
+1. Åpne Firebase Console -> Firestore -> Rules
+2. Lim inn reglene fra firestore.rules og trykk "Publish".
+
+Restauranten ble midlertidig lagret lokalt slik at du kan fortsette testingen nå.`);let e=g();e.find(e=>e.id===h)||(e.unshift({id:h,name:p,logo_url:y,pin:b,pin_hash:await C(b),itemCount:x?m.length:0,created_at:new Date().toISOString()}),_(e),v=e,N())}else alert(`Kunne ikke opprette restaurant: `+(e.message||e))}finally{u.disabled=!1,u.innerHTML=`
             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/>
             </svg>
