@@ -1694,12 +1694,11 @@ service cloud.firestore {
       if (noMenuBtn) noMenuBtn.href = guestMenuUrl;
       const enMenuBtn = document.getElementById('open-guest-menu-en-btn');
       if (enMenuBtn) enMenuBtn.href = guestMenuEnUrl;
-      const footerLink = document.getElementById('footer-menu-link');
-      if (footerLink) footerLink.href = guestMenuUrl;
-      const headerRestIdEl = document.getElementById('header-restaurant-id');
-      if (headerRestIdEl) headerRestIdEl.innerText = restaurantId;
-      const pathLabelEl = document.getElementById('firestore-path-label');
-      if (pathLabelEl) pathLabelEl.innerText = `restaurants/${restaurantId}/menu_items`;
+      const headerRestIdElem = document.getElementById('header-restaurant-id');
+      if (headerRestIdElem) headerRestIdElem.innerText = restaurantId;
+
+      const firestorePathElem = document.getElementById('firestore-path-label');
+      if (firestorePathElem) firestorePathElem.innerText = `restaurants/${restaurantId}/menu_items`;
 
       // Hent konfigurering (enten fra koden eller fra nettleser-lagret konfig)
       let activeConfig = DEFAULT_FIREBASE_CONFIG;
@@ -2564,7 +2563,7 @@ service cloud.firestore {
           if (isRealFirebase && db) {
             // Sørg for at restaurant-dokumentet også eksisterer
             await setDoc(doc(db, 'restaurants', restaurantId), {
-              name: document.getElementById('header-restaurant-name').innerText || restaurantId,
+              name: document.getElementById('header-restaurant-name')?.innerText || restaurantId,
               tagline_above: currentRestaurantMeta.tagline_above || 'Fine Dining & Vinbar',
               tagline_below: currentRestaurantMeta.tagline_below || 'Sesongens råvarer og klassiske favoritter. Velkommen til bords.',
               categories: currentCategories,
@@ -2690,9 +2689,12 @@ service cloud.firestore {
         const activeCount = dishesList.filter(d => !d.sold_out).length;
         const soldOutCount = dishesList.filter(d => d.sold_out).length;
 
-        document.getElementById('stat-total-count').innerText = totalCount;
-        document.getElementById('stat-active-count').innerText = activeCount;
-        document.getElementById('stat-soldout-count').innerText = soldOutCount;
+        const totalEl = document.getElementById('stat-total-count');
+        if (totalEl) totalEl.innerText = totalCount;
+        const activeEl = document.getElementById('stat-active-count');
+        if (activeEl) activeEl.innerText = activeCount;
+        const soldOutEl = document.getElementById('stat-soldout-count');
+        if (soldOutEl) soldOutEl.innerText = soldOutCount;
 
         // Oppdater kategorikontroller med oppdaterte tall
         renderCategoryControls();
@@ -3311,7 +3313,7 @@ service cloud.firestore {
             renderTable();
           }
 
-          document.getElementById('add-dish-form').reset();
+          document.getElementById('add-dish-form')?.reset();
           renderCategoryControls();
           showToast(`✓ "${newDish.name}" lagret i Firestore og live på gjestemenyen!`);
           reloadSimulatorIframe();

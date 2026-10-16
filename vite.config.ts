@@ -8,6 +8,7 @@ export default defineConfig(() => {
     base: './',
     build: {
       outDir: 'docs',
+      emptyOutDir: true,
       rollupOptions: {
         input: {
           main: path.resolve(import.meta.dirname, 'index.html'),

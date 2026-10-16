@@ -40,7 +40,7 @@
       };
     </script>
     <style>body{-webkit-font-smoothing:antialiased;font-family:Inter,sans-serif}</style>
-    <script type="module" crossorigin src="./assets/admin-BuVbPgJx.js"></script>
+    <script type="module" crossorigin src="./assets/admin-fI_1ud_u.js"></script>
     <link rel="modulepreload" crossorigin href="./assets/modulepreload-polyfill-P2Xu9kJm.js">
   </head>
   <body class="bg-zinc-100 text-zinc-900 min-h-screen flex flex-col">
@@ -96,12 +96,9 @@
 
         <form id="restaurant-pin-form" onsubmit="handleRestaurantPinSubmit(event)" class="space-y-4">
           <div class="space-y-1.5 text-left">
-            <div class="flex items-center justify-between">
-              <label for="restaurant-pin-input" class="block text-xs font-semibold text-zinc-700">
-                Adgangskode (PIN)
-              </label>
-              <span class="text-[11px] text-zinc-400">Standard: 1234</span>
-            </div>
+            <label for="restaurant-pin-input" class="block text-xs font-semibold text-zinc-700">
+              Adgangskode (PIN)
+            </label>
             <input
               type="password"
               inputmode="numeric"
@@ -113,13 +110,8 @@
             />
           </div>
 
-          <div id="pin-error-msg" class="hidden text-xs text-rose-600 font-medium bg-rose-50 border border-rose-200 py-2.5 px-3 rounded-lg text-left space-y-1">
-            <div class="font-bold">Feil adgangskode.</div>
-            <div class="text-[11px] text-zinc-600">Tips: Du kan også bruke Superadmin Master-PIN (standard: <strong>4563</strong>) for å åpne ethvert kontrollpanel, eller sjekke koden i <a href="superadmin.html" class="underline text-zinc-900 font-semibold">Superadmin-portalen</a>.</div>
-          </div>
-
-          <div id="lock-firestore-status" class="hidden text-[11px] text-amber-800 bg-amber-50 border border-amber-200 p-2.5 rounded-lg text-left">
-            <span class="font-bold">⚠️ Firestore-advarsel:</span> <span id="lock-firestore-status-text">Kunne ikke lese restauranten live fra Firestore. Bruker standard PIN: 1234.</span>
+          <div id="pin-error-msg" class="hidden text-xs text-rose-600 font-medium bg-rose-50 border border-rose-200 py-2.5 px-3 rounded-lg text-left">
+            Ugyldig adgangskode. Vennligst sjekk med din administrator.
           </div>
 
           <button
@@ -132,22 +124,10 @@
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
             </svg>
           </button>
-
-          <!-- Superadmin Hurtigadgang (vises automatisk hvis Superadmin er innlogget i nettleseren) -->
-          <div id="superadmin-quick-unlock" class="hidden pt-3 border-t border-zinc-100">
-            <button
-              type="button"
-              onclick="handleSuperadminDirectUnlock()"
-              class="w-full py-2.5 px-3 rounded-xl bg-accent-50 hover:bg-accent-100 border border-accent-200 text-accent-800 font-semibold text-xs transition-colors flex items-center justify-center gap-2 shadow-2xs"
-            >
-              <span>👑 Lås opp direkte som Superadmin / Eier</span>
-            </button>
-          </div>
         </form>
 
-        <div class="pt-2 border-t border-zinc-100 flex items-center justify-between text-[11px] text-zinc-400">
-          <span>ID: <code class="font-mono text-zinc-700 font-semibold" id="lock-restaurant-id">--</code></span>
-          <a href="superadmin.html" class="hover:text-zinc-700 underline">Superadmin portal ↗</a>
+        <div class="pt-2 border-t border-zinc-100 text-center text-[11px] text-zinc-400">
+          Beskyttet kontrollpanel · Kun for autorisert personell
         </div>
       </div>
     </div>

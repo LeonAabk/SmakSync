@@ -1685,6 +1685,8 @@
           saveBtn.disabled = false;
           saveBtn.innerText = 'Lagre i Firestore';
         }
+      };
+
       window.openRestaurantAdmin = async function(id, pin, pinHash) {
         try {
           const hash = pinHash || (pin ? await sha256(String(pin).trim()) : '');
@@ -1746,6 +1748,7 @@ Vennligst ta vare på koden for å administrere menyen.`;
         } catch {
           return [];
         }
+      }
       function saveFallbackInquiries(list) {
         localStorage.setItem(INQUIRIES_STORAGE_KEY, JSON.stringify(list));
       }
