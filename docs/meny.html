@@ -39,7 +39,7 @@
       };
     </script>
     <style>:root{--color-accent:#10b981;--color-accent-hover:#059669;--color-accent-badge:#10b98126;--color-accent-border:#10b98159}body{-webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent;font-family:Inter,sans-serif}.no-scrollbar::-webkit-scrollbar{display:none}.no-scrollbar{-ms-overflow-style:none;scrollbar-width:none}.accent-emerald{--color-accent:#10b981;--color-accent-hover:#059669;--color-accent-badge:#10b98126;--color-accent-border:#10b98159}.accent-gold{--color-accent:#f59e0b;--color-accent-hover:#d97706;--color-accent-badge:#f59e0b2e;--color-accent-border:#f59e0b66}.accent-rose{--color-accent:#e11d48;--color-accent-hover:#be123c;--color-accent-badge:#e11d4826;--color-accent-border:#e11d4859}.accent-orange{--color-accent:#ea580c;--color-accent-hover:#c2410c;--color-accent-badge:#ea580c26;--color-accent-border:#ea580c59}.accent-blue{--color-accent:#2563eb;--color-accent-hover:#1d4ed8;--color-accent-badge:#2563eb26;--color-accent-border:#2563eb59}.accent-slate{--color-accent:#71717a;--color-accent-hover:#52525b;--color-accent-badge:#71717a33;--color-accent-border:#71717a66}.theme-btn-accent{background-color:var(--color-accent)!important;color:#fff!important}.theme-text-accent{color:var(--color-accent)!important}.theme-border-accent{border-color:var(--color-accent)!important}.theme-badge-accent{background-color:var(--color-accent-badge)!important;border-color:var(--color-accent-border)!important;color:var(--color-accent)!important}body.theme-light{color:#1c1917!important;background-color:#f5f5f4!important}body.theme-light #valid-menu-container{background-color:#fff!important;border-color:#e7e5e4!important}body.theme-light .menu-header-box{background:linear-gradient(#f5f5f4,#fff)!important;border-color:#e7e5e4!important}body.theme-light .menu-top-sticky{background-color:#fffffff2!important;border-color:#e7e5e4!important}body.theme-light .menu-category-sticky{background-color:#fffffff5!important;border-color:#e7e5e4!important}body.theme-light .menu-footer-box{background-color:#fafaf9f2!important;border-color:#e7e5e4!important}body.theme-light .dish-card-active{background-color:#fff!important;border-color:#e7e5e4!important;box-shadow:0 1px 3px #0000000a!important}body.theme-light .dish-card-active:hover{border-color:#d6d3d1!important}body.theme-light .dish-title,body.theme-light .dish-price{color:#1c1917!important}body.theme-light .dish-desc{color:#57534e!important}body.theme-light .dish-allergens-box{color:#78716c!important;border-color:#f5f5f4!important}body.theme-light .cat-pill-inactive{color:#57534e!important;background-color:#f5f5f4!important;border-color:#e7e5e4!important}body.theme-light .cat-pill-inactive:hover{color:#1c1917!important;background-color:#e7e5e4!important}body.theme-light .cat-pill-active{color:#fff!important;background-color:#1c1917!important}body.theme-light #menu-search-input{color:#1c1917!important;background-color:#f5f5f4!important;border-color:#e7e5e4!important}body.theme-light #menu-search-input::placeholder{color:#a8a29e!important}body.theme-light #guest-restaurant-title{color:#1c1917!important}body.theme-light #restaurant-description{color:#57534e!important}body.theme-light #restaurant-tagline{color:#78716c!important}body.theme-light .dish-card-soldout{background-color:#f5f5f4!important;border-color:#e7e5e4!important}body.theme-light .dish-card-soldout .dish-title{color:#a8a29e!important}.font-preset-serif{font-family:Playfair Display,Georgia,serif!important}.font-preset-nordic{font-family:Plus Jakarta Sans,sans-serif!important}.font-preset-sans{font-family:Inter,sans-serif!important}</style>
-    <script type="module" crossorigin src="./assets/meny-BKCGPXl_.js"></script>
+    <script type="module" crossorigin src="./assets/meny-cIXQNhTc.js"></script>
     <link rel="modulepreload" crossorigin href="./assets/modulepreload-polyfill-P2Xu9kJm.js">
   </head>
   <body class="bg-zinc-950 text-zinc-100 min-h-screen flex flex-col justify-between selection:bg-zinc-800 accent-emerald">
@@ -108,18 +108,6 @@
           >
             <span>📶</span>
             <span>WiFi</span>
-          </button>
-
-          <!-- Tilkall servitør hurtigknapp (vises hvis eieren har aktivert servitørknapp) -->
-          <button
-            type="button"
-            id="top-service-btn"
-            onclick="openServiceModal()"
-            class="hidden px-2 py-0.5 rounded-full text-[10px] font-semibold bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-amber-300 transition-all flex items-center gap-1 shadow-2xs active:scale-95"
-            title="Tilkall servitør til bordet"
-          >
-            <span>🔔</span>
-            <span id="top-service-btn-label">Tilkall</span>
           </button>
 
           <!-- SPRÅKVELGER -->
@@ -293,82 +281,12 @@
       <!-- BUNN: FOOTER                               -->
       <!-- ========================================== -->
       <footer class="menu-footer-box p-4 border-t border-zinc-900 bg-zinc-950/90 backdrop-blur sticky bottom-0 z-20 space-y-2">
-        
-        <!-- Google Review / Tilbakemelding-knapp (vises om eieren har aktivert) -->
-        <div id="google-review-footer-container" class="hidden text-center pb-1">
-          <a
-            id="google-review-link"
-            href="#"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-white text-xs font-semibold border border-zinc-800 shadow-2xs transition-all active:scale-95"
-          >
-            <span>⭐</span>
-            <span id="google-review-btn-text">Gi oss en anmeldelse på Google</span>
-          </a>
-        </div>
-
         <div class="text-center text-[10px] text-zinc-400 space-y-1">
           <p id="ui-label-footer">SmakSync™ · Drevet av kontaktløs NFC · Ingen app kreves</p>
           <p id="live-sync-indicator" class="text-zinc-500 font-mono">Tilkoblet Firebase Realtime</p>
         </div>
       </footer>
 
-    </div>
-
-    <!-- ========================================== -->
-    <!-- MODAL: TILKALL SERVITØR                    -->
-    <!-- ========================================== -->
-    <div id="service-bell-modal" class="fixed inset-0 z-50 hidden bg-zinc-950/80 backdrop-blur-sm flex items-center justify-center p-4">
-      <div class="w-full max-w-sm bg-zinc-900 border border-zinc-800 rounded-3xl p-6 shadow-2xl text-center space-y-4">
-        <div class="h-14 w-14 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-amber-400 mx-auto flex items-center justify-center text-2xl shadow-inner">
-          🔔
-        </div>
-        <div>
-          <h3 class="text-base font-bold text-white">Tilkall Betjening</h3>
-          <p class="text-xs text-zinc-400 mt-1" id="service-bell-modal-subtitle">
-            Ønsker du service eller å be om regningen til bordet ditt?
-          </p>
-        </div>
-
-        <div id="service-bell-confirm-view" class="space-y-3">
-          <div class="p-3 rounded-xl bg-zinc-950 border border-zinc-800 text-left text-xs space-y-1">
-            <span class="text-zinc-500 font-mono text-[10px] uppercase">Gjeldende bord:</span>
-            <p class="font-bold text-white" id="service-modal-table-label">Bord ikke oppgitt</p>
-          </div>
-          <button
-            type="button"
-            onclick="confirmCallService()"
-            id="service-bell-submit-btn"
-            class="w-full py-2.5 px-4 rounded-xl theme-btn-accent font-bold text-xs shadow-md transition-all active:scale-95 flex items-center justify-center gap-2"
-          >
-            <span>Tilkall betjening nå</span>
-          </button>
-          <button
-            type="button"
-            onclick="closeServiceModal()"
-            class="w-full py-2 rounded-xl text-zinc-400 hover:text-white text-xs font-medium"
-          >
-            Avbryt
-          </button>
-        </div>
-
-        <div id="service-bell-success-view" class="hidden space-y-3 py-2">
-          <div class="p-3 rounded-xl bg-emerald-950/40 border border-emerald-800/60 text-emerald-300 text-xs">
-            <p class="font-bold">✓ Varselet er sendt!</p>
-            <p class="text-[11px] text-emerald-400/90 mt-1" id="service-modal-success-msg">
-              En servitør kommer straks bort til bordet ditt.
-            </p>
-          </div>
-          <button
-            type="button"
-            onclick="closeServiceModal()"
-            class="w-full py-2.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-white text-xs font-semibold"
-          >
-            Lukk
-          </button>
-        </div>
-      </div>
     </div>
 
     <!-- ========================================== -->
