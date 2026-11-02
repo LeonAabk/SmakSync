@@ -1915,8 +1915,8 @@ Har du anledning til en kort prat på telefon (${inq.phone || 'ditt oppgitte num
 
 Med vennlig hilsen,
 Leon / SmakSync Studio (Aabak Studio)
-hei@smaksync.no · +47 22 10 90 00
-https://smaksync.no · https://aabakstudio.com/NfcReview/`);
+aabakstudio@gmail.com
+https://aabakstudio.com/SmakSync/ · https://aabakstudio.com/NfcReview/`);
 
           const mailtoHref = `mailto:${encodeURIComponent(inq.email)}?subject=${mailSubject}&body=${mailBody}`;
           const telHref = inq.phone ? `tel:${inq.phone.replace(/[^0-9+]/g, '')}` : '#';
@@ -2147,7 +2147,7 @@ Vi oversender med dette informasjon og prisoversikt tilpasset ${inq.restaurant_n
 
 ${inq.message ? `Angående din kommentar:\n> "${inq.message}"\n\n` : ''}Med vennlig hilsen,
 Leon / SmakSync Studio
-hei@smaksync.no · +47 22 10 90 00`);
+aabakstudio@gmail.com`);
         const mailtoBtn = document.getElementById('inq-modal-mailto-btn');
         mailtoBtn.href = `mailto:${encodeURIComponent(inq.email)}?subject=${mailSubject}&body=${mailBody}`;
         mailtoBtn.onclick = () => {

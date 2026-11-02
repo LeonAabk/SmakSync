@@ -185,8 +185,8 @@ Har du anledning til en kort prat på telefon (${e.phone||`ditt oppgitte nummer`
 
 Med vennlig hilsen,
 Leon / SmakSync Studio (Aabak Studio)
-hei@smaksync.no · +47 22 10 90 00
-https://smaksync.no · https://aabakstudio.com/NfcReview/`),a=`mailto:${encodeURIComponent(e.email)}?subject=${r}&body=${i}`,o=e.phone?`tel:${e.phone.replace(/[^0-9+]/g,``)}`:`#`;return`
+aabakstudio@gmail.com
+https://aabakstudio.com/SmakSync/ · https://aabakstudio.com/NfcReview/`),a=`mailto:${encodeURIComponent(e.email)}?subject=${r}&body=${i}`,o=e.phone?`tel:${e.phone.replace(/[^0-9+]/g,``)}`:`#`;return`
             <tr class="hover:bg-zinc-50/80 transition-colors ${t?`bg-emerald-50/20 font-medium`:``}">
               <!-- Tidspunkt -->
               <td class="py-3 px-3.5 whitespace-nowrap text-zinc-500 text-xs font-mono">
@@ -318,4 +318,4 @@ Vi oversender med dette informasjon og prisoversikt tilpasset ${t.restaurant_nam
 
 ${t.message?`Angående din kommentar:\n> "${t.message}"\n\n`:``}Med vennlig hilsen,
 Leon / SmakSync Studio
-hei@smaksync.no · +47 22 10 90 00`),s=document.getElementById(`inq-modal-mailto-btn`);s.href=`mailto:${encodeURIComponent(t.email)}?subject=${a}&body=${o}`,s.onclick=()=>{markInquiryAsReplied(e)};let c=document.getElementById(`inq-modal-toggle-status-btn`);c.innerText=t.status===`ny`?`Merk som besvart`:`Merk som ubehandlet`,document.getElementById(`inquiry-modal`).classList.remove(`hidden`)},window.closeInquiryModal=function(){document.getElementById(`inquiry-modal`).classList.add(`hidden`),B=null},window.toggleInquiryModalStatus=function(){B&&(toggleInquiryStatus(B),openInquiryModal(B))},window.deleteCurrentModalInquiry=function(){if(!B)return;let e=B;closeInquiryModal(),deleteInquiry(e)},document.addEventListener(`DOMContentLoaded`,()=>{k()}),k();
+aabakstudio@gmail.com`),s=document.getElementById(`inq-modal-mailto-btn`);s.href=`mailto:${encodeURIComponent(t.email)}?subject=${a}&body=${o}`,s.onclick=()=>{markInquiryAsReplied(e)};let c=document.getElementById(`inq-modal-toggle-status-btn`);c.innerText=t.status===`ny`?`Merk som besvart`:`Merk som ubehandlet`,document.getElementById(`inquiry-modal`).classList.remove(`hidden`)},window.closeInquiryModal=function(){document.getElementById(`inquiry-modal`).classList.add(`hidden`),B=null},window.toggleInquiryModalStatus=function(){B&&(toggleInquiryStatus(B),openInquiryModal(B))},window.deleteCurrentModalInquiry=function(){if(!B)return;let e=B;closeInquiryModal(),deleteInquiry(e)},document.addEventListener(`DOMContentLoaded`,()=>{k()}),k();
