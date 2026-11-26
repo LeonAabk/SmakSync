@@ -9,11 +9,74 @@ service cloud.firestore {
       allow read: if true;
       allow write: if true;
 
-      // Menyelementer og driftsinnstillinger
-      match /{subcollection=**} {
+      // Menyelementer (SmakSync). Strammes inn i et eget steg.
+      match /menu_items/{itemId} {
         allow read: if true;
         allow write: if true;
       }
+    }
+
+    // 1b. Ordrer fra NfcReview-butikken (aabakstudio.com/NfcReview):
+    // - Kunder kan bare opprette en ny ordre, og bare med gyldige felt.
+    // - Kunder kan hente én ordre med det lange ordrenummeret (sporingssiden). Ingen kan liste alle.
+    // - Bare admin-kontoen (Google-innlogging) kan liste, endre og slette.
+    match /restaurants/aabakstudio/orders/{orderId} {
+      allow get: if isShopAdmin() || isSecureOrderId(orderId);
+      allow list, update, delete: if isShopAdmin();
+      allow create: if isShopAdmin() || isValidNewOrder(orderId);
+    }
+
+    function isShopAdmin() {
+      return request.auth != null
+        && request.auth.token.email == 'aabakstudio@gmail.com'
+        && request.auth.token.email_verified == true;
+    }
+
+    // Samme format som generateOrderId() i NfcReview: NFC-XXXX-XXXX-XXXX (60 bit tilfeldighet).
+    function isSecureOrderId(id) {
+      return id.matches('^NFC-[2-9A-HJ-NP-Z]{4}-[2-9A-HJ-NP-Z]{4}-[2-9A-HJ-NP-Z]{4}$');
+    }
+
+    function isShortString(v, max) {
+      return v is string && v.size() <= max;
+    }
+
+    function isAmount(v) {
+      return v is int && v >= 0 && v <= 100000;
+    }
+
+    function isValidNewOrder(id) {
+      let d = request.resource.data;
+      return isSecureOrderId(id)
+        && d.keys().hasOnly(['orderId', 'createdAt', 'status', 'total', 'subtotal', 'discountAmount',
+             'shippingFee', 'companyName', 'contactPerson', 'email', 'phone', 'address', 'postalCode',
+             'city', 'orgNumber', 'googleReviewUrl', 'reviewInputMode', 'googleLookupName',
+             'googleLookupCity', 'trackingNumber', 'adminNotes', 'paymentMethod', 'itemsJson',
+             'checklistJson', 'updatedAt'])
+        && d.keys().hasAll(['orderId', 'createdAt', 'status', 'total', 'companyName', 'contactPerson',
+             'email', 'itemsJson'])
+        && d.orderId == id
+        && d.status == 'ny'
+        && d.get('trackingNumber', '') == ''
+        && d.get('adminNotes', '') == ''
+        && isAmount(d.total) && isAmount(d.get('subtotal', 0))
+        && isAmount(d.get('discountAmount', 0)) && isAmount(d.get('shippingFee', 0))
+        && isShortString(d.createdAt, 40) && isShortString(d.get('updatedAt', ''), 40)
+        && isShortString(d.companyName, 200) && d.companyName.size() > 0
+        && isShortString(d.contactPerson, 200) && d.contactPerson.size() > 0
+        && isShortString(d.email, 200) && d.email.matches('^[^@ ]+@[^@ ]+[.][^@ ]+$')
+        && isShortString(d.get('phone', ''), 40)
+        && isShortString(d.get('address', ''), 300)
+        && isShortString(d.get('postalCode', ''), 20)
+        && isShortString(d.get('city', ''), 100)
+        && isShortString(d.get('orgNumber', ''), 40)
+        && isShortString(d.get('googleReviewUrl', ''), 1000)
+        && isShortString(d.get('reviewInputMode', ''), 20)
+        && isShortString(d.get('googleLookupName', ''), 200)
+        && isShortString(d.get('googleLookupCity', ''), 100)
+        && isShortString(d.get('paymentMethod', ''), 40)
+        && isShortString(d.itemsJson, 50000)
+        && isShortString(d.get('checklistJson', ''), 500);
     }
 
     // 2. Kontakthenvendelser og prisforespørsler:
