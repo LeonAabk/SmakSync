@@ -26,10 +26,10 @@ service cloud.firestore {
       allow create: if isShopAdmin() || isValidNewOrder(orderId);
     }
 
+    // Bruker-ID-ene til admin-kontoene (samme liste som ADMIN_UIDS i NfcReview/src/utils/firebase.ts).
     function isShopAdmin() {
       return request.auth != null
-        && request.auth.token.email == 'aabakstudio@gmail.com'
-        && request.auth.token.email_verified == true;
+        && request.auth.uid in ['UID_1_SETTES_INN', 'UID_2_SETTES_INN'];
     }
 
     // Samme format som generateOrderId() i NfcReview: NFC-XXXX-XXXX-XXXX (60 bit tilfeldighet).
