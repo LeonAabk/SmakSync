@@ -29,7 +29,7 @@ service cloud.firestore {
     // Bruker-ID-ene til admin-kontoene (samme liste som ADMIN_UIDS i NfcReview/src/utils/firebase.ts).
     function isShopAdmin() {
       return request.auth != null
-        && request.auth.uid in ['UID_1_SETTES_INN', 'UID_2_SETTES_INN'];
+        && request.auth.uid in ['9t6J2r8E3mhW3SaX5v4hP0PD71C2', 'MW6Ssb83uwPlFfFHHD8Vu1Y6hRe2'];
     }
 
     // Samme format som generateOrderId() i NfcReview: NFC-XXXX-XXXX-XXXX (60 bit tilfeldighet).
