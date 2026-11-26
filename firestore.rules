@@ -3,7 +3,6 @@ service cloud.firestore {
   match /databases/{database}/documents {
 
     // 1. KONTAKTSKJEMA (/inquiries og /contact_requests)
-    // OBS: lesing er fortsatt åpen for alle. Strammes inn i SmakSync-steget.
     match /inquiries/{inquiryId} {
       allow create: if request.resource.data.restaurant_name is string
                     && request.resource.data.restaurant_name.size() > 0
